@@ -1,0 +1,38 @@
+# Mutations for user and business creation
+
+# Insert a new user
+mutation CreateUser($data: User_Data!) {
+  user_insert(data: $data) {
+    id
+    name
+    email
+    favorite_category
+    created_datetime
+  }
+}
+
+# Insert a new business
+mutation CreateBusiness($data: Business_Data!) {
+  business_insert(data: $data) {
+    id
+    name
+    contact_name
+    email
+    phone_number
+    address
+    category_id
+    description
+    punch_num
+    expiration_duration_in_days
+    created_datetime
+  }
+}
+
+# Insert a new category (for seeding)
+mutation CreateCategory($data: Category_Data!) {
+  category_insert(data: $data) {
+    id
+    name
+    description
+  }
+}
