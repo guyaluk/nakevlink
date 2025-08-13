@@ -3,6 +3,10 @@
     "rules": "firestore.rules",
     "indexes": "firestore.indexes.json"
   },
+  "dataconnect": {
+    "source": "dataconnect",
+    "serviceId": "nakevlink-dataconnect"
+  },
   "functions": {
     "predeploy": [
       "npm --prefix \"$RESOURCE_DIR\" run lint",
@@ -36,6 +40,9 @@
     },
     "hosting": {
       "port": 5000
+    },
+    "dataconnect": {
+      "port": 9399
     },
     "ui": {
       "enabled": true,

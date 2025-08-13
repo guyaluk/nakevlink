@@ -1,0 +1,9 @@
+# Firebase Data Connect Connector Configuration
+
+connectorId: nakevlink-connector
+serviceId: nakevlink-dataconnect
+
+# Cloud SQL instance configuration
+cloudSql:
+  database: nakevlink
+  schemaValidation: STRICT
