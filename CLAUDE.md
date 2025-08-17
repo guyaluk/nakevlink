@@ -105,23 +105,27 @@ Configured emulators:
    - React app: http://localhost:3005 (current development port)
    - Firebase UI: http://localhost:4100 (when emulators running)
 
-## ✅ Complete Authentication System (Current Status)
+## ✅ Real Firebase Authentication System (Current Status)
 
-### **Functional Features**
+### **Production-Ready Features**
+- **Real Firebase Authentication**: Production Firebase Auth with emulator support
 - **Complete Authentication Flow**: Login, Signup, Logout, Role-based routing
 - **Customer Signup**: Name, email, password, favorite category selection
 - **Business Signup**: Personal info + business details (name, category, contact info, punch card settings)
 - **Role-Based Authentication**: Customers redirect to `/customers`, Business owners to `/business`
-- **Persistent Storage**: localStorage-based user storage (survives page refresh and hot reloads)
-- **Form Validation**: Password matching, required fields, email validation
-- **Error Handling**: Duplicate email detection, invalid credentials, field validation
+- **Firebase Persistence**: Authentication persists across page refreshes
+- **Custom Claims Ready**: Firebase Functions for role management
+- **Error Boundaries**: Comprehensive error handling and recovery
+- **Loading States**: Proper loading indicators during Firebase operations
 
 ### **Technology Stack**
 - **Frontend**: React 19, TypeScript, Vite
 - **UI Components**: shadcn/ui with Tailwind CSS v4
 - **Routing**: React Router DOM
-- **Authentication**: Mock authentication system with localStorage persistence
-- **State Management**: React Context (AuthContext)
+- **Authentication**: Real Firebase Auth with TypeScript support
+- **State Management**: React Context with Firebase integration
+- **Firebase**: Auth, Functions, Emulators
+- **Error Handling**: ErrorBoundary component
 - **Icons**: Lucide React
 
 ### **Component Structure**
@@ -164,7 +168,15 @@ web-app/src/
 
 ## Important Notes
 
-- **Current State**: Mock authentication with localStorage (fully functional for development)
-- **Firebase Setup**: Emulators configured but not actively used in current auth flow
+- **Current State**: Real Firebase Authentication (production-ready)
+- **Firebase Setup**: Emulators actively running for local development
 - **Mobile-First**: All components designed mobile-first with responsive breakpoints
-- **Development Port**: App runs on http://localhost:3005 (auto-assigned by Vite)
+- **Development Port**: App runs on http://localhost:3005+ (auto-assigned by Vite)
+
+### **Firebase Configuration**
+- **Auth Emulator**: localhost:8199 (configured and working)
+- **Functions Emulator**: localhost:6201 (running with custom claims functions)
+- **Emulator UI**: localhost:3200 (Firebase dashboard for debugging)
+- **Environment**: `.env.local` with VITE_FIREBASE_USE_EMULATOR=true
+- **TypeScript**: Proper `import type` syntax for Firebase types
+- **Error Recovery**: 5-second timeout and fallback handling

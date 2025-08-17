@@ -21,15 +21,24 @@ export const db = getFirestore(app);
 export const functions = getFunctions(app);
 
 // Connect to emulators if in development
+console.log('Firebase config: USE_EMULATOR =', import.meta.env.VITE_FIREBASE_USE_EMULATOR);
+console.log('Firebase config: PROJECT_ID =', import.meta.env.VITE_FIREBASE_PROJECT_ID);
+
 if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
   try {
+    console.log('Firebase: Attempting to connect to Auth emulator at localhost:8199');
     // Auth emulator
     if (!auth.emulatorConfig) {
-      connectAuthEmulator(auth, 'http://localhost:9199');
+      connectAuthEmulator(auth, 'http://localhost:8199');
+      console.log('Firebase: Successfully connected to Auth emulator');
+    } else {
+      console.log('Firebase: Auth emulator already configured');
     }
   } catch (error) {
-    console.warn('Failed to connect to Auth emulator:', error);
+    console.warn('Firebase: Failed to connect to Auth emulator:', error);
   }
+} else {
+  console.log('Firebase: Using production Firebase (emulator disabled)');
 }
 
 export { app };

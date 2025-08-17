@@ -4,20 +4,35 @@ import { AuthProvider, useAuth } from '@/contexts/AuthContext';
 import RoleSelection from '@/components/auth/RoleSelection';
 import SimpleCustomerSignup from '@/components/auth/SimpleCustomerSignup';
 import SimpleBusinessSignup from '@/components/auth/SimpleBusinessSignup';
+import ErrorBoundary from '@/components/ErrorBoundary';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Link } from 'react-router-dom';
 
-// Simple Login with mock Firebase for testing
+// Simple Login with Firebase Auth
 const SimpleLogin = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const { signIn, user } = useAuth();
   const navigate = useNavigate();
+
+  console.log('SimpleLogin render:', { user: user?.email, loading });
+
+  // Navigate based on user role when user state changes
+  React.useEffect(() => {
+    if (user) {
+      console.log('User authenticated, navigating based on role:', user.role);
+      if (user.role === 'business_owner') {
+        navigate('/business');
+      } else {
+        navigate('/customers');
+      }
+    }
+  }, [user, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,21 +45,14 @@ const SimpleLogin = () => {
     try {
       setError('');
       setLoading(true);
-      const result = await signIn(email, password);
+      await signIn(email, password);
       
-      // Get user role from localStorage to determine redirect
-      const users = JSON.parse(localStorage.getItem('nakevlink_mock_users') || '[]');
-      const user = users.find((u: any) => u.email === email);
-      
-      // Navigate based on user role
-      if (user?.role === 'business_owner') {
-        navigate('/business');
-      } else {
-        navigate('/customers');
-      }
+      // Navigate based on user role (the user will be set in AuthContext)
+      console.log('Login successful, waiting for user state update...');
       
     } catch (err: any) {
       setError('Failed to sign in. Please check your credentials.');
+      console.error('Sign in error:', err);
     } finally {
       setLoading(false);
     }
@@ -194,20 +202,24 @@ const BusinessDashboard = () => {
 };
 
 function App() {
+  console.log('App component rendering...');
+  
   return (
-    <AuthProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<SimpleLogin />} />
-          <Route path="/login" element={<SimpleLogin />} />
-          <Route path="/signup" element={<RoleSelection />} />
-          <Route path="/signup/customer" element={<SimpleCustomerSignup />} />
-          <Route path="/signup/business" element={<SimpleBusinessSignup />} />
-          <Route path="/customers" element={<CustomerDashboard />} />
-          <Route path="/business" element={<BusinessDashboard />} />
-        </Routes>
-      </Router>
-    </AuthProvider>
+    <ErrorBoundary>
+      <AuthProvider>
+        <Router>
+          <Routes>
+            <Route path="/" element={<SimpleLogin />} />
+            <Route path="/login" element={<SimpleLogin />} />
+            <Route path="/signup" element={<RoleSelection />} />
+            <Route path="/signup/customer" element={<SimpleCustomerSignup />} />
+            <Route path="/signup/business" element={<SimpleBusinessSignup />} />
+            <Route path="/customers" element={<CustomerDashboard />} />
+            <Route path="/business" element={<BusinessDashboard />} />
+          </Routes>
+        </Router>
+      </AuthProvider>
+    </ErrorBoundary>
   );
 }
 
