@@ -102,11 +102,69 @@ Configured emulators:
    ```
 
 4. **Access application**:
-   - React app: http://localhost:3000
-   - Firebase UI: http://localhost:4000
+   - React app: http://localhost:3005 (current development port)
+   - Firebase UI: http://localhost:4100 (when emulators running)
+
+## ✅ Complete Authentication System (Current Status)
+
+### **Functional Features**
+- **Complete Authentication Flow**: Login, Signup, Logout, Role-based routing
+- **Customer Signup**: Name, email, password, favorite category selection
+- **Business Signup**: Personal info + business details (name, category, contact info, punch card settings)
+- **Role-Based Authentication**: Customers redirect to `/customers`, Business owners to `/business`
+- **Persistent Storage**: localStorage-based user storage (survives page refresh and hot reloads)
+- **Form Validation**: Password matching, required fields, email validation
+- **Error Handling**: Duplicate email detection, invalid credentials, field validation
+
+### **Technology Stack**
+- **Frontend**: React 19, TypeScript, Vite
+- **UI Components**: shadcn/ui with Tailwind CSS v4
+- **Routing**: React Router DOM
+- **Authentication**: Mock authentication system with localStorage persistence
+- **State Management**: React Context (AuthContext)
+- **Icons**: Lucide React
+
+### **Component Structure**
+```
+web-app/src/
+├── components/
+│   ├── ui/                           # shadcn/ui components
+│   └── auth/
+│       ├── Login.tsx                 # Firebase-integrated login form
+│       ├── RoleSelection.tsx         # Customer vs Business role selection
+│       ├── SimpleCustomerSignup.tsx # Customer signup form
+│       └── SimpleBusinessSignup.tsx # Business signup form
+├── contexts/
+│   └── AuthContext.tsx              # Authentication state management
+└── constants/
+    └── categories.ts                 # Business categories (fitness, coffee, etc.)
+```
+
+### **Current Routes**
+- `/` - Login page
+- `/login` - Login page
+- `/signup` - Role selection (Customer vs Business Owner)
+- `/signup/customer` - Customer signup form
+- `/signup/business` - Business signup form  
+- `/customers` - Customer dashboard (role-protected)
+- `/business` - Business dashboard (role-protected)
+
+### **Testing the Authentication System**
+1. **Customer Flow**: Signup → Dashboard → Logout → Login → Dashboard
+2. **Business Flow**: Signup → Dashboard → Logout → Login → Dashboard
+3. **Role Validation**: Business users redirect to `/business`, customers to `/customers`
+4. **Persistence**: Users persist across page refreshes and code changes
+
+### **Next Development Steps**
+- Replace mock authentication with real Firebase Auth
+- Add Firebase Functions for setting custom claims (roles)
+- Integrate Data Connect for user/business data storage
+- Add protected route components with role validation
+- Implement dashboard functionality (punch cards, business management)
 
 ## Important Notes
 
-- Firebase SDK installation may need to be completed manually due to path issues
-- Update Firebase config in `web-app/src/config/firebase.ts` with your project credentials
-- Mobile testing available via network IP when using `--host` flag
+- **Current State**: Mock authentication with localStorage (fully functional for development)
+- **Firebase Setup**: Emulators configured but not actively used in current auth flow
+- **Mobile-First**: All components designed mobile-first with responsive breakpoints
+- **Development Port**: App runs on http://localhost:3005 (auto-assigned by Vite)
