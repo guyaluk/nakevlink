@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/constants/categories';
+import { createBusiness } from '@/lib/dataconnect';
 
 interface BusinessFormData {
   name: string;
@@ -23,6 +24,7 @@ interface BusinessFormData {
   description: string;
   punchNum: string;
   expirationDays: string;
+  businessImage: string; // base64 string
 }
 
 const SimpleBusinessSignup: React.FC = () => {
@@ -38,10 +40,13 @@ const SimpleBusinessSignup: React.FC = () => {
     categoryId: '',
     description: '',
     punchNum: '10',
-    expirationDays: '30'
+    expirationDays: '30',
+    businessImage: ''
   });
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [imageError, setImageError] = useState('');
   const { signUp } = useAuth();
   const navigate = useNavigate();
 
@@ -58,6 +63,46 @@ const SimpleBusinessSignup: React.FC = () => {
       ...prev,
       categoryId: value
     }));
+  };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setImageError('');
+
+    // Validate file type
+    if (!file.type.includes('image/')) {
+      setImageError('Please select a valid image file (JPG or PNG)');
+      return;
+    }
+
+    // Validate file size (2MB max)
+    if (file.size > 2 * 1024 * 1024) {
+      setImageError('Image size must be less than 2MB');
+      return;
+    }
+
+    // Convert to base64
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target?.result as string;
+      setFormData(prev => ({
+        ...prev,
+        businessImage: base64String
+      }));
+      setImagePreview(base64String);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setFormData(prev => ({
+      ...prev,
+      businessImage: ''
+    }));
+    setImagePreview(null);
+    setImageError('');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -82,27 +127,36 @@ const SimpleBusinessSignup: React.FC = () => {
       setError('');
       setLoading(true);
       
-      // Use mock signup with business owner role
+      // Create user account with business owner role
       const user = await signUp(formData.email, formData.password, {
         name: formData.name,
         role: 'business_owner'
       });
       
-      console.log('Business owner signup successful:', {
-        uid: user.uid,
-        name: formData.name,
-        email: formData.email,
-        businessData: {
+      // Save business data to database
+      try {
+        const businessId = await createBusiness({
           name: formData.businessName,
-          contact_name: formData.contactName,
-          phone_number: formData.phoneNumber,
-          address: formData.address,
+          contact_name: formData.contactName || undefined,
+          phone_number: formData.phoneNumber || undefined,
+          address: formData.address || undefined,
           category_id: parseInt(formData.categoryId),
-          description: formData.description,
-          punch_num: parseInt(formData.punchNum),
-          expiration_duration_in_days: parseInt(formData.expirationDays)
-        }
-      });
+          description: formData.description || undefined,
+          punch_num: parseInt(formData.punchNum) || 10,
+          expiration_duration_in_days: parseInt(formData.expirationDays) || 30,
+          email: formData.email
+        });
+        
+        console.log('Business created successfully:', {
+          uid: user.uid,
+          businessId: businessId,
+          name: formData.name,
+          businessName: formData.businessName
+        });
+      } catch (dbError) {
+        console.error('Failed to save business data:', dbError);
+        // Continue even if database save fails
+      }
       
       // Navigate to business dashboard
       navigate('/business');
@@ -288,6 +342,53 @@ const SimpleBusinessSignup: React.FC = () => {
                     onChange={handleChange}
                     rows={3}
                   />
+                </div>
+
+                {/* Business Image Upload */}
+                <div className="space-y-2">
+                  <Label htmlFor="businessImage">Business Logo/Photo</Label>
+                  <div className="space-y-3">
+                    <Input
+                      id="businessImage"
+                      name="businessImage"
+                      type="file"
+                      accept="image/jpeg,image/png,image/jpg"
+                      onChange={handleImageUpload}
+                      className="cursor-pointer"
+                    />
+                    {imageError && (
+                      <p className="text-sm text-destructive">{imageError}</p>
+                    )}
+                    
+                    {/* Image Preview */}
+                    {imagePreview && (
+                      <div className="relative w-32 h-32 mx-auto border-2 border-dashed border-primary/20 rounded-lg overflow-hidden">
+                        <img
+                          src={imagePreview}
+                          alt="Business logo preview"
+                          className="w-full h-full object-cover"
+                        />
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          onClick={removeImage}
+                          className="absolute top-1 right-1 h-6 w-6 p-0"
+                        >
+                          ×
+                        </Button>
+                      </div>
+                    )}
+                    
+                    {!imagePreview && (
+                      <div className="w-32 h-32 mx-auto border-2 border-dashed border-muted-foreground/20 rounded-lg flex items-center justify-center text-muted-foreground">
+                        <span className="text-sm text-center">
+                          Upload Image<br/>
+                          <span className="text-xs">(JPG/PNG, max 2MB)</span>
+                        </span>
+                      </div>
+                    )}
+                  </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
