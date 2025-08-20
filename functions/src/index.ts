@@ -7,12 +7,20 @@ export const createUserWithRole = functions.auth.user().onCreate(async (user) =>
   try {
     console.log("User created:", user.uid, user.email);
     
-    // Set default role as customer
+    // Check if this is a business owner by checking the businesses collection
+    const db = admin.firestore();
+    const businessQuery = await db.collection('businesses')
+      .where('email', '==', user.email)
+      .get();
+    
+    const role = !businessQuery.empty ? "business_owner" : "customer";
+    
+    // Set role based on whether they have a business record
     await admin.auth().setCustomUserClaims(user.uid, {
-      role: "customer"
+      role: role
     });
     
-    console.log("Custom claims set for user:", user.uid);
+    console.log(`Custom claims set for user ${user.uid} with role: ${role}`);
   } catch (error) {
     console.error("Error setting custom claims:", error);
   }

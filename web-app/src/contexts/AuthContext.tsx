@@ -1,14 +1,15 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { User } from 'firebase/auth';
 import { 
-  onAuthStateChanged, 
+  onAuthStateChanged,
+  onIdTokenChanged,
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword, 
   signOut,
   updateProfile
 } from 'firebase/auth';
-import { httpsCallable } from 'firebase/functions';
-import { auth, functions } from '@/config/firebase';
+import { auth } from '@/config/firebase';
+import { createUser as createUserInDb } from '@/lib/dataconnect';
 
 export type UserRole = 'customer' | 'business_owner';
 
@@ -40,21 +41,83 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   console.log('AuthProvider render:', { user: user?.email, loading });
 
-  // Get custom claims and role from Firebase Auth
-  const getUserWithRole = async (firebaseUser: User): Promise<AuthUser> => {
+  // INSTANT role detection - uses cache first, verifies in background
+  const getUserRoleInstant = (firebaseUser: User): AuthUser => {
+    const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`) as UserRole;
+    const role = (cachedRole === 'business_owner' || cachedRole === 'customer') ? cachedRole : 'customer';
+    
+    console.log('AuthContext: Instant role for', firebaseUser.email, ':', role);
+    
+    return {
+      ...firebaseUser,
+      role
+    };
+  };
+
+  // BACKGROUND role verification - runs async to update if needed
+  const verifyRoleInBackground = async (firebaseUser: User): Promise<void> => {
     try {
-      // Temporarily skip token result calls to isolate auth issues
-      console.log('AuthContext: Skipping token result call, using default role');
-      return {
-        ...firebaseUser,
-        role: 'customer' // Default to customer for now
-      };
+      console.log('AuthContext: Background verification for:', firebaseUser.email);
+      
+      // Check custom claims first
+      try {
+        const idTokenResult = await firebaseUser.getIdTokenResult();
+        if (idTokenResult.claims.role) {
+          const claimsRole = idTokenResult.claims.role as UserRole;
+          console.log('AuthContext: Found custom claims role:', claimsRole);
+          
+          const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`);
+          if (cachedRole !== claimsRole) {
+            console.log('AuthContext: Role changed via custom claims:', cachedRole, '→', claimsRole);
+            localStorage.setItem(`user_role_${firebaseUser.uid}`, claimsRole);
+            setUser({
+              ...firebaseUser,
+              role: claimsRole
+            });
+          }
+          return;
+        }
+      } catch (claimsError) {
+        console.log('AuthContext: No custom claims, checking database');
+      }
+      
+      // Database check with retries
+      let attempts = 0;
+      const maxAttempts = 3;
+      
+      while (attempts < maxAttempts) {
+        try {
+          const { getBusinessByEmail } = await import('@/lib/dataconnect');
+          const business = await getBusinessByEmail(firebaseUser.email || '');
+          
+          const dbRole: UserRole = business ? 'business_owner' : 'customer';
+          const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`);
+          
+          if (cachedRole !== dbRole) {
+            console.log('AuthContext: Role changed via database:', cachedRole, '→', dbRole);
+            localStorage.setItem(`user_role_${firebaseUser.uid}`, dbRole);
+            setUser({
+              ...firebaseUser,
+              role: dbRole
+            });
+          } else {
+            console.log('AuthContext: Role verified, no change needed');
+          }
+          break;
+        } catch (dbError: any) {
+          attempts++;
+          console.error(`AuthContext: Background verification attempt ${attempts} failed:`, dbError);
+          
+          if (dbError.code === 'permission-denied' && attempts < maxAttempts) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * attempts));
+          } else {
+            console.error('AuthContext: Background verification failed permanently');
+            break;
+          }
+        }
+      }
     } catch (error) {
-      console.error('AuthContext: Error getting token result:', error);
-      return {
-        ...firebaseUser,
-        role: 'customer'
-      };
+      console.error('AuthContext: Background role verification error:', error);
     }
   };
 
@@ -65,11 +128,15 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const result = await signInWithEmailAndPassword(auth, email, password);
       console.log('AuthContext: Sign in successful, user:', result.user.email);
       
-      const userWithRole = await getUserWithRole(result.user);
-      console.log('AuthContext: Setting user with role:', userWithRole.email, userWithRole.role);
+      // INSTANT: Set user with cached role immediately
+      const userWithRole = getUserRoleInstant(result.user);
+      console.log('AuthContext: Setting user with instant role:', userWithRole.email, userWithRole.role);
       setUser(userWithRole);
       
-      console.log('AuthContext: User state updated successfully');
+      // BACKGROUND: Verify role and update if needed
+      verifyRoleInBackground(result.user);
+      
+      console.log('AuthContext: Instant login complete, background verification started');
     } catch (error: any) {
       console.error('AuthContext: Sign in error:', error);
       throw new Error(error.message || 'Failed to sign in');
@@ -89,14 +156,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       }
       
-      // Temporarily disable Firebase Functions calls to isolate auth issues
-      console.log('AuthContext: Skipping Firebase Functions call for now');
+      // Save user to database
+      try {
+        await createUserInDb({
+          id: result.user.uid,
+          name: userData?.name || result.user.displayName || '',
+          email: result.user.email || '',
+          favorite_category: userData?.favoriteCategory
+        });
+        console.log('AuthContext: User saved to database');
+      } catch (dbError) {
+        console.error('AuthContext: Failed to save user to database:', dbError);
+        // Continue even if database save fails
+      }
       
-      // Create user with default role for now
+      // Create user with role
       const userWithRole: AuthUser = {
         ...result.user,
         role: userData?.role || 'customer'
       };
+      
+      // Store role in localStorage as a temporary solution until custom claims are set up
+      localStorage.setItem(`user_role_${result.user.uid}`, userData?.role || 'customer');
+      
       setUser(userWithRole);
       
       console.log('User created successfully:', {
@@ -125,7 +207,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Listen to authentication state changes
   useEffect(() => {
-    console.log('AuthContext useEffect: Setting up auth listener');
+    console.log('AuthContext useEffect: Setting up auth listeners');
     
     // Add timeout to prevent infinite loading
     const loadingTimeout = setTimeout(() => {
@@ -133,23 +215,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     }, 5000);
 
-    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+    // Main auth state listener - handles login/logout
+    const unsubscribeAuthState = onAuthStateChanged(auth, (firebaseUser) => {
       console.log('AuthContext: Auth state changed:', firebaseUser?.email || 'no user');
       clearTimeout(loadingTimeout);
       setLoading(true);
       
       try {
         if (firebaseUser) {
-          console.log('AuthContext: Getting user role for:', firebaseUser.email);
-          const userWithRole = await getUserWithRole(firebaseUser);
-          console.log('AuthContext: User with role:', userWithRole.email, userWithRole.role);
+          // INSTANT: Set user with cached role immediately
+          const userWithRole = getUserRoleInstant(firebaseUser);
+          console.log('AuthContext: Setting instant role:', userWithRole.email, userWithRole.role);
           setUser(userWithRole);
+          
+          // BACKGROUND: Verify role and update if needed
+          verifyRoleInBackground(firebaseUser);
         } else {
           console.log('AuthContext: No user, setting to null');
           setUser(null);
         }
       } catch (error) {
-        console.error('AuthContext: Error getting user role:', error);
+        console.error('AuthContext: Error in auth state change:', error);
         setUser(firebaseUser ? { ...firebaseUser, role: 'customer' } : null);
       } finally {
         console.log('AuthContext: Setting loading to false');
@@ -157,12 +243,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     });
 
+    // Token listener - handles custom claims changes
+    const unsubscribeTokenChange = onIdTokenChanged(auth, (firebaseUser) => {
+      if (firebaseUser && user) {
+        console.log('AuthContext: Token changed, checking for updated claims');
+        verifyRoleInBackground(firebaseUser);
+      }
+    });
+
     return () => {
-      console.log('AuthContext: Cleaning up auth listener');
+      console.log('AuthContext: Cleaning up auth listeners');
       clearTimeout(loadingTimeout);
-      unsubscribe();
+      unsubscribeAuthState();
+      unsubscribeTokenChange();
     };
-  }, []);
+  }, [user]);
 
   const value = {
     user,

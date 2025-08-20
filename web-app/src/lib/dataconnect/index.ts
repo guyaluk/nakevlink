@@ -1,7 +1,7 @@
 // Firebase Data Connect SDK
 // This is a temporary manual implementation until the CLI SDK generation is fixed
 
-import { getFirestore, doc, setDoc, getDoc, collection, query, where, getDocs, addDoc, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, getDoc, collection, query, where, getDocs, addDoc, Timestamp } from 'firebase/firestore';
 import { db } from '@/config/firebase';
 
 // Types based on your Data Connect schema
@@ -84,11 +84,31 @@ export const getUser = async (userId: string): Promise<User | null> => {
 
 // Business operations
 export const createBusiness = async (business: Omit<Business, 'id' | 'created_datetime'>): Promise<string> => {
-  const docRef = await addDoc(collection(db, 'businesses'), {
-    ...business,
-    created_datetime: Timestamp.now()
+  console.log('createBusiness: Creating business with data:', {
+    name: business.name,
+    email: business.email,
+    category_id: business.category_id
   });
-  return docRef.id;
+  
+  try {
+    const businessData = {
+      ...business,
+      created_datetime: Timestamp.now()
+    };
+    
+    const docRef = await addDoc(collection(db, 'businesses'), businessData);
+    
+    console.log('createBusiness: Business created successfully:', {
+      id: docRef.id,
+      name: business.name,
+      email: business.email
+    });
+    
+    return docRef.id;
+  } catch (error) {
+    console.error('createBusiness: Failed to create business:', error);
+    throw error;
+  }
 };
 
 export const getBusiness = async (businessId: string): Promise<Business | null> => {
@@ -121,6 +141,41 @@ export const getAllBusinesses = async (): Promise<Business[]> => {
     ...doc.data(),
     created_datetime: doc.data().created_datetime?.toDate()
   } as Business));
+};
+
+export const getBusinessByEmail = async (email: string): Promise<Business | null> => {
+  if (!email) {
+    console.log('getBusinessByEmail: No email provided');
+    return null;
+  }
+  
+  console.log('getBusinessByEmail: Querying for email:', email);
+  
+  try {
+    const q = query(collection(db, 'businesses'), where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    
+    console.log('getBusinessByEmail: Query completed, documents found:', querySnapshot.size);
+    
+    if (querySnapshot.empty) {
+      console.log('getBusinessByEmail: No business found for email:', email);
+      return null;
+    }
+    
+    const doc = querySnapshot.docs[0];
+    const data = doc.data();
+    const business = {
+      id: doc.id,
+      ...data,
+      created_datetime: data.created_datetime?.toDate()
+    } as Business;
+    
+    console.log('getBusinessByEmail: Found business:', { id: business.id, name: business.name, email: business.email });
+    return business;
+  } catch (error) {
+    console.error('getBusinessByEmail: Query failed:', error);
+    throw error;
+  }
 };
 
 // Categories (hardcoded for now, matching your constants)
