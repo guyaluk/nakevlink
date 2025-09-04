@@ -6,8 +6,9 @@ import { functions } from '@/config/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
-import { ArrowLeft, Clock, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Clock, CheckCircle, RefreshCw } from 'lucide-react';
 import BottomNavigation from './BottomNavigation';
+import { retryFirebaseOperation, RetryError } from '@/utils/retry';
 
 interface GeneratedCode {
   code: string;
@@ -25,47 +26,104 @@ const PunchCardView: React.FC = () => {
   const [error, setError] = useState('');
   const [punchCardData, setPunchCardData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [retryAttempt, setRetryAttempt] = useState(0);
+  const [isRetrying, setIsRetrying] = useState(false);
   
-  // Simple data fetching function
-  const fetchPunchCardData = async () => {
-    if (!cardId) return;
-    
+  // Check for existing active punch code
+  const checkForActivePunchCode = async () => {
+    if (!cardId || !user) return null;
+
     try {
-      setLoading(true);
-      setError('');
-      
-      const { getPunchCardById, getPunchesForCard } = await import('@/lib/dataconnect');
-      
-      console.log('PunchCardView: Fetching punch card data for ID:', cardId);
-      const cardResult = await getPunchCardById({ id: cardId });
-      
-      if (!cardResult?.data?.punchCard) {
-        setError('Punch card not found.');
-        return;
-      }
-      
-      const card = cardResult.data.punchCard;
-      console.log('PunchCardView: Found punch card:', card);
-      
-      // Get punch count from Data Connect
-      const punchesResult = await getPunchesForCard({ cardId: cardId });
-      const dataConnectPunches = punchesResult?.data?.punches?.length || 0;
-      
-      // Also get punch count from Firestore (where Cloud Functions write punches)
       const { db } = await import('@/config/firebase');
       const { collection, query, where, getDocs } = await import('firebase/firestore');
       
-      const firestorePunchesQuery = query(
-        collection(db, 'punches'),
-        where('cardId', '==', cardId)
+      const now = new Date();
+      const activeCodesQuery = query(
+        collection(db, 'punchCodes'),
+        where('userId', '==', user.uid),
+        where('cardId', '==', cardId),
+        where('isUsed', '==', false),
+        where('expiresAt', '>', now)
       );
-      const firestorePunchesSnapshot = await getDocs(firestorePunchesQuery);
-      const firestorePunches = firestorePunchesSnapshot.size;
+
+      const activeCodesSnapshot = await getDocs(activeCodesQuery);
       
-      // Use the higher count (handles both data sources)
-      const currentPunches = Math.max(dataConnectPunches, firestorePunches);
+      if (!activeCodesSnapshot.empty) {
+        const activeCodeDoc = activeCodesSnapshot.docs[0];
+        const activeCodeData = activeCodeDoc.data();
+        
+        console.log('Found active punch code:', activeCodeData);
+        
+        return {
+          code: activeCodeData.code,
+          expiresAt: activeCodeData.expiresAt.toMillis ? activeCodeData.expiresAt.toMillis() : activeCodeData.expiresAt.getTime()
+        };
+      }
       
-      console.log('PunchCardView: Found', dataConnectPunches, 'Data Connect punches and', firestorePunches, 'Firestore punches for card. Using:', currentPunches);
+      return null;
+    } catch (error) {
+      console.error('Error checking for active punch code:', error);
+      return null;
+    }
+  };
+
+  // Data fetching function with retry logic
+  const fetchPunchCardData = async (isRetryAttempt = false) => {
+    if (!cardId) return;
+    
+    try {
+      if (isRetryAttempt) {
+        setIsRetrying(true);
+        setRetryAttempt(prev => prev + 1);
+      } else {
+        setLoading(true);
+        setRetryAttempt(0);
+      }
+      setError('');
+      
+      console.log('PunchCardView: Fetching punch card data for ID:', cardId);
+      
+      // Wrap the data fetching in retry logic
+      const result = await retryFirebaseOperation(async () => {
+        const { getPunchCardById, getPunchesForCard } = await import('@/lib/dataconnect');
+        
+        const cardResult = await getPunchCardById({ id: cardId });
+        
+        if (!cardResult?.data?.punchCard) {
+          throw new Error('Punch card not found.');
+        }
+        
+        const card = cardResult.data.punchCard;
+        console.log('PunchCardView: Found punch card:', card);
+        
+        // Get punch count from Data Connect
+        const punchesResult = await getPunchesForCard({ cardId: cardId });
+        const dataConnectPunches = punchesResult?.data?.punches?.length || 0;
+        
+        // Also get punch count from Firestore (where Cloud Functions write punches)
+        const { db } = await import('@/config/firebase');
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        
+        const firestorePunchesQuery = query(
+          collection(db, 'punches'),
+          where('cardId', '==', cardId)
+        );
+        const firestorePunchesSnapshot = await getDocs(firestorePunchesQuery);
+        const firestorePunches = firestorePunchesSnapshot.size;
+        
+        // Use the higher count (handles both data sources)
+        const currentPunches = Math.max(dataConnectPunches, firestorePunches);
+        
+        console.log('PunchCardView: Found', dataConnectPunches, 'Data Connect punches and', firestorePunches, 'Firestore punches for card. Using:', currentPunches);
+        
+        return { card, currentPunches };
+      }, {
+        maxAttempts: 3,
+        baseDelay: 1000,
+        maxDelay: 5000
+      });
+      
+      const { card, currentPunches } = result;
       
       // Format expiration date
       const expirationDate = new Date(card.expiresAt).toLocaleDateString();
@@ -96,11 +154,43 @@ const PunchCardView: React.FC = () => {
       setPunchCardData(punchCard);
       console.log('PunchCardView: Loaded real punch card data:', punchCard);
       
+      // Check for existing active punch code
+      const activeCode = await checkForActivePunchCode();
+      if (activeCode) {
+        setGeneratedCode(activeCode);
+        setTimeLeft(Math.max(0, activeCode.expiresAt - Date.now()));
+        console.log('PunchCardView: Found existing active code:', activeCode.code);
+      }
+      
     } catch (error) {
       console.error('Error fetching punch card:', error);
-      setError('Failed to load punch card data. Please try again.');
+      
+      let errorMessage = 'Failed to load punch card data.';
+      
+      if (error instanceof RetryError) {
+        errorMessage = `Failed to load punch card data after ${error.attemptsMade} attempts. `;
+        
+        if (error.lastError?.message?.includes('Bad Request')) {
+          errorMessage += 'There may be a connection issue with the database.';
+        } else if (error.lastError?.code?.includes('not-found')) {
+          errorMessage = 'Punch card not found.';
+        } else if (error.lastError?.code?.includes('permission-denied')) {
+          errorMessage = "You don't have permission to view this punch card.";
+        } else {
+          errorMessage += 'Please check your internet connection and try again.';
+        }
+      } else if (error instanceof Error) {
+        if (error.message.includes('Punch card not found')) {
+          errorMessage = 'Punch card not found.';
+        } else {
+          errorMessage = error.message || errorMessage;
+        }
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
+      setIsRetrying(false);
     }
   };
 
@@ -187,7 +277,12 @@ const PunchCardView: React.FC = () => {
 
   // Manual refresh function
   const handleRefresh = () => {
-    fetchPunchCardData();
+    fetchPunchCardData(false);
+  };
+
+  // Manual retry function
+  const handleRetry = () => {
+    fetchPunchCardData(true);
   };
 
   // Use real data or fallback
@@ -241,7 +336,9 @@ const PunchCardView: React.FC = () => {
           <div className="flex items-center justify-center py-12">
             <div className="text-center space-y-4">
               <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-              <p className="text-muted-foreground">Loading your punch card...</p>
+              <p className="text-muted-foreground">
+                {isRetrying ? `Retrying... (Attempt ${retryAttempt})` : 'Loading your punch card...'}
+              </p>
             </div>
           </div>
         </div>
@@ -270,10 +367,13 @@ const PunchCardView: React.FC = () => {
             variant="outline"
             size="sm"
             onClick={handleRefresh}
-            disabled={loading}
-            className="text-sm"
+            disabled={loading || isRetrying}
+            className="text-sm flex items-center space-x-2"
           >
-            {loading ? 'Loading...' : 'Refresh'}
+            <RefreshCw className={`w-4 h-4 ${(loading || isRetrying) ? 'animate-spin' : ''}`} />
+            <span>
+              {loading || isRetrying ? 'Loading...' : 'Refresh'}
+            </span>
           </Button>
         </div>
 
@@ -354,8 +454,23 @@ const PunchCardView: React.FC = () => {
 
             {/* Error Message */}
             {error && (
-              <div className="p-3 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md">
-                {error}
+              <div className="p-4 text-sm text-destructive bg-destructive/10 border border-destructive/20 rounded-md space-y-3">
+                <p>{error}</p>
+                {retryAttempt > 0 && (
+                  <p className="text-xs text-muted-foreground">
+                    Tried {retryAttempt} time{retryAttempt > 1 ? 's' : ''}
+                  </p>
+                )}
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleRetry}
+                  disabled={isRetrying || loading}
+                  className="text-xs flex items-center space-x-2"
+                >
+                  <RefreshCw className={`w-3 h-3 ${isRetrying ? 'animate-spin' : ''}`} />
+                  <span>{isRetrying ? 'Retrying...' : 'Try Again'}</span>
+                </Button>
               </div>
             )}
 
@@ -386,7 +501,7 @@ const PunchCardView: React.FC = () => {
             {!isComplete && (
               <Button
                 onClick={handleGenerateCode}
-                disabled={generating || hasActiveCode}
+                disabled={generating || !!hasActiveCode}
                 className="w-full py-4 text-lg font-semibold"
                 size="lg"
               >

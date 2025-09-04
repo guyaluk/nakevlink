@@ -1,0 +1,76 @@
+[debug] [2025-09-04T18:59:07.572Z] [Firebase Plugin] Activating Firebase extension.
+[info] [Firebase Plugin] Checked firebase-tools, is up to date!
+[debug] [2025-09-04T18:59:08.476Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2025-09-04T18:59:08.476Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-04T18:59:08.476Z] > authorizing via signed-in user (guyaluk@gmail.com)
+[debug] [2025-09-04T18:59:08.477Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.477Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.477Z] [Firebase Plugin] User found:  guyaluk@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2025-09-04T18:59:08.478Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.478Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-09-04T18:59:08.560Z] [Firebase Plugin] Value of process.env.MONOSPACE_ENV: undefined
+[debug] [2025-09-04T18:59:08.560Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2025-09-04T18:59:08.560Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-04T18:59:08.560Z] > authorizing via signed-in user (guyaluk@gmail.com)
+[debug] [2025-09-04T18:59:08.560Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.560Z] [Firebase Plugin] User found:  guyaluk@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2025-09-04T18:59:08.561Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.561Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-09-04T18:59:08.563Z] [Firebase Plugin] Value of process.env.MONOSPACE_ENV: undefined
+[debug] [2025-09-04T18:59:08.563Z] [Firebase Plugin] requireAuthWrapper
+[debug] [2025-09-04T18:59:08.563Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-09-04T18:59:08.563Z] > authorizing via signed-in user (guyaluk@gmail.com)
+[debug] [2025-09-04T18:59:08.563Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.563Z] [Firebase Plugin] User found:  guyaluk@gmail.com
+[info] [Firebase Plugin] (Core:Project) New user detected, fetching projects
+[debug] [2025-09-04T18:59:08.563Z] Checked if tokens are valid: true, expires at: 1757013623255
+[debug] [2025-09-04T18:59:08.563Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects pageSize=1000
+[debug] [2025-09-04T18:59:09.026Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-09-04T18:59:09.026Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-09-04T18:59:09.027Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-09-04T18:59:09.027Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[debug] [2025-09-04T18:59:09.053Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects 200
+[debug] [2025-09-04T18:59:09.053Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects [omitted]
+[info] [Firebase Plugin] Starting Data Connect toolkit (version 2.11.2) on port 50001
+[info] i  dataconnect: downloading dataconnect-emulator-2.11.2... {"metadata":{"emulator":{"name":"dataconnect"},"message":"downloading dataconnect-emulator-2.11.2..."}}
+[debug] [2025-09-04T18:59:19.958Z] >>> [apiv2][query] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-v2.11.2 
+[debug] [2025-09-04T18:59:20.338Z] <<< [apiv2][status] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-v2.11.2 200
+[debug] [2025-09-04T18:59:20.338Z] <<< [apiv2][body] GET https://storage.googleapis.com/firemat-preview-drop/emulator/dataconnect-emulator-macos-v2.11.2 [stream]
+[info] i  dataconnect: Removing outdated emulator files: dataconnect-emulator-2.12.0 {"metadata":{"emulator":{"name":"dataconnect"},"message":"Removing outdated emulator files: dataconnect-emulator-2.12.0"}}
+[debug] [2025-09-04T18:59:24.026Z] I0904 21:59:24.001883   18920 control.go:94] [/emulator/nakevlink-dataconnect d33b] UpdateResources(): done
+Schema: sources: schema/schema.gql [1912B] 
+Connector "nakevlink-connector": sources: connector/mutations.gql [2242B] connector/queries.gql [4881B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.001883   18920 control.go:94] [/emulator/nakevlink-dataconnect d33b] UpdateResources(): done\nSchema: sources: schema/schema.gql [1912B] \nConnector \"nakevlink-connector\": sources: connector/mutations.gql [2242B] connector/queries.gql [4881B] \n"}}
+[debug] [2025-09-04T18:59:24.026Z] Ignoring unsupported arg: auto_download {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: auto_download"}}
+[debug] [2025-09-04T18:59:24.027Z] Ignoring unsupported arg: port {"metadata":{"emulator":{"name":"dataconnect"},"message":"Ignoring unsupported arg: port"}}
+[debug] [2025-09-04T18:59:24.027Z] Starting Data Connect Emulator with command {"binary":"/Users/guyaluk/.cache/firebase/emulators/dataconnect-emulator-2.11.2","args":["--logtostderr","-v=2","dev","--listen=localhost:50001","--config_dir=/Users/guyaluk/Repos/nakevlink/dataconnect","--enable_output_schema_extensions=true","--enable_output_generated_sdk=true"],"optionalArgs":["listen","config_dir","enable_output_schema_extensions","enable_output_generated_sdk"],"joinArgs":true,"shell":false,"port":9399} {"metadata":{"emulator":{"name":"dataconnect"},"message":"Starting Data Connect Emulator with command {\"binary\":\"/Users/guyaluk/.cache/firebase/emulators/dataconnect-emulator-2.11.2\",\"args\":[\"--logtostderr\",\"-v=2\",\"dev\",\"--listen=localhost:50001\",\"--config_dir=/Users/guyaluk/Repos/nakevlink/dataconnect\",\"--enable_output_schema_extensions=true\",\"--enable_output_generated_sdk=true\"],\"optionalArgs\":[\"listen\",\"config_dir\",\"enable_output_schema_extensions\",\"enable_output_generated_sdk\"],\"joinArgs\":true,\"shell\":false,\"port\":9399}"}}
+[info] i  dataconnect: Data Connect Emulator logging to dataconnect-debug.log {"metadata":{"emulator":{"name":"dataconnect"},"message":"Data Connect Emulator logging to dataconnect-debug.log"}}
+[debug] [2025-09-04T18:59:24.152Z] I0904 21:59:24.151424   18930 load.go:31] Reloading schema and connectors...
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.151424   18930 load.go:31] Reloading schema and connectors...\n"}}
+[debug] [2025-09-04T18:59:24.217Z] I0904 21:59:24.217850   18930 control.go:94] [/emulator/nakevlink-dataconnect b075] UpdateResources(): done
+Schema: sources: schema/schema.gql [1912B] 
+Connector "nakevlink-connector": sources: connector/mutations.gql [2242B] connector/queries.gql [4881B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.217850   18930 control.go:94] [/emulator/nakevlink-dataconnect b075] UpdateResources(): done\nSchema: sources: schema/schema.gql [1912B] \nConnector \"nakevlink-connector\": sources: connector/mutations.gql [2242B] connector/queries.gql [4881B] \n"}}
+[debug] [2025-09-04T18:59:24.247Z] I0904 21:59:24.247825   18930 codegen.go:82] [connector "nakevlink-connector" javascriptSdk] Generating sources into "/Users/guyaluk/Repos/nakevlink/web-app/src/lib/dataconnect"
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.247825   18930 codegen.go:82] [connector \"nakevlink-connector\" javascriptSdk] Generating sources into \"/Users/guyaluk/Repos/nakevlink/web-app/src/lib/dataconnect\"\n"}}
+[debug] [2025-09-04T18:59:24.259Z] I0904 21:59:24.259215   18930 collector.go:107] schema extensions wrote into "/Users/guyaluk/Repos/nakevlink/dataconnect/.dataconnect/schema"
+Generated sources: main/mutation.gql [18150B] prelude.gql [73251B] main/input.gql [53918B] main/relation.gql [27012B] main/query.gql [6899B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.259215   18930 collector.go:107] schema extensions wrote into \"/Users/guyaluk/Repos/nakevlink/dataconnect/.dataconnect/schema\"\nGenerated sources: main/mutation.gql [18150B] prelude.gql [73251B] main/input.gql [53918B] main/relation.gql [27012B] main/query.gql [6899B] \n"}}
+[debug] [2025-09-04T18:59:24.259Z] I0904 21:59:24.259700   18930 collector.go:107] connector "nakevlink-connector" javascriptSdk wrote into "/Users/guyaluk/Repos/nakevlink/web-app/src/lib/dataconnect"
+Generated sources: esm/package.json [17B] index.cjs.js [10722B] package.json [638B] README.md [105443B] index.d.ts [24429B] esm/index.esm.js [9242B] 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.259700   18930 collector.go:107] connector \"nakevlink-connector\" javascriptSdk wrote into \"/Users/guyaluk/Repos/nakevlink/web-app/src/lib/dataconnect\"\nGenerated sources: esm/package.json [17B] index.cjs.js [10722B] package.json [638B] README.md [105443B] index.d.ts [24429B] esm/index.esm.js [9242B] \n"}}
+[debug] [2025-09-04T18:59:24.259Z] I0904 21:59:24.259789   18930 installsdk.go:138] generate.javascriptSdk.packageJsonDir is not specified, skipping automatic installation of JS package
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.259789   18930 installsdk.go:138] generate.javascriptSdk.packageJsonDir is not specified, skipping automatic installation of JS package\n"}}
+[debug] [2025-09-04T18:59:24.260Z] I0904 21:59:24.260281   18930 load.go:109] Finished reloading
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.260281   18930 load.go:109] Finished reloading\n"}}
+[debug] [2025-09-04T18:59:24.265Z] I0904 21:59:24.265013   18930 dev.go:102] Listening on address (HTTP + gRPC): 127.0.0.1:50001
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.265013   18930 dev.go:102] Listening on address (HTTP + gRPC): 127.0.0.1:50001\n"}}
+[debug] [2025-09-04T18:59:24.499Z] I0904 21:59:24.499300   18930 engine.go:171] [/emulator/nakevlink-dataconnect b075] ExecuteGraphqlRead IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 21:59:24.499300   18930 engine.go:171] [/emulator/nakevlink-dataconnect b075] ExecuteGraphqlRead IntrospectionQuery: succeeded. \n"}}
+[debug] [2025-09-04T19:00:36.773Z] >>> [apiv2][query] GET http://127.0.0.1:4400/emulators [none]
+[debug] [2025-09-04T19:00:36.779Z] <<< [apiv2][status] GET http://127.0.0.1:4400/emulators 200
+[debug] [2025-09-04T19:00:36.779Z] <<< [apiv2][body] GET http://127.0.0.1:4400/emulators {"hub":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":4400},{"address":"::1","family":"IPv6","port":4400}],"name":"hub","host":"127.0.0.1","port":4400},"ui":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":3200},{"address":"::1","family":"IPv6","port":3200}],"name":"ui","host":"127.0.0.1","port":3200},"logging":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":4500}],"name":"logging","host":"127.0.0.1","port":4500},"extensions":{"name":"extensions","host":"127.0.0.1","port":6201},"auth":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":8199}],"name":"auth","host":"127.0.0.1","port":8199},"functions":{"name":"functions","host":"127.0.0.1","port":6201},"firestore":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":7180}],"name":"firestore","host":"127.0.0.1","port":7180,"pid":19876,"reservedPorts":[9150],"webSocketHost":"127.0.0.1","webSocketPort":9150},"hosting":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":6200}],"name":"hosting","host":"127.0.0.1","port":6200},"eventarc":{"name":"eventarc","host":"127.0.0.1","port":9299},"dataconnect":{"listen":[{"address":"127.0.0.1","family":"IPv4","port":8699},{"address":"::1","family":"IPv6","port":8699}],"name":"dataconnect","host":"127.0.0.1","port":8699,"pid":19972,"timeout":10000},"tasks":{"name":"tasks","host":"127.0.0.1","port":9499}}
+[debug] [2025-09-04T19:00:36.898Z] I0904 22:00:36.898862   18930 engine.go:171] [/emulator/nakevlink-dataconnect b075] ExecuteGraphqlRead IntrospectionQuery: succeeded. 
+ {"metadata":{"emulator":{"name":"dataconnect"},"message":"I0904 22:00:36.898862   18930 engine.go:171] [/emulator/nakevlink-dataconnect b075] ExecuteGraphqlRead IntrospectionQuery: succeeded. \n"}}

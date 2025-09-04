@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, connectAuthEmulator } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, connectFirestoreEmulator } from 'firebase/firestore';
 import { getFunctions, connectFunctionsEmulator } from 'firebase/functions';
 import { getDataConnect, connectDataConnectEmulator } from 'firebase/data-connect';
 import { connectorConfig } from '@/lib/dataconnect/esm/index.esm.js';
@@ -48,6 +48,20 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
         console.log('Firebase: Functions emulator already configured');
       } else {
         console.warn('Firebase: Failed to connect to Functions emulator:', functionsError);
+      }
+    }
+    
+    // Firestore emulator
+    try {
+      const firestoreHost = import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_HOST || 'localhost';
+      const firestorePort = parseInt(import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_PORT || '7180');
+      connectFirestoreEmulator(db, firestoreHost, firestorePort);
+      console.log(`Firebase: Successfully connected to Firestore emulator at ${firestoreHost}:${firestorePort}`);
+    } catch (firestoreError: any) {
+      if (firestoreError.message?.includes('already')) {
+        console.log('Firebase: Firestore emulator already configured');
+      } else {
+        console.warn('Firebase: Failed to connect to Firestore emulator:', firestoreError);
       }
     }
     
