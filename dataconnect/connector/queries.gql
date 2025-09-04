@@ -1,0 +1,272 @@
+# Queries for fetching user and business data
+
+# Get user by ID (Firebase UID)
+query GetUser($id: String!) @auth(level: USER) {
+  user(key: {id: $id}) {
+    id
+    name
+    email
+    favoriteCategory
+    createdDatetime
+  }
+}
+
+# Get business by ID
+query GetBusiness($id: String!) @auth(level: USER) {
+  business(key: {id: $id}) {
+    id
+    name
+    contactName
+    email
+    phoneNumber
+    address
+    categoryId
+    image
+    description
+    punchNum
+    expirationDurationInDays
+    createdDatetime
+  }
+}
+
+# Get businesses by category (categoryId references hardcoded categories)
+query GetBusinessesByCategory($categoryId: Int!) @auth(level: PUBLIC) {
+  businesses(where: {categoryId: {eq: $categoryId}}) {
+    id
+    name
+    description
+    punchNum
+    expirationDurationInDays
+    categoryId
+  }
+}
+
+# Get all businesses
+query GetAllBusinesses @auth(level: PUBLIC) {
+  businesses {
+    id
+    name
+    description
+    punchNum
+    expirationDurationInDays
+    categoryId
+    image
+    address
+  }
+}
+
+# Get business by email
+query GetBusinessByEmail($email: String!) @auth(level: USER) {
+  businesses(where: {email: {eq: $email}}) {
+    id
+    name
+    contactName
+    email
+    phoneNumber
+    address
+    categoryId
+    image
+    description
+    punchNum
+    expirationDurationInDays
+    createdDatetime
+  }
+}
+
+# Get punch cards for a specific business
+query GetBusinessPunchCards($businessId: String!) @auth(level: USER) {
+  punchCards(where: {businessId: {eq: $businessId}}) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Get all punches for a specific business (through punch cards)
+query GetBusinessPunches($businessId: String!) @auth(level: USER) {
+  punchCards(where: {businessId: {eq: $businessId}}) {
+    id
+    maxPunches
+    createdAt
+    expiresAt
+    user {
+      name
+      email
+    }
+  }
+}
+
+# Get punches made today for a business
+query GetBusinessPunchesToday($businessId: String!, $todayStart: Timestamp!) @auth(level: USER) {
+  punchCards(where: {businessId: {eq: $businessId}}) {
+    id
+    maxPunches
+    createdAt
+    expiresAt
+  }
+}
+
+# Get punch cards for a specific user
+query GetUserPunchCards($userId: String!) @auth(level: USER) {
+  punchCards(where: {userId: {eq: $userId}}) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    business {
+      id
+      name
+      categoryId
+      image
+      description
+      address
+    }
+  }
+}
+
+# Get user punch card for specific business
+query GetUserPunchCardForBusiness($userId: String!, $businessId: String!) @auth(level: USER) {
+  punchCards(where: {userId: {eq: $userId}, businessId: {eq: $businessId}}) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    business {
+      id
+      name
+      categoryId
+      image
+      description
+      address
+    }
+  }
+}
+
+# Get active user punch card for specific business (non-expired only)
+query GetActiveUserPunchCardForBusiness($userId: String!, $businessId: String!, $now: Timestamp!) @auth(level: USER) {
+  punchCards(
+    where: {
+      userId: {eq: $userId}, 
+      businessId: {eq: $businessId},
+      expiresAt: {gt: $now}
+    },
+    orderBy: {createdAt: DESC},
+    limit: 1
+  ) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    business {
+      id
+      name
+      categoryId
+      image
+      description
+      address
+      phoneNumber
+      punchNum
+    }
+  }
+}
+
+# Get punch card by ID
+query GetPunchCardById($id: String!) @auth(level: USER) {
+  punchCard(key: {id: $id}) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    business {
+      id
+      name
+      categoryId
+      image
+      description
+      address
+      phoneNumber
+      punchNum
+    }
+    user {
+      id
+      name
+      email
+    }
+  }
+}
+
+# Get punches for a specific punch card
+query GetPunchesForCard($cardId: String!) @auth(level: USER) {
+  punches(where: {cardId: {eq: $cardId}}) {
+    id
+    punchTime
+  }
+}
+
+# Get punch code by code value (for validation)
+query GetPunchCodeByCode($code: String!) @auth(level: USER) {
+  punchCodes(where: {code: {eq: $code}}, limit: 1) {
+    id
+    code
+    cardId
+    businessId
+    userId
+    createdAt
+    expiresAt
+    usedAt
+    isUsed
+    card {
+      id
+      maxPunches
+      expiresAt
+      business {
+        id
+        name
+      }
+      user {
+        id
+        name
+        email
+      }
+    }
+  }
+}
+
+# Get active punch codes for a user (not expired, not used)
+query GetActivePunchCodes($userId: String!, $now: Timestamp!) @auth(level: USER) {
+  punchCodes(
+    where: {
+      userId: {eq: $userId},
+      isUsed: {eq: false},
+      expiresAt: {gt: $now}
+    },
+    orderBy: {createdAt: DESC}
+  ) {
+    id
+    code
+    cardId
+    expiresAt
+    createdAt
+    card {
+      business {
+        name
+      }
+    }
+  }
+}

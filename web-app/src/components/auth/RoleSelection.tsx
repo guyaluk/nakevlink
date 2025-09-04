@@ -16,7 +16,7 @@ const RoleSelection: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 pb-16">
       <div className="w-full max-w-2xl space-y-8">
         {/* Header */}
         <div className="text-center">

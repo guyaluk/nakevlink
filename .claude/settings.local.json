@@ -5,7 +5,10 @@
       "WebSearch",
       "Bash(firebase --version)",
       "Bash(firebase projects:list:*)",
-      "Bash(firebase emulators:start:*)"
+      "Bash(firebase emulators:start:*)",
+      "Bash(firebase dataconnect:sdk:generate --service nakevlink-dataconnect)",
+      "Bash(npm run dev:*)",
+      "WebFetch(domain:firebase.google.com)"
     ],
     "deny": [],
     "ask": []

@@ -4,8 +4,7 @@
     "indexes": "firestore.indexes.json"
   },
   "dataconnect": {
-    "source": "dataconnect",
-    "serviceId": "nakevlink-dataconnect"
+    "source": "dataconnect"
   },
   "functions": {
     "predeploy": [
@@ -33,7 +32,7 @@
       "port": 8199
     },
     "firestore": {
-      "port": 8181
+      "port": 7180
     },
     "functions": {
       "port": 6201

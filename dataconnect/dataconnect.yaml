@@ -1,0 +1,14 @@
+specVersion: v1alpha
+serviceId: nakevlink-dataconnect
+
+location: us-central1
+
+schema:
+  source: "./schema"
+  datasource:
+    postgresql:
+      database: "nakevlink"
+      cloudSql:
+        instanceId: "nakevlink:us-central1:nakevlink-db"
+      
+connectorDirs: ["./connector"]

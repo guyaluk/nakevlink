@@ -1,0 +1,612 @@
+extend type Mutation {
+  """
+  ✨ Insert a single `Business` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  business_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Business_Data!
+  ): Business_KeyOutput! @fdc_generated(from: "Business", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `Punch` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punch_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: Punch_Data!
+  ): Punch_KeyOutput! @fdc_generated(from: "Punch", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `PunchCard` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punchCard_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: PunchCard_Data!
+  ): PunchCard_KeyOutput! @fdc_generated(from: "PunchCard", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `PunchCode` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punchCode_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: PunchCode_Data!
+  ): PunchCode_KeyOutput! @fdc_generated(from: "PunchCode", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert a single `User` into the table and return its key. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insert(
+    """
+    Data object to insert into the table.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: INSERT_SINGLE)
+  """
+  ✨ Insert `Business` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  business_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Business_Data!]!
+  ): [Business_KeyOutput!]! @fdc_generated(from: "Business", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `Punch` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punch_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [Punch_Data!]!
+  ): [Punch_KeyOutput!]! @fdc_generated(from: "Punch", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `PunchCard` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punchCard_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [PunchCard_Data!]!
+  ): [PunchCard_KeyOutput!]! @fdc_generated(from: "PunchCard", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `PunchCode` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  punchCode_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [PunchCode_Data!]!
+  ): [PunchCode_KeyOutput!]! @fdc_generated(from: "PunchCode", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert `User` objects into the table and return their keys. Columns not specified in `data` will receive defaults (e.g. `null`).
+  """
+  user_insertMany(
+    """
+    List of data objects to insert into the table.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: INSERT_MULTIPLE)
+  """
+  ✨ Insert or update a single `Business` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Business`.
+  """
+  business_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Business_Data!
+  ): Business_KeyOutput! @fdc_generated(from: "Business", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `Punch` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Punch`.
+  """
+  punch_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: Punch_Data!
+  ): Punch_KeyOutput! @fdc_generated(from: "Punch", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `PunchCard` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PunchCard`.
+  """
+  punchCard_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: PunchCard_Data!
+  ): PunchCard_KeyOutput! @fdc_generated(from: "PunchCard", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `PunchCode` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PunchCode`.
+  """
+  punchCode_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: PunchCode_Data!
+  ): PunchCode_KeyOutput! @fdc_generated(from: "PunchCode", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update a single `User` into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsert(
+    """
+    Data object to insert or update if it already exists.
+    """
+    data: User_Data!
+  ): User_KeyOutput! @fdc_generated(from: "User", purpose: UPSERT_SINGLE)
+  """
+  ✨ Insert or update `Business` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Business`.
+  """
+  business_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Business_Data!]!
+  ): [Business_KeyOutput!]! @fdc_generated(from: "Business", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `Punch` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `Punch`.
+  """
+  punch_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [Punch_Data!]!
+  ): [Punch_KeyOutput!]! @fdc_generated(from: "Punch", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `PunchCard` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PunchCard`.
+  """
+  punchCard_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [PunchCard_Data!]!
+  ): [PunchCard_KeyOutput!]! @fdc_generated(from: "PunchCard", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `PunchCode` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `PunchCode`.
+  """
+  punchCode_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [PunchCode_Data!]!
+  ): [PunchCode_KeyOutput!]! @fdc_generated(from: "PunchCode", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Insert or update `User` objects into the table, based on the primary key. Returns the key of the newly inserted or existing updated `User`.
+  """
+  user_upsertMany(
+    """
+    List of data objects to insert or update if it already exists.
+    """
+    data: [User_Data!]!
+  ): [User_KeyOutput!]! @fdc_generated(from: "User", purpose: UPSERT_MULTIPLE)
+  """
+  ✨ Update a single `Business` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Business` or `null` if not found.
+  """
+  business_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Business_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Business_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Business_Data!
+  ): Business_KeyOutput @fdc_generated(from: "Business", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `Punch` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `Punch` or `null` if not found.
+  """
+  punch_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Punch_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Punch_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: Punch_Data!
+  ): Punch_KeyOutput @fdc_generated(from: "Punch", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `PunchCard` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `PunchCard` or `null` if not found.
+  """
+  punchCard_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCard_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: PunchCard_Data!
+  ): PunchCard_KeyOutput @fdc_generated(from: "PunchCard", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `PunchCode` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `PunchCode` or `null` if not found.
+  """
+  punchCode_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCode_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCode_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: PunchCode_Data!
+  ): PunchCode_KeyOutput @fdc_generated(from: "PunchCode", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update a single `User` based on `id`, `key` or `first`, setting columns specified in `data`. Returns the key of the updated `User` or `null` if not found.
+  """
+  user_update(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+
+    """
+    Data object containing fields to be updated.
+    """
+    data: User_Data!
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: UPDATE_SINGLE)
+  """
+  ✨ Update `Business` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  business_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Business_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Business_Data!
+  ): Int! @fdc_generated(from: "Business", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `Punch` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  punch_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: Punch_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: Punch_Data!
+  ): Int! @fdc_generated(from: "Punch", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `PunchCard` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  punchCard_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: PunchCard_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: PunchCard_Data!
+  ): Int! @fdc_generated(from: "PunchCard", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `PunchCode` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  punchCode_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: PunchCode_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: PunchCode_Data!
+  ): Int! @fdc_generated(from: "PunchCode", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Update `User` objects matching `where` conditions (or `all`, if true) according to `data`. Returns the number of rows updated.
+  """
+  user_updateMany(
+    """
+    Filter condition to specify which rows to update.
+    """
+    where: User_Filter
+
+    """
+    Set to true to update all rows.
+    """
+    all: Boolean = false
+
+    """
+    Data object containing fields to update.
+    """
+    data: User_Data!
+  ): Int! @fdc_generated(from: "User", purpose: UPDATE_MULTIPLE)
+  """
+  ✨ Delete a single `Business` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  business_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Business_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Business_FirstRow
+  ): Business_KeyOutput @fdc_generated(from: "Business", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `Punch` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  punch_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Punch_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Punch_FirstRow
+  ): Punch_KeyOutput @fdc_generated(from: "Punch", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `PunchCard` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  punchCard_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCard_FirstRow
+  ): PunchCard_KeyOutput @fdc_generated(from: "PunchCard", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `PunchCode` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  punchCode_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCode_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCode_FirstRow
+  ): PunchCode_KeyOutput @fdc_generated(from: "PunchCode", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete a single `User` based on `id`, `key` or `first` and return its key (or `null` if not found).
+  """
+  user_delete(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User_KeyOutput @fdc_generated(from: "User", purpose: DELETE_SINGLE)
+  """
+  ✨ Delete `Business` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  business_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Business_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Business", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `Punch` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  punch_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: Punch_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "Punch", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `PunchCard` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  punchCard_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: PunchCard_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `PunchCode` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  punchCode_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: PunchCode_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode", purpose: DELETE_MULTIPLE)
+  """
+  ✨ Delete `User` objects matching `where` conditions (or `all`, if true). Returns the number of rows deleted.
+  """
+  user_deleteMany(
+    """
+    Filter condition to specify which rows to delete.
+    """
+    where: User_Filter
+
+    """
+    Set to true to delete all rows.
+    """
+    all: Boolean = false
+  ): Int! @fdc_generated(from: "User", purpose: DELETE_MULTIPLE)
+}

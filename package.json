@@ -1,0 +1,25 @@
+{
+  "name": "nakevlink",
+  "version": "1.0.0",
+  "description": "NakevLink - Mobile-first punch card application built with React, Firebase, and Data Connect",
+  "private": true,
+  "scripts": {
+    "dev": "cd web-app && npm run dev",
+    "build": "cd web-app && npm run build",
+    "emulators": "firebase emulators:start",
+    "dev:full": "cd web-app && npm run dev:full"
+  },
+  "keywords": [
+    "punch-card",
+    "firebase",
+    "data-connect",
+    "react",
+    "typescript",
+    "mobile-first"
+  ],
+  "author": "",
+  "license": "ISC",
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

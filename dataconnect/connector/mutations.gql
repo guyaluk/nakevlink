@@ -1,38 +1,70 @@
 # Mutations for user and business creation
 
 # Insert a new user
-mutation CreateUser($data: User_Data!) {
-  user_insert(data: $data) {
-    id
-    name
-    email
-    favorite_category
-    created_datetime
-  }
+mutation CreateUser($id: String!, $name: String!, $email: String!, $favoriteCategory: Int, $createdDatetime: Timestamp) @auth(level: USER) {
+  user_insert(data: {
+    id: $id,
+    name: $name,
+    email: $email,
+    favoriteCategory: $favoriteCategory,
+    createdDatetime: $createdDatetime
+  })
 }
 
 # Insert a new business
-mutation CreateBusiness($data: Business_Data!) {
-  business_insert(data: $data) {
-    id
-    name
-    contact_name
-    email
-    phone_number
-    address
-    category_id
-    description
-    punch_num
-    expiration_duration_in_days
-    created_datetime
-  }
+mutation CreateBusiness($id: String, $name: String!, $contactName: String, $email: String, $phoneNumber: String, $address: String, $categoryId: Int!, $image: String, $description: String, $punchNum: Int, $expirationDurationInDays: Int, $createdDatetime: Timestamp) @auth(level: USER) {
+  business_insert(data: {
+    id: $id,
+    name: $name,
+    contactName: $contactName,
+    email: $email,
+    phoneNumber: $phoneNumber,
+    address: $address,
+    categoryId: $categoryId,
+    image: $image,
+    description: $description,
+    punchNum: $punchNum,
+    expirationDurationInDays: $expirationDurationInDays,
+    createdDatetime: $createdDatetime
+  })
 }
 
-# Insert a new category (for seeding)
-mutation CreateCategory($data: Category_Data!) {
-  category_insert(data: $data) {
-    id
-    name
-    description
-  }
+# Create a new punch card for a customer
+mutation CreatePunchCard($businessId: String!, $userId: String!, $maxPunches: Int!, $expiresAt: Timestamp!, $createdAt: Timestamp) @auth(level: USER) {
+  punchCard_insert(data: {
+    businessId: $businessId,
+    userId: $userId,
+    maxPunches: $maxPunches,
+    expiresAt: $expiresAt,
+    createdAt: $createdAt
+  })
+}
+
+# Create a new punch code for redemption
+mutation CreatePunchCode($code: String!, $cardId: String!, $businessId: String!, $userId: String!, $expiresAt: Timestamp!, $createdAt: Timestamp) @auth(level: USER) {
+  punchCode_insert(data: {
+    code: $code,
+    cardId: $cardId,
+    businessId: $businessId,
+    userId: $userId,
+    expiresAt: $expiresAt,
+    createdAt: $createdAt,
+    isUsed: false
+  })
+}
+
+# Mark a punch code as used and add the punch
+mutation RedeemPunchCode($codeId: String!, $usedAt: Timestamp!) @auth(level: USER) {
+  punchCode_update(id: $codeId, data: {
+    isUsed: true,
+    usedAt: $usedAt
+  })
+}
+
+# Add a punch to a card (called after successful code redemption)
+mutation AddPunch($cardId: String!, $punchTime: Timestamp) @auth(level: USER) {
+  punch_insert(data: {
+    cardId: $cardId,
+    punchTime: $punchTime
+  })
 }

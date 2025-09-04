@@ -5,6 +5,11 @@ import RoleSelection from '@/components/auth/RoleSelection';
 import SimpleCustomerSignup from '@/components/auth/SimpleCustomerSignup';
 import SimpleBusinessSignup from '@/components/auth/SimpleBusinessSignup';
 import PunchCardView from '@/components/customer/PunchCardView';
+import DiscoveryScreen from '@/components/customer/DiscoveryScreen';
+import BusinessDetailsScreen from '@/components/customer/BusinessDetailsScreen';
+import OnePunchLeftScreen from '@/components/customer/OnePunchLeftScreen';
+import PunchStation from '@/components/business/PunchStation';
+import CustomerDashboard from '@/components/dashboards/CustomerDashboard';
 import ErrorBoundary from '@/components/ErrorBoundary';
 // import ProtectedRoute from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
@@ -58,7 +63,7 @@ const SimpleLogin = () => {
       
       console.log('Login successful, waiting for user state update...');
       
-    } catch (err: any) {
+    } catch (err) {
       setError('Failed to sign in. Please check your credentials.');
       console.error('Sign in error:', err);
     } finally {
@@ -143,34 +148,42 @@ const SimpleLogin = () => {
   );
 };
 
-// Customer Dashboard
-const CustomerDashboard = () => {
+
+// Business Dashboard  
+const BusinessDashboard = () => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState('');
-  const [nearbyBusinesses, setNearbyBusinesses] = useState<any[]>([]);
-  const [frequentlyUsed, setFrequentlyUsed] = useState<any[]>([]);
+  
+  const [businessData, setBusinessData] = useState<{
+    id: string;
+    name: string;
+    contactName?: string | null;
+    email?: string | null;
+    phoneNumber?: string | null;
+    address?: string | null;
+    categoryId: number;
+    image?: string | null;
+    description?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+    createdDatetime?: string | null;
+  } | null>(null);
+  const [metrics, setMetrics] = useState({
+    activePunchCards: 0,
+    punchesToday: 0,
+    averageTimeToReward: '0 days',
+    almostCompleteCards: 0
+  });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
+  console.log('BusinessDashboard render:', {
+    email: user?.email,
+    role: user?.role,
+    displayName: user?.displayName
+  });
 
-  // Function to get business display image (emoji or first letter)
-  const getBusinessImage = (business: any) => {
-    if (business.image) {
-      // If it's a base64 image, return a placeholder emoji based on category
-      if (business.image.startsWith('data:image/')) {
-        return getCategoryEmoji(business.category_id);
-      }
-      return business.image;
-    }
-    return business.name.charAt(0).toUpperCase();
-  };
-
-  // Function to get emoji based on category ID
+  // Helper function to get category emoji
   const getCategoryEmoji = (categoryId: number) => {
     const categoryEmojis: { [key: number]: string } = {
       1: '💪', // Fitness Studios
@@ -178,176 +191,134 @@ const CustomerDashboard = () => {
       3: '🍽️', // Restaurants
       4: '🛍️', // Retail Stores
       5: '💅', // Beauty & Wellness
-      6: '⚙️'  // Services
+      6: '⚙️', // Services
+      7: '🏢'  // Other
     };
     return categoryEmojis[categoryId] || '🏢';
   };
 
-  // Function to get category name
+  // Helper function to get category name
   const getCategoryName = (categoryId: number) => {
     const categoryNames: { [key: number]: string } = {
-      1: 'Fitness',
+      1: 'Fitness Studio',
       2: 'Coffee Shop',
       3: 'Restaurant', 
-      4: 'Retail',
+      4: 'Retail Store',
       5: 'Beauty & Wellness',
-      6: 'Services'
+      6: 'Services',
+      7: 'Other'
     };
     return categoryNames[categoryId] || 'Business';
   };
 
-  // Function to format time ago
-  const formatTimeAgo = (date: Date) => {
-    const now = new Date();
-    const diffTime = Math.abs(now.getTime() - date.getTime());
-    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-    
-    if (diffDays === 0) return 'Today';
-    if (diffDays === 1) return '1 day ago';
-    if (diffDays < 7) return `${diffDays} days ago`;
-    if (diffDays < 30) return `${Math.floor(diffDays / 7)} week${Math.floor(diffDays / 7) > 1 ? 's' : ''} ago`;
-    return `${Math.floor(diffDays / 30)} month${Math.floor(diffDays / 30) > 1 ? 's' : ''} ago`;
+  // Helper function to format business image
+  const getBusinessImage = (business: { image?: string }) => {
+    if (business.image && business.image.startsWith('data:image/')) {
+      return business.image;
+    }
+    return null; // We'll use emoji/name fallback in UI
   };
 
-  // Fetch nearby businesses and user's punch cards
-  React.useEffect(() => {
-    const fetchDashboardData = async () => {
-      if (!user) return;
-      
-      try {
-        setLoading(true);
-        setError(null);
-        
-        // Import data functions
-        const { getAllBusinesses, getUserPunchCards, getCardPunches } = await import('@/lib/dataconnect');
-        
-        // Fetch all businesses for nearby cards
-        console.log('CustomerDashboard: Fetching all businesses...');
-        const businesses = await getAllBusinesses();
-        console.log('CustomerDashboard: Found businesses:', businesses.length);
-        
-        // Transform businesses for nearby cards display
-        const nearbyData = businesses.map(business => ({
-          id: business.id,
-          businessName: business.name,
-          image: getBusinessImage(business),
-          distance: '0.5 km', // TODO: Calculate real distance based on location
-          category: getCategoryName(business.category_id),
-          categoryId: business.category_id
-        })).slice(0, 8); // Limit to 8 for display
-        
-        console.log('CustomerDashboard: Nearby businesses prepared:', nearbyData.length);
-        setNearbyBusinesses(nearbyData);
-        
-        // Fetch user's punch cards for frequently used section
-        console.log('CustomerDashboard: Fetching user punch cards...');
-        const userCards = await getUserPunchCards(user.uid);
-        console.log('CustomerDashboard: Found user cards:', userCards.length);
-        
-        // Get punch counts for each card and transform for display
-        const frequentlyUsedData = await Promise.all(
-          userCards.map(async (card) => {
-            try {
-              // Find the business for this card
-              const business = businesses.find(b => b.id === card.business_id);
-              if (!business) {
-                console.log('CustomerDashboard: No business found for card:', card.business_id);
-                return null;
-              }
-              
-              // Get punches for this card
-              const punches = await getCardPunches(card.id || 0);
-              const currentPunches = punches.length;
-              
-              return {
-                id: business.id,
-                businessName: business.name,
-                image: getBusinessImage(business),
-                currentPunches,
-                maxPunches: card.max_punches,
-                lastVisit: formatTimeAgo(card.created_at),
-                cardId: card.id
-              };
-            } catch (error) {
-              console.error('CustomerDashboard: Error processing card:', error);
-              return null;
-            }
-          })
-        );
-        
-        // Filter out null results and sort by most recent
-        const validFrequentlyUsed = frequentlyUsedData
-          .filter(item => item !== null)
-          .slice(0, 5); // Limit to 5 for display
-        
-        console.log('CustomerDashboard: Frequently used prepared:', validFrequentlyUsed.length);
-        setFrequentlyUsed(validFrequentlyUsed);
-        
-      } catch (error) {
-        console.error('CustomerDashboard: Error fetching dashboard data:', error);
-        setError('Failed to load dashboard data. Please try again.');
-      } finally {
-        setLoading(false);
-      }
+  // Calculate metrics from punch cards data
+  const calculateMetrics = (punchCards: { expiresAt: string; maxPunches: number; createdAt?: string | null }[]) => {
+    const now = new Date();
+    
+    // Active punch cards (not expired, not fully punched)
+    const activePunchCards = punchCards.filter(card => {
+      const expiresAt = new Date(card.expiresAt);
+      return expiresAt > now; // Not expired
+    }).length;
+    
+    // Almost complete cards (at max punches - 1)
+    const almostCompleteCards = punchCards.filter(card => {
+      const expiresAt = new Date(card.expiresAt);
+      // For now, we'll estimate based on card age - this would need actual punch count
+      return expiresAt > now; // Active cards that might be almost complete
+    }).length;
+    
+    return {
+      activePunchCards,
+      punchesToday: 0, // Would need to count actual punches made today
+      averageTimeToReward: '5 days', // Placeholder calculation
+      almostCompleteCards: Math.min(almostCompleteCards, Math.floor(activePunchCards * 0.3))
     };
+  };
 
-    fetchDashboardData();
-  }, [user]);
+  // Fetch business data and metrics
+  const fetchBusinessData = React.useCallback(async () => {
+    if (!user?.email) return;
+    
+    try {
+      setLoading(true);
+      setError(null);
+      
+      // Import Data Connect functions
+      const { getBusinessByEmail, getBusinessPunchCards } = await import('@/lib/dataconnect');
+      
+      // Get business data
+      console.log('BusinessDashboard: Fetching business data for:', user.email);
+      const businessResult = await getBusinessByEmail({ email: user.email });
+      
+      if (businessResult && businessResult.data?.businesses && businessResult.data.businesses.length > 0) {
+        const business = businessResult.data.businesses[0];
+        setBusinessData(business);
+        
+        // Get punch cards for this business
+        const punchCardsResult = await getBusinessPunchCards({ businessId: business.id });
+        const punchCards = punchCardsResult.data?.punchCards || [];
+        
+        // Calculate metrics
+        const calculatedMetrics = calculateMetrics(punchCards);
+        setMetrics(calculatedMetrics);
+        
+        console.log('BusinessDashboard: Data loaded', {
+          business: business.name,
+          punchCards: punchCards.length,
+          metrics: calculatedMetrics
+        });
+        
+      } else {
+        console.log('BusinessDashboard: Business lookup failed', {
+          email: user.email,
+          result: businessResult,
+          hasData: !!businessResult?.data,
+          hasBusinesses: !!businessResult?.data?.businesses,
+          businessCount: businessResult?.data?.businesses?.length || 0
+        });
+        
+        setError(`Business profile not found for ${user.email}. This may happen if:
+        • The business profile wasn't created during signup
+        • There's a mismatch between your login email and business email
+        • The Data Connect database is not accessible
+        
+        Please try logging out and signing up again, or contact support.`);
+      }
+      
+    } catch (error) {
+      console.error('BusinessDashboard: Error fetching data:', error);
+      setError('Failed to load business data. Please try again.');
+    } finally {
+      setLoading(false);
+    }
+  }, [user?.email]);
 
-  // Filter businesses based on search query
-  const filteredNearbyBusinesses = nearbyBusinesses.filter(business => 
-    business.businessName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    business.category.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  // Fetch data on component mount
+  React.useEffect(() => {
+    fetchBusinessData();
+  }, [fetchBusinessData]);
 
-  const filteredFrequentlyUsed = frequentlyUsed.filter(business => 
-    business.businessName.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleLogout = async () => {
+    await logout();
+    navigate('/login');
+  };
 
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        {/* Header Section */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
-                {(user?.displayName || user?.email || 'U').charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Hello</p>
-                <p className="font-semibold text-gray-900">{user?.displayName || user?.email || 'Customer'}</p>
-              </div>
-            </div>
-            <Button onClick={handleLogout} variant="ghost" size="sm">
-              Sign Out
-            </Button>
-          </div>
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search businesses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2"
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-          </div>
-        </div>
-
-        {/* Loading Content */}
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center space-y-4">
-            <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
-            <p className="text-muted-foreground">Loading your dashboard...</p>
-          </div>
+      <div className="min-h-screen bg-background flex items-center justify-center pb-16">
+        <div className="text-center space-y-4">
+          <div className="w-8 h-8 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto"></div>
+          <p className="text-muted-foreground">Loading your business dashboard...</p>
         </div>
       </div>
     );
@@ -356,55 +327,29 @@ const CustomerDashboard = () => {
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-background flex flex-col">
-        {/* Header Section */}
-        <div className="bg-white border-b border-gray-200 px-4 py-3">
-          <div className="flex items-center justify-between mb-3">
-            <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
-                {(user?.displayName || user?.email || 'U').charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">Hello</p>
-                <p className="font-semibold text-gray-900">{user?.displayName || user?.email || 'Customer'}</p>
-              </div>
-            </div>
-            <Button onClick={handleLogout} variant="ghost" size="sm">
-              Sign Out
-            </Button>
+      <div className="min-h-screen bg-background flex items-center justify-center p-4 pb-16">
+        <div className="text-center space-y-4 max-w-md">
+          <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
+            <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
           </div>
-          
-          {/* Search Bar */}
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder="Search businesses..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2"
-            />
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">Something went wrong</h3>
+            <p className="text-gray-600 mt-2">{error}</p>
           </div>
-        </div>
-
-        {/* Error Content */}
-        <div className="flex-1 flex items-center justify-center p-4">
-          <div className="text-center space-y-4 max-w-md">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mx-auto">
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900">Something went wrong</h3>
-              <p className="text-gray-600 mt-2">{error}</p>
-            </div>
-            <Button onClick={() => window.location.reload()} className="mt-4">
+          <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4">
+            <Button onClick={fetchBusinessData}>
               Try Again
+            </Button>
+            <Button 
+              variant="outline" 
+              onClick={async () => {
+                await logout();
+                navigate('/login');
+              }}
+            >
+              Logout & Return to Login
             </Button>
           </div>
         </div>
@@ -412,245 +357,174 @@ const CustomerDashboard = () => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background flex flex-col">
-      {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 px-4 py-3">
-        <div className="flex items-center justify-between mb-3">
-          <div className="flex items-center space-x-3">
-            {/* Profile Avatar */}
-            <div className="w-10 h-10 bg-primary rounded-full flex items-center justify-center text-white font-semibold">
-              {(user?.displayName || user?.email || 'U').charAt(0).toUpperCase()}
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Hello</p>
-              <p className="font-semibold text-gray-900">{user?.displayName || user?.email || 'Customer'}</p>
-            </div>
-          </div>
-          <Button onClick={handleLogout} variant="ghost" size="sm">
-            Sign Out
-          </Button>
-        </div>
-        
-        {/* Search Bar */}
-        <div className="relative">
-          <Input
-            type="text"
-            placeholder="Search businesses..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2"
-          />
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-            </svg>
-          </div>
-        </div>
-      </div>
+  const businessImage = businessData ? getBusinessImage(businessData) : null;
+  const categoryEmoji = getCategoryEmoji(businessData?.categoryId || 7);
+  const categoryName = getCategoryName(businessData?.categoryId || 7);
 
-      {/* Main Content - Split Screen */}
-      <div className="flex-1 overflow-y-auto">
-        {/* Top Half: Nearby Cards */}
-        <div className="px-4 py-4">
-          <h2 className="text-lg font-semibold mb-3">
-            {searchQuery ? `Search Results (${filteredNearbyBusinesses.length + filteredFrequentlyUsed.length})` : 'Nearby Cards'}
-          </h2>
-          
-          {filteredNearbyBusinesses.length === 0 && searchQuery ? (
-            <div className="text-center py-8 text-gray-500">
-              <p>No nearby businesses found for "{searchQuery}"</p>
-            </div>
+  return (
+    <div className="min-h-screen bg-background pb-16">
+      {/* Hero Section */}
+      <div className="relative">
+        {/* Business Image Banner */}
+        <div className="h-48 bg-gradient-to-r from-primary/20 to-primary/30 relative overflow-hidden">
+          {businessImage ? (
+            <img 
+              src={businessImage} 
+              alt={businessData?.name}
+              className="w-full h-full object-cover"
+            />
           ) : (
-            <div className="grid grid-cols-2 gap-3">
-              {filteredNearbyBusinesses.map((business) => (
-                <Card 
-                  key={business.id} 
-                  className="cursor-pointer hover:shadow-md transition-all duration-200"
-                  onClick={() => navigate(`/customers/cards/${business.id}`)}
-                >
-                  <CardContent className="p-0">
-                    {/* Business Image */}
-                    <div className="w-full h-24 bg-gradient-to-br from-primary/10 to-primary/20 flex items-center justify-center rounded-t-lg">
-                      <span className="text-2xl">{business.image}</span>
-                    </div>
-                    
-                    {/* Business Info */}
-                    <div className="p-3">
-                      <h3 className="font-medium text-sm truncate">{business.businessName}</h3>
-                      <p className="text-xs text-gray-500 mt-1">{business.distance} • {business.category}</p>
-                    </div>
-                  </CardContent>
-                </Card>
-              ))}
+            <div className="w-full h-full flex items-center justify-center">
+              <span className="text-6xl">{categoryEmoji}</span>
             </div>
           )}
+          
+          {/* Overlay for text readability */}
+          <div className="absolute inset-0 bg-black/30"></div>
         </div>
-
-        {/* Divider - only show if both sections have content */}
-        {(!searchQuery || (filteredNearbyBusinesses.length > 0 && filteredFrequentlyUsed.length > 0)) && (
-          <div className="border-t border-gray-200 mx-4"></div>
-        )}
-
-        {/* Bottom Half: Frequently Used Cards */}
-        {(!searchQuery || filteredFrequentlyUsed.length > 0) && (
-          <div className="px-4 py-4">
-            <h2 className="text-lg font-semibold mb-3">
-              {searchQuery ? 'Your Cards' : 'Frequently Used Cards'}
-            </h2>
-            
-            {filteredFrequentlyUsed.length === 0 ? (
-              <div className="text-center py-8 text-gray-500">
-                {searchQuery ? (
-                  <p>No punch cards found for "{searchQuery}"</p>
-                ) : (
-                  <p>You don't have any punch cards yet. Visit a business to get started!</p>
+        
+        {/* Business Info Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
+          <div className="flex justify-between items-end">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">{businessData?.name || 'Your Business'}</h1>
+              <div className="flex items-center space-x-4 text-sm">
+                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                  {categoryName}
+                </span>
+                {businessData?.address && (
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+                    📍 {businessData.address}
+                  </span>
                 )}
               </div>
-            ) : (
-              <div className="grid grid-cols-1 gap-3">
-                {filteredFrequentlyUsed.map((business) => (
-                  <Card 
-                    key={business.id} 
-                    className="cursor-pointer hover:shadow-md transition-all duration-200"
-                    onClick={() => navigate(`/customers/cards/${business.cardId}`)}
-                  >
-                    <CardContent className="p-4">
-                      <div className="flex items-center space-x-4">
-                        {/* Business Image */}
-                        <div className="w-12 h-12 bg-gradient-to-br from-primary/10 to-primary/20 rounded-lg flex items-center justify-center flex-shrink-0">
-                          <span className="text-xl">{business.image}</span>
-                        </div>
-                        
-                        {/* Business Info */}
-                        <div className="flex-1 min-w-0">
-                          <h3 className="font-medium truncate">{business.businessName}</h3>
-                          <p className="text-sm text-gray-500">Last visit: {business.lastVisit}</p>
-                          
-                          {/* Progress */}
-                          <div className="flex items-center space-x-2 mt-2">
-                            <div className="flex-1 bg-gray-200 rounded-full h-2">
-                              <div 
-                                className="bg-primary h-2 rounded-full transition-all duration-300"
-                                style={{ width: `${(business.currentPunches / business.maxPunches) * 100}%` }}
-                              ></div>
-                            </div>
-                            <span className="text-xs text-gray-500 whitespace-nowrap">
-                              {business.currentPunches}/{business.maxPunches}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                ))}
-              </div>
-            )}
+            </div>
+            
+            <div className="flex space-x-2">
+              <Button 
+                variant="secondary" 
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30"
+              >
+                ⚙️ Manage Profile
+              </Button>
+              <Button 
+                onClick={handleLogout} 
+                variant="secondary" 
+                size="sm"
+                className="bg-white/20 backdrop-blur-sm border-white/30 hover:bg-white/30"
+              >
+                Sign Out
+              </Button>
+            </div>
           </div>
-        )}
-      </div>
-
-      {/* Bottom Navigation */}
-      <div className="bg-white border-t border-gray-200 px-4 py-2">
-        <div className="flex justify-around">
-          <Button variant="ghost" className="flex-col h-auto py-2 text-primary">
-            <div className="w-6 h-6 mb-1">
-              <svg fill="currentColor" viewBox="0 0 24 24">
-                <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
-              </svg>
-            </div>
-            <span className="text-xs">Home</span>
-          </Button>
-          
-          <Button variant="ghost" className="flex-col h-auto py-2 text-gray-500">
-            <div className="w-6 h-6 mb-1">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <span className="text-xs">Search</span>
-          </Button>
-          
-          <Button variant="ghost" className="flex-col h-auto py-2 text-gray-500">
-            <div className="w-6 h-6 mb-1">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <span className="text-xs">Cards</span>
-          </Button>
-          
-          <Button variant="ghost" className="flex-col h-auto py-2 text-gray-500">
-            <div className="w-6 h-6 mb-1">
-              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-              </svg>
-            </div>
-            <span className="text-xs">History</span>
-          </Button>
         </div>
       </div>
-    </div>
-  );
-};
 
-// Business Dashboard  
-const BusinessDashboard = () => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-
-  console.log('BusinessDashboard render:', {
-    email: user?.email,
-    role: user?.role,
-    displayName: user?.displayName
-  });
-
-  const handleLogout = async () => {
-    await logout();
-    navigate('/login');
-  };
-
-  return (
-    <div className="min-h-screen bg-background p-4">
-      <div className="w-full max-w-2xl mx-auto space-y-6">
-        {/* Header */}
-        <div className="flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-foreground">🏢 Business Dashboard</h1>
-            <p className="text-muted-foreground mt-2">
-              Welcome back, {user?.displayName || user?.email}!
-            </p>
-            <p className="text-sm text-green-600 font-medium">
-              ✅ Role: Business Owner
-            </p>
-          </div>
-          <Button onClick={handleLogout} variant="outline" size="sm">
-            Sign Out
-          </Button>
-        </div>
-
-        {/* Business Tools */}
-        <div className="grid gap-4">
+      {/* Main Content */}
+      <div className="p-4 space-y-6">
+        {/* Metrics Cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {/* Active Punch Cards */}
           <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Punch Card Management</h2>
-              <p className="text-muted-foreground mb-4">
-                Validate customer punch codes and manage your punch card system.
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">🎫</span>
+              </div>
+              <p className="text-2xl font-bold text-foreground">{metrics.activePunchCards}</p>
+              <p className="text-sm text-muted-foreground">Active Cards</p>
+            </CardContent>
+          </Card>
+
+          {/* Punches Today */}
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">✨</span>
+              </div>
+              <p className="text-2xl font-bold text-foreground">{metrics.punchesToday}</p>
+              <p className="text-sm text-muted-foreground">Punches Today</p>
+            </CardContent>
+          </Card>
+
+          {/* Average Time to Reward */}
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">⏱️</span>
+              </div>
+              <p className="text-2xl font-bold text-foreground">{metrics.averageTimeToReward}</p>
+              <p className="text-sm text-muted-foreground">Avg to Reward</p>
+            </CardContent>
+          </Card>
+
+          {/* Almost Complete Cards */}
+          <Card>
+            <CardContent className="p-4 text-center">
+              <div className="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                <span className="text-2xl">🏆</span>
+              </div>
+              <p className="text-2xl font-bold text-foreground">{metrics.almostCompleteCards}</p>
+              <p className="text-sm text-muted-foreground">Almost Complete</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Primary CTAs */}
+        <div className="grid gap-4 md:grid-cols-3">
+          {/* Create Punch Program - Show if no program exists */}
+          {!businessData?.punchNum && (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-3xl">➕</span>
+                </div>
+                <h3 className="text-lg font-semibold mb-2">Create Punch Program</h3>
+                <p className="text-muted-foreground text-sm mb-4">
+                  Set up your punch card rewards program
+                </p>
+                <Button className="w-full">
+                  Create Program
+                </Button>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Punch Now */}
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">🎯</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Punch Now</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                Validate customer punch codes
               </p>
-              <Button onClick={() => navigate('/business/punch-station')} className="w-full">
-                🎯 Open Punch Station
+              <Button 
+                onClick={() => navigate('/business/punch-station')} 
+                className="w-full"
+              >
+                Open Punch Station
               </Button>
             </CardContent>
           </Card>
 
+          {/* Insights */}
           <Card>
-            <CardContent className="p-6">
-              <h2 className="text-xl font-semibold mb-4">Business Settings</h2>
-              <p className="text-muted-foreground mb-4">
-                Manage your business profile, punch card settings, and rewards.
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">📊</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">Insights</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                View analytics and reports
               </p>
-              <Button variant="outline" className="w-full">
-                ⚙️ Business Settings
+              <Button 
+                onClick={() => navigate('/business/insights')} 
+                variant="outline" 
+                className="w-full"
+              >
+                View Analytics
               </Button>
             </CardContent>
           </Card>
@@ -674,8 +548,13 @@ function App() {
             <Route path="/signup/customer" element={<SimpleCustomerSignup />} />
             <Route path="/signup/business" element={<SimpleBusinessSignup />} />
             <Route path="/customers" element={<CustomerDashboard />} />
+            <Route path="/customers/discovery" element={<DiscoveryScreen />} />
+            <Route path="/customers/one-punch-left" element={<OnePunchLeftScreen />} />
+            <Route path="/customers/business/:businessId" element={<BusinessDetailsScreen />} />
             <Route path="/customers/cards/:cardId" element={<PunchCardView />} />
             <Route path="/business" element={<BusinessDashboard />} />
+            <Route path="/business/punch-station" element={<PunchStation />} />
+            <Route path="/business/insights" element={<div className="p-4 text-center"><h1>Business Insights (Coming Soon)</h1></div>} />
           </Routes>
         </Router>
       </AuthProvider>

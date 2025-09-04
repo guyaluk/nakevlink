@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/config/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -9,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/constants/categories';
-import { createBusiness } from '@/lib/dataconnect';
+import { createBusiness } from '@/lib/dataconnect/esm/index.esm.js';
 
 interface BusinessFormData {
   name: string;
@@ -77,9 +79,10 @@ const SimpleBusinessSignup: React.FC = () => {
       return;
     }
 
-    // Validate file size (2MB max)
-    if (file.size > 2 * 1024 * 1024) {
-      setImageError('Image size must be less than 2MB');
+    // Validate file size (500KB max for Firestore storage)
+    const maxSize = 500 * 1024; // 500KB
+    if (file.size > maxSize) {
+      setImageError('Image size must be less than 500KB for storage. Please choose a smaller image or compress it.');
       return;
     }
 
@@ -87,11 +90,22 @@ const SimpleBusinessSignup: React.FC = () => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const base64String = event.target?.result as string;
+      
+      // Check base64 string size
+      if (base64String.length > 500000) {
+        setImageError('Compressed image is still too large. Please use a smaller image.');
+        setImagePreview(null);
+        return;
+      }
+      
       setFormData(prev => ({
         ...prev,
         businessImage: base64String
       }));
       setImagePreview(base64String);
+    };
+    reader.onerror = () => {
+      setImageError('Failed to read image file');
     };
     reader.readAsDataURL(file);
   };
@@ -133,43 +147,76 @@ const SimpleBusinessSignup: React.FC = () => {
         role: 'business_owner'
       });
       
+      // Set custom claims for business owner role
+      try {
+        const setUserRole = httpsCallable(functions, 'setUserRole');
+        await setUserRole({ uid: user.uid, role: 'business_owner' });
+        console.log('Custom claims set for business owner:', user.uid);
+      } catch (claimsError) {
+        console.error('Failed to set custom claims:', claimsError);
+        // Continue even if custom claims fail
+      }
+      
       // Save business data to database
       try {
-        const businessId = await createBusiness({
+        // IMPORTANT: Use user.email (from Firebase Auth) to ensure consistency
+        const businessData: any = {
           name: formData.businessName,
-          contact_name: formData.contactName || undefined,
-          phone_number: formData.phoneNumber || undefined,
+          contactName: formData.contactName || undefined,
+          phoneNumber: formData.phoneNumber || undefined,
           address: formData.address || undefined,
-          category_id: parseInt(formData.categoryId),
+          categoryId: parseInt(formData.categoryId),
           description: formData.description || undefined,
-          punch_num: parseInt(formData.punchNum) || 10,
-          expiration_duration_in_days: parseInt(formData.expirationDays) || 30,
-          email: formData.email
-        });
+          punchNum: parseInt(formData.punchNum) || 10,
+          expirationDurationInDays: parseInt(formData.expirationDays) || 30,
+          email: user.email // Use Firebase Auth email for consistency
+        };
+
+        // Only add image if it's under 500KB (to stay well under Firestore's 1MB limit)
+        if (formData.businessImage && formData.businessImage.length < 500000) {
+          businessData.image = formData.businessImage;
+        } else if (formData.businessImage) {
+          console.warn('Image too large for Firestore, skipping image upload');
+        }
+
+        console.log('Creating business with data:', businessData);
+        const businessResult = await createBusiness(businessData);
         
         console.log('Business created successfully:', {
           uid: user.uid,
-          businessId: businessId,
+          businessResult: businessResult,
           name: formData.name,
-          businessName: formData.businessName
+          businessName: formData.businessName,
+          email: user.email,
+          imageIncluded: !!businessData.image
         });
       } catch (dbError) {
         console.error('Failed to save business data:', dbError);
-        // Continue even if database save fails
+        console.error('Business data that failed:', {
+          name: formData.businessName,
+          email: user.email,
+          categoryId: parseInt(formData.categoryId)
+        });
+        
+        // Show error to user instead of silently continuing
+        setError('Failed to save business profile. Please try again or contact support.');
+        setLoading(false);
+        return; // Don't navigate if business creation failed
       }
       
       // Navigate to business dashboard
       navigate('/business');
       
     } catch (err: any) {
-      setError(err.message || 'Failed to create account');
+      console.error('Business signup error:', err);
+      setError(err.message || 'Failed to create account. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 pb-16">
       <div className="w-full max-w-2xl space-y-8">
         {/* Header */}
         <div className="text-center">
@@ -384,7 +431,7 @@ const SimpleBusinessSignup: React.FC = () => {
                       <div className="w-32 h-32 mx-auto border-2 border-dashed border-muted-foreground/20 rounded-lg flex items-center justify-center text-muted-foreground">
                         <span className="text-sm text-center">
                           Upload Image<br/>
-                          <span className="text-xs">(JPG/PNG, max 2MB)</span>
+                          <span className="text-xs">(JPG/PNG, max 500KB)</span>
                         </span>
                       </div>
                     )}

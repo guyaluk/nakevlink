@@ -1,0 +1,1813 @@
+"""
+✨ `Business_KeyOutput` returns the primary key fields of table type `Business`.
+
+It has the same format as `Business_Key`, but is only used as mutation return value.
+"""
+scalar Business_KeyOutput
+"""
+✨ `Punch_KeyOutput` returns the primary key fields of table type `Punch`.
+
+It has the same format as `Punch_Key`, but is only used as mutation return value.
+"""
+scalar Punch_KeyOutput
+"""
+✨ `PunchCard_KeyOutput` returns the primary key fields of table type `PunchCard`.
+
+It has the same format as `PunchCard_Key`, but is only used as mutation return value.
+"""
+scalar PunchCard_KeyOutput
+"""
+✨ `PunchCode_KeyOutput` returns the primary key fields of table type `PunchCode`.
+
+It has the same format as `PunchCode_Key`, but is only used as mutation return value.
+"""
+scalar PunchCode_KeyOutput
+"""
+✨ `User_KeyOutput` returns the primary key fields of table type `User`.
+
+It has the same format as `User_Key`, but is only used as mutation return value.
+"""
+scalar User_KeyOutput
+"""
+✨ Generated data input type for table 'Business'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Business_Data {
+  """
+  ✨ Generated from Field `Business`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Business`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`address` of type `String`
+  """
+  address: String
+  """
+  ✨ `_expr` server value variant of `address` (✨ Generated from Field `Business`.`address` of type `String`)
+  """
+  address_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`categoryId` of type `Int!`
+  """
+  categoryId: Int
+  """
+  ✨ `_expr` server value variant of `categoryId` (✨ Generated from Field `Business`.`categoryId` of type `Int!`)
+  """
+  categoryId_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `categoryId` (✨ Generated from Field `Business`.`categoryId` of type `Int!`)
+  """
+  categoryId_update: [Int_Update!]
+  """
+  ✨ Generated from Field `Business`.`contactName` of type `String`
+  """
+  contactName: String
+  """
+  ✨ `_expr` server value variant of `contactName` (✨ Generated from Field `Business`.`contactName` of type `String`)
+  """
+  contactName_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdDatetime` (✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdDatetime` (✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdDatetime` (✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `Business`.`description` of type `String`
+  """
+  description: String
+  """
+  ✨ `_expr` server value variant of `description` (✨ Generated from Field `Business`.`description` of type `String`)
+  """
+  description_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`email` of type `String`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `Business`.`email` of type `String`)
+  """
+  email_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays` of type `Int`
+  """
+  expirationDurationInDays: Int
+  """
+  ✨ `_expr` server value variant of `expirationDurationInDays` (✨ Generated from Field `Business`.`expirationDurationInDays` of type `Int`)
+  """
+  expirationDurationInDays_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `expirationDurationInDays` (✨ Generated from Field `Business`.`expirationDurationInDays` of type `Int`)
+  """
+  expirationDurationInDays_update: [Int_Update!]
+  """
+  ✨ Generated from Field `Business`.`image` of type `String`
+  """
+  image: String
+  """
+  ✨ `_expr` server value variant of `image` (✨ Generated from Field `Business`.`image` of type `String`)
+  """
+  image_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `Business`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`phoneNumber` of type `String`
+  """
+  phoneNumber: String
+  """
+  ✨ `_expr` server value variant of `phoneNumber` (✨ Generated from Field `Business`.`phoneNumber` of type `String`)
+  """
+  phoneNumber_expr: String_Expr
+  """
+  ✨ Generated from Field `Business`.`punchNum` of type `Int`
+  """
+  punchNum: Int
+  """
+  ✨ `_expr` server value variant of `punchNum` (✨ Generated from Field `Business`.`punchNum` of type `Int`)
+  """
+  punchNum_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `punchNum` (✨ Generated from Field `Business`.`punchNum` of type `Int`)
+  """
+  punchNum_update: [Int_Update!]
+}
+"""
+✨ Generated filter input type for table 'Business'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Business_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Business_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Business_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Business_Filter!]
+  """
+  ✨ Generated from Field `Business`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `Business`.`address` of type `String`
+  """
+  address: String_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId` of type `Int!`
+  """
+  categoryId: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`contactName` of type `String`
+  """
+  contactName: String_Filter
+  """
+  ✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: Timestamp_Filter
+  """
+  ✨ Generated from Field `Business`.`description` of type `String`
+  """
+  description: String_Filter
+  """
+  ✨ Generated from Field `Business`.`email` of type `String`
+  """
+  email: String_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays` of type `Int`
+  """
+  expirationDurationInDays: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`image` of type `String`
+  """
+  image: String_Filter
+  """
+  ✨ Generated from Field `Business`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `Business`.`phoneNumber` of type `String`
+  """
+  phoneNumber: String_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum` of type `Int`
+  """
+  punchNum: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`punchCards_on_business` of type `[PunchCard!]!`
+  """
+  punchCards_on_business: PunchCard_ListFilter
+  """
+  ✨ Generated from Field `Business`.`punchCodes_on_business` of type `[PunchCode!]!`
+  """
+  punchCodes_on_business: PunchCode_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'Business'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Business_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Business_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Business_Filter
+}
+"""
+✨ Generated having input type for table 'Business'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Business_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Business_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Business_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Business_Having!]
+  """
+  ✨ Generated from Field `Business`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`address_count` of type `Int!`
+  """
+  address_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`contactName_count` of type `Int!`
+  """
+  contactName_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_count` of type `Int!`
+  """
+  createdDatetime_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`description_count` of type `Int!`
+  """
+  description_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_count` of type `Int!`
+  """
+  expirationDurationInDays_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`image_count` of type `Int!`
+  """
+  image_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`phoneNumber_count` of type `Int!`
+  """
+  phoneNumber_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum_count` of type `Int!`
+  """
+  punchNum_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId_sum` of type `Int`
+  """
+  categoryId_sum: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_sum` of type `Int`
+  """
+  expirationDurationInDays_sum: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum_sum` of type `Int`
+  """
+  punchNum_sum: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId_avg` of type `Float`
+  """
+  categoryId_avg: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_avg` of type `Float`
+  """
+  expirationDurationInDays_avg: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum_avg` of type `Float`
+  """
+  punchNum_avg: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId_min` of type `Int`
+  """
+  categoryId_min: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_min` of type `Timestamp`
+  """
+  createdDatetime_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_min` of type `Int`
+  """
+  expirationDurationInDays_min: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum_min` of type `Int`
+  """
+  punchNum_min: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`categoryId_max` of type `Int`
+  """
+  categoryId_max: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_max` of type `Timestamp`
+  """
+  createdDatetime_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_max` of type `Int`
+  """
+  expirationDurationInDays_max: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`punchNum_max` of type `Int`
+  """
+  punchNum_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'Business'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Business_Key {
+  """
+  ✨ Generated from Field `Business`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Business`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'Business'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Business_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Business_Filter
+}
+"""
+✨ Generated order input type for table 'Business'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Business_Order {
+  """
+  ✨ Generated from Field `Business`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`address` of type `String`
+  """
+  address: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId` of type `Int!`
+  """
+  categoryId: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`contactName` of type `String`
+  """
+  contactName: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`description` of type `String`
+  """
+  description: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`email` of type `String`
+  """
+  email: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays` of type `Int`
+  """
+  expirationDurationInDays: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`image` of type `String`
+  """
+  image: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`phoneNumber` of type `String`
+  """
+  phoneNumber: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum` of type `Int`
+  """
+  punchNum: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`address_count` of type `Int!`
+  """
+  address_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId_count` of type `Int!`
+  """
+  categoryId_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`contactName_count` of type `Int!`
+  """
+  contactName_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_count` of type `Int!`
+  """
+  createdDatetime_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`description_count` of type `Int!`
+  """
+  description_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_count` of type `Int!`
+  """
+  expirationDurationInDays_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`image_count` of type `Int!`
+  """
+  image_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`phoneNumber_count` of type `Int!`
+  """
+  phoneNumber_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum_count` of type `Int!`
+  """
+  punchNum_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId_sum` of type `Int`
+  """
+  categoryId_sum: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_sum` of type `Int`
+  """
+  expirationDurationInDays_sum: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum_sum` of type `Int`
+  """
+  punchNum_sum: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId_avg` of type `Float`
+  """
+  categoryId_avg: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_avg` of type `Float`
+  """
+  expirationDurationInDays_avg: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum_avg` of type `Float`
+  """
+  punchNum_avg: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId_min` of type `Int`
+  """
+  categoryId_min: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_min` of type `Timestamp`
+  """
+  createdDatetime_min: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_min` of type `Int`
+  """
+  expirationDurationInDays_min: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum_min` of type `Int`
+  """
+  punchNum_min: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`categoryId_max` of type `Int`
+  """
+  categoryId_max: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`createdDatetime_max` of type `Timestamp`
+  """
+  createdDatetime_max: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`expirationDurationInDays_max` of type `Int`
+  """
+  expirationDurationInDays_max: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`punchNum_max` of type `Int`
+  """
+  punchNum_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'Punch'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input Punch_Data {
+  """
+  ✨ Generated from Field `Punch`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Punch`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `Punch`.`cardId` of type `String!`
+  """
+  cardId: String
+  """
+  ✨ `_expr` server value variant of `cardId` (✨ Generated from Field `Punch`.`cardId` of type `String!`)
+  """
+  cardId_expr: String_Expr
+  """
+  ✨ Generated from Field `Punch`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Key
+  """
+  ✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`
+  """
+  punchTime: Timestamp
+  """
+  ✨ `_expr` server value variant of `punchTime` (✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`)
+  """
+  punchTime_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `punchTime` (✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`)
+  """
+  punchTime_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `punchTime` (✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`)
+  """
+  punchTime_update: [Timestamp_Update!]
+}
+"""
+✨ Generated filter input type for table 'Punch'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Punch_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [Punch_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: Punch_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [Punch_Filter!]
+  """
+  ✨ Generated from Field `Punch`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `Punch`.`cardId` of type `String!`
+  """
+  cardId: String_Filter
+  """
+  ✨ Generated from Field `Punch`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Filter
+  """
+  ✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`
+  """
+  punchTime: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'Punch'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input Punch_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [Punch_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: Punch_Filter
+}
+"""
+✨ Generated having input type for table 'Punch'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input Punch_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [Punch_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: Punch_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [Punch_Having!]
+  """
+  ✨ Generated from Field `Punch`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `Punch`.`cardId_count` of type `Int!`
+  """
+  cardId_count: Int_Filter
+  """
+  ✨ Generated from Field `Punch`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `Punch`.`punchTime_count` of type `Int!`
+  """
+  punchTime_count: Int_Filter
+  """
+  ✨ Generated from Field `Punch`.`punchTime_min` of type `Timestamp`
+  """
+  punchTime_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `Punch`.`punchTime_max` of type `Timestamp`
+  """
+  punchTime_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'Punch'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input Punch_Key {
+  """
+  ✨ Generated from Field `Punch`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `Punch`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'Punch'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input Punch_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: Punch_Filter
+}
+"""
+✨ Generated order input type for table 'Punch'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input Punch_Order {
+  """
+  ✨ Generated from Field `Punch`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`cardId` of type `String!`
+  """
+  cardId: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Order
+  """
+  ✨ Generated from Field `Punch`.`punchTime` of type `Timestamp`
+  """
+  punchTime: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`cardId_count` of type `Int!`
+  """
+  cardId_count: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`punchTime_count` of type `Int!`
+  """
+  punchTime_count: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`punchTime_min` of type `Timestamp`
+  """
+  punchTime_min: OrderDirection
+  """
+  ✨ Generated from Field `Punch`.`punchTime_max` of type `Timestamp`
+  """
+  punchTime_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'PunchCard'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input PunchCard_Data {
+  """
+  ✨ Generated from Field `PunchCard`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PunchCard`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCard`.`businessId` of type `String!`
+  """
+  businessId: String
+  """
+  ✨ `_expr` server value variant of `businessId` (✨ Generated from Field `PunchCard`.`businessId` of type `String!`)
+  """
+  businessId_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCard`.`userId` of type `String!`
+  """
+  userId: String
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `PunchCard`.`userId` of type `String!`)
+  """
+  userId_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCard`.`business` of type `Business!`
+  """
+  business: Business_Key
+  """
+  ✨ Generated from Field `PunchCard`.`user` of type `User!`
+  """
+  user: User_Key
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `expiresAt` (✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `expiresAt` (✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `expiresAt` (✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches` of type `Int!`
+  """
+  maxPunches: Int
+  """
+  ✨ `_expr` server value variant of `maxPunches` (✨ Generated from Field `PunchCard`.`maxPunches` of type `Int!`)
+  """
+  maxPunches_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `maxPunches` (✨ Generated from Field `PunchCard`.`maxPunches` of type `Int!`)
+  """
+  maxPunches_update: [Int_Update!]
+}
+"""
+✨ Generated filter input type for table 'PunchCard'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PunchCard_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [PunchCard_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: PunchCard_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [PunchCard_Filter!]
+  """
+  ✨ Generated from Field `PunchCard`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`businessId` of type `String!`
+  """
+  businessId: String_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`userId` of type `String!`
+  """
+  userId: String_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`business` of type `Business!`
+  """
+  business: Business_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`user` of type `User!`
+  """
+  user: User_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches` of type `Int!`
+  """
+  maxPunches: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`punches_on_card` of type `[Punch!]!`
+  """
+  punches_on_card: Punch_ListFilter
+  """
+  ✨ Generated from Field `PunchCard`.`punchCodes_on_card` of type `[PunchCode!]!`
+  """
+  punchCodes_on_card: PunchCode_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'PunchCard'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input PunchCard_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [PunchCard_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: PunchCard_Filter
+}
+"""
+✨ Generated having input type for table 'PunchCard'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PunchCard_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [PunchCard_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: PunchCard_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [PunchCard_Having!]
+  """
+  ✨ Generated from Field `PunchCard`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`businessId_count` of type `Int!`
+  """
+  businessId_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_count` of type `Int!`
+  """
+  expiresAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_count` of type `Int!`
+  """
+  maxPunches_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_sum` of type `Int`
+  """
+  maxPunches_sum: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_avg` of type `Float`
+  """
+  maxPunches_avg: Float_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_min` of type `Timestamp`
+  """
+  expiresAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_min` of type `Int`
+  """
+  maxPunches_min: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_max` of type `Timestamp`
+  """
+  expiresAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_max` of type `Int`
+  """
+  maxPunches_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'PunchCard'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input PunchCard_Key {
+  """
+  ✨ Generated from Field `PunchCard`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PunchCard`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'PunchCard'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input PunchCard_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: PunchCard_Filter
+}
+"""
+✨ Generated order input type for table 'PunchCard'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input PunchCard_Order {
+  """
+  ✨ Generated from Field `PunchCard`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`businessId` of type `String!`
+  """
+  businessId: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`userId` of type `String!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`business` of type `Business!`
+  """
+  business: Business_Order
+  """
+  ✨ Generated from Field `PunchCard`.`user` of type `User!`
+  """
+  user: User_Order
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches` of type `Int!`
+  """
+  maxPunches: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`businessId_count` of type `Int!`
+  """
+  businessId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_count` of type `Int!`
+  """
+  expiresAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_count` of type `Int!`
+  """
+  maxPunches_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_sum` of type `Int`
+  """
+  maxPunches_sum: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_avg` of type `Float`
+  """
+  maxPunches_avg: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_min` of type `Timestamp`
+  """
+  expiresAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_min` of type `Int`
+  """
+  maxPunches_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`expiresAt_max` of type `Timestamp`
+  """
+  expiresAt_max: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`maxPunches_max` of type `Int`
+  """
+  maxPunches_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'PunchCode'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input PunchCode_Data {
+  """
+  ✨ Generated from Field `PunchCode`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PunchCode`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`businessId` of type `String!`
+  """
+  businessId: String
+  """
+  ✨ `_expr` server value variant of `businessId` (✨ Generated from Field `PunchCode`.`businessId` of type `String!`)
+  """
+  businessId_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`cardId` of type `String!`
+  """
+  cardId: String
+  """
+  ✨ `_expr` server value variant of `cardId` (✨ Generated from Field `PunchCode`.`cardId` of type `String!`)
+  """
+  cardId_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`userId` of type `String!`
+  """
+  userId: String
+  """
+  ✨ `_expr` server value variant of `userId` (✨ Generated from Field `PunchCode`.`userId` of type `String!`)
+  """
+  userId_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`business` of type `Business!`
+  """
+  business: Business_Key
+  """
+  ✨ Generated from Field `PunchCode`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Key
+  """
+  ✨ Generated from Field `PunchCode`.`user` of type `User!`
+  """
+  user: User_Key
+  """
+  ✨ Generated from Field `PunchCode`.`code` of type `String!`
+  """
+  code: String
+  """
+  ✨ `_expr` server value variant of `code` (✨ Generated from Field `PunchCode`.`code` of type `String!`)
+  """
+  code_expr: String_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`
+  """
+  createdAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdAt` (✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdAt` (✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdAt` (✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`)
+  """
+  createdAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `expiresAt` (✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `expiresAt` (✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `expiresAt` (✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`)
+  """
+  expiresAt_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `PunchCode`.`isUsed` of type `Boolean`
+  """
+  isUsed: Boolean
+  """
+  ✨ `_expr` server value variant of `isUsed` (✨ Generated from Field `PunchCode`.`isUsed` of type `Boolean`)
+  """
+  isUsed_expr: Boolean_Expr
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`
+  """
+  usedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `usedAt` (✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`)
+  """
+  usedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `usedAt` (✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`)
+  """
+  usedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `usedAt` (✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`)
+  """
+  usedAt_update: [Timestamp_Update!]
+}
+"""
+✨ Generated filter input type for table 'PunchCode'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PunchCode_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [PunchCode_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: PunchCode_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [PunchCode_Filter!]
+  """
+  ✨ Generated from Field `PunchCode`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`businessId` of type `String!`
+  """
+  businessId: String_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`cardId` of type `String!`
+  """
+  cardId: String_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`userId` of type `String!`
+  """
+  userId: String_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`business` of type `Business!`
+  """
+  business: Business_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`user` of type `User!`
+  """
+  user: User_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`code` of type `String!`
+  """
+  code: String_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`
+  """
+  createdAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`isUsed` of type `Boolean`
+  """
+  isUsed: Boolean_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`
+  """
+  usedAt: Timestamp_Filter
+}
+"""
+✨ Generated first-row input type for table 'PunchCode'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input PunchCode_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [PunchCode_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: PunchCode_Filter
+}
+"""
+✨ Generated having input type for table 'PunchCode'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input PunchCode_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [PunchCode_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: PunchCode_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [PunchCode_Having!]
+  """
+  ✨ Generated from Field `PunchCode`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`businessId_count` of type `Int!`
+  """
+  businessId_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`cardId_count` of type `Int!`
+  """
+  cardId_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`code_count` of type `Int!`
+  """
+  code_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_count` of type `Int!`
+  """
+  expiresAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`isUsed_count` of type `Int!`
+  """
+  isUsed_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_count` of type `Int!`
+  """
+  usedAt_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`userId_count` of type `Int!`
+  """
+  userId_count: Int_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_min` of type `Timestamp`
+  """
+  expiresAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_min` of type `Timestamp`
+  """
+  usedAt_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_max` of type `Timestamp`
+  """
+  expiresAt_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_max` of type `Timestamp`
+  """
+  usedAt_max: Timestamp_Filter
+}
+"""
+✨ Generated key input type for table 'PunchCode'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input PunchCode_Key {
+  """
+  ✨ Generated from Field `PunchCode`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `PunchCode`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'PunchCode'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input PunchCode_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: PunchCode_Filter
+}
+"""
+✨ Generated order input type for table 'PunchCode'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input PunchCode_Order {
+  """
+  ✨ Generated from Field `PunchCode`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`businessId` of type `String!`
+  """
+  businessId: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`cardId` of type `String!`
+  """
+  cardId: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`userId` of type `String!`
+  """
+  userId: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`business` of type `Business!`
+  """
+  business: Business_Order
+  """
+  ✨ Generated from Field `PunchCode`.`card` of type `PunchCard!`
+  """
+  card: PunchCard_Order
+  """
+  ✨ Generated from Field `PunchCode`.`user` of type `User!`
+  """
+  user: User_Order
+  """
+  ✨ Generated from Field `PunchCode`.`code` of type `String!`
+  """
+  code: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt` of type `Timestamp`
+  """
+  createdAt: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt` of type `Timestamp!`
+  """
+  expiresAt: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`isUsed` of type `Boolean`
+  """
+  isUsed: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt` of type `Timestamp`
+  """
+  usedAt: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`businessId_count` of type `Int!`
+  """
+  businessId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`cardId_count` of type `Int!`
+  """
+  cardId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`code_count` of type `Int!`
+  """
+  code_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_count` of type `Int!`
+  """
+  createdAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_count` of type `Int!`
+  """
+  expiresAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`isUsed_count` of type `Int!`
+  """
+  isUsed_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_count` of type `Int!`
+  """
+  usedAt_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`userId_count` of type `Int!`
+  """
+  userId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_min` of type `Timestamp`
+  """
+  createdAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_min` of type `Timestamp`
+  """
+  expiresAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_min` of type `Timestamp`
+  """
+  usedAt_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`createdAt_max` of type `Timestamp`
+  """
+  createdAt_max: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`expiresAt_max` of type `Timestamp`
+  """
+  expiresAt_max: OrderDirection
+  """
+  ✨ Generated from Field `PunchCode`.`usedAt_max` of type `Timestamp`
+  """
+  usedAt_max: OrderDirection
+}
+"""
+✨ Generated data input type for table 'User'. It includes all necessary fields for creating or upserting rows into table.
+"""
+input User_Data {
+  """
+  ✨ Generated from Field `User`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: Timestamp
+  """
+  ✨ `_expr` server value variant of `createdDatetime` (✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `createdDatetime` (✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `createdDatetime` (✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`)
+  """
+  createdDatetime_update: [Timestamp_Update!]
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String
+  """
+  ✨ `_expr` server value variant of `email` (✨ Generated from Field `User`.`email` of type `String!`)
+  """
+  email_expr: String_Expr
+  """
+  ✨ Generated from Field `User`.`favoriteCategory` of type `Int`
+  """
+  favoriteCategory: Int
+  """
+  ✨ `_expr` server value variant of `favoriteCategory` (✨ Generated from Field `User`.`favoriteCategory` of type `Int`)
+  """
+  favoriteCategory_expr: Int_Expr
+  """
+  ✨ `_update` server value variant of `favoriteCategory` (✨ Generated from Field `User`.`favoriteCategory` of type `Int`)
+  """
+  favoriteCategory_update: [Int_Update!]
+  """
+  ✨ Generated from Field `User`.`name` of type `String!`
+  """
+  name: String
+  """
+  ✨ `_expr` server value variant of `name` (✨ Generated from Field `User`.`name` of type `String!`)
+  """
+  name_expr: String_Expr
+}
+"""
+✨ Generated filter input type for table 'User'. This input allows filtering objects using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Filter {
+  """
+  Apply multiple filter conditions using `AND` logic.
+  """
+  _and: [User_Filter!]
+  """
+  Negate the result of the provided filter condition.
+  """
+  _not: User_Filter
+  """
+  Apply multiple filter conditions using `OR` logic.
+  """
+  _or: [User_Filter!]
+  """
+  ✨ Generated from Field `User`.`id` of type `String!`
+  """
+  id: String_Filter
+  """
+  ✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: String_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory` of type `Int`
+  """
+  favoriteCategory: Int_Filter
+  """
+  ✨ Generated from Field `User`.`name` of type `String!`
+  """
+  name: String_Filter
+  """
+  ✨ Generated from Field `User`.`punchCards_on_user` of type `[PunchCard!]!`
+  """
+  punchCards_on_user: PunchCard_ListFilter
+  """
+  ✨ Generated from Field `User`.`punchCodes_on_user` of type `[PunchCode!]!`
+  """
+  punchCodes_on_user: PunchCode_ListFilter
+}
+"""
+✨ Generated first-row input type for table 'User'. This input selects the first row matching the filter criteria, ordered according to the specified conditions.
+"""
+input User_FirstRow {
+  """
+  Order the result by the specified fields.
+  """
+  orderBy: [User_Order!]
+  """
+  Filters rows based on the specified conditions.
+  """
+  where: User_Filter
+}
+"""
+✨ Generated having input type for table 'User'. This input allows you to filter groups during aggregate queries using various conditions. Use `_or`, `_and`, and `_not` to compose complex filters.
+"""
+input User_Having {
+  """
+  Apply multiple Having conditions using `AND` logic.
+  """
+  _and: [User_Having!]
+  """
+  Whether to apply DISTINCT to the aggregate function.
+  """
+  _distinct: Boolean
+  """
+  Negate the result of the provided Having condition.
+  """
+  _not: User_Having
+  """
+  Apply multiple Having conditions using `OR` logic.
+  """
+  _or: [User_Having!]
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdDatetime_count` of type `Int!`
+  """
+  createdDatetime_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_count` of type `Int!`
+  """
+  favoriteCategory_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`name_count` of type `Int!`
+  """
+  name_count: Int_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_sum` of type `Int`
+  """
+  favoriteCategory_sum: Int_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_avg` of type `Float`
+  """
+  favoriteCategory_avg: Float_Filter
+  """
+  ✨ Generated from Field `User`.`createdDatetime_min` of type `Timestamp`
+  """
+  createdDatetime_min: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_min` of type `Int`
+  """
+  favoriteCategory_min: Int_Filter
+  """
+  ✨ Generated from Field `User`.`createdDatetime_max` of type `Timestamp`
+  """
+  createdDatetime_max: Timestamp_Filter
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_max` of type `Int`
+  """
+  favoriteCategory_max: Int_Filter
+}
+"""
+✨ Generated key input type for table 'User'. It represents the primary key fields used to uniquely identify a row in the table.
+"""
+input User_Key {
+  """
+  ✨ Generated from Field `User`.`id` of type `String!`
+  """
+  id: String
+  """
+  ✨ `_expr` server value variant of `id` (✨ Generated from Field `User`.`id` of type `String!`)
+  """
+  id_expr: String_Expr
+}
+"""
+✨ Generated list filter input type for table 'User'. This input applies filtering logic based on the count or existence of related objects that matches certain criteria.
+"""
+input User_ListFilter {
+  """
+  The desired number of objects that match the condition (defaults to at least one).
+  """
+  count: Int_Filter = {gt:0}
+  """
+  Condition of the related objects to filter for.
+  """
+  exist: User_Filter
+}
+"""
+✨ Generated order input type for table 'User'. This input defines the sorting order of rows in query results based on one or more fields.
+"""
+input User_Order {
+  """
+  ✨ Generated from Field `User`.`id` of type `String!`
+  """
+  id: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdDatetime` of type `Timestamp`
+  """
+  createdDatetime: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email` of type `String!`
+  """
+  email: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory` of type `Int`
+  """
+  favoriteCategory: OrderDirection
+  """
+  ✨ Generated from Field `User`.`name` of type `String!`
+  """
+  name: OrderDirection
+  """
+  ✨ Generated from Field `User`.`_count` of type `Int!`
+  """
+  _count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdDatetime_count` of type `Int!`
+  """
+  createdDatetime_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`email_count` of type `Int!`
+  """
+  email_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_count` of type `Int!`
+  """
+  favoriteCategory_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`id_count` of type `Int!`
+  """
+  id_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`name_count` of type `Int!`
+  """
+  name_count: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_sum` of type `Int`
+  """
+  favoriteCategory_sum: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_avg` of type `Float`
+  """
+  favoriteCategory_avg: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdDatetime_min` of type `Timestamp`
+  """
+  createdDatetime_min: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_min` of type `Int`
+  """
+  favoriteCategory_min: OrderDirection
+  """
+  ✨ Generated from Field `User`.`createdDatetime_max` of type `Timestamp`
+  """
+  createdDatetime_max: OrderDirection
+  """
+  ✨ Generated from Field `User`.`favoriteCategory_max` of type `Int`
+  """
+  favoriteCategory_max: OrderDirection
+}

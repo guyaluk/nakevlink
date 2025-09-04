@@ -9,7 +9,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
-import { createUser as createUserInDb } from '@/lib/dataconnect';
+import { createUser as createUserInDb } from '@/lib/dataconnect/esm/index.esm.js';
 
 export type UserRole = 'customer' | 'business_owner';
 
@@ -88,7 +88,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       while (attempts < maxAttempts) {
         try {
           const { getBusinessByEmail } = await import('@/lib/dataconnect');
-          const business = await getBusinessByEmail(firebaseUser.email || '');
+          const business = await getBusinessByEmail({ email: firebaseUser.email || '' });
           
           const dbRole: UserRole = business ? 'business_owner' : 'customer';
           const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`);
@@ -156,18 +156,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         });
       }
       
-      // Save user to database
-      try {
-        await createUserInDb({
-          id: result.user.uid,
-          name: userData?.name || result.user.displayName || '',
-          email: result.user.email || '',
-          favorite_category: userData?.favoriteCategory
-        });
-        console.log('AuthContext: User saved to database');
-      } catch (dbError) {
-        console.error('AuthContext: Failed to save user to database:', dbError);
-        // Continue even if database save fails
+      // Save user to database (only for customers, business owners are handled by SimpleBusinessSignup)
+      if (userData?.role === 'customer') {
+        try {
+          await createUserInDb({
+            id: result.user.uid,
+            name: userData?.name || result.user.displayName || '',
+            email: result.user.email || '',
+            favoriteCategory: userData?.favoriteCategory
+          });
+          console.log('AuthContext: Customer saved to User table');
+        } catch (dbError) {
+          console.error('AuthContext: Failed to save customer to database:', dbError);
+          // Continue even if database save fails
+        }
+      } else if (userData?.role === 'business_owner') {
+        console.log('AuthContext: Business owner will be saved to Business table by SimpleBusinessSignup');
       }
       
       // Create user with role
@@ -257,7 +261,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       unsubscribeAuthState();
       unsubscribeTokenChange();
     };
-  }, [user]);
+  }, []);
 
   const value = {
     user,

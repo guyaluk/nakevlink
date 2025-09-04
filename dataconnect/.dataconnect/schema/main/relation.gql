@@ -1,0 +1,763 @@
+extend type Business {
+  """
+  ✨ List `PunchCard` objects in a one-to-many relationship (where `PunchCard`.`business` is this object).
+  """
+  punchCards_on_business(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCard_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCard_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCard_Having
+  ): [PunchCard!]! @fdc_generated(from: "PunchCard.business", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `PunchCode` objects in a one-to-many relationship (where `PunchCode`.`business` is this object).
+  """
+  punchCodes_on_business(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCode_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCode_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCode_Having
+  ): [PunchCode!]! @fdc_generated(from: "PunchCode.business", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Business", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Business` table.
+  """
+  _count: Int! @fdc_generated(from: "Business", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `address` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  address_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.address", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `categoryId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  categoryId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.categoryId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `contactName` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  contactName_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.contactName", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `createdDatetime` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdDatetime_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.createdDatetime", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `description` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  description_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.description", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `expirationDurationInDays` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  expirationDurationInDays_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `image` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  image_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.image", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.name", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `phoneNumber` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  phoneNumber_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.phoneNumber", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `punchNum` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  punchNum_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.punchNum", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `categoryId` field in the `Business` table.
+  """
+  categoryId_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Business.categoryId", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `expirationDurationInDays` field in the `Business` table.
+  """
+  expirationDurationInDays_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `punchNum` field in the `Business` table.
+  """
+  punchNum_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "Business.punchNum", purpose: QUERY_SUM)
+  """
+  ✨ Average the `categoryId` field in the `Business` table.
+  """
+  categoryId_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.categoryId", purpose: QUERY_AVG)
+  """
+  ✨ Average the `expirationDurationInDays` field in the `Business` table.
+  """
+  expirationDurationInDays_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_AVG)
+  """
+  ✨ Average the `punchNum` field in the `Business` table.
+  """
+  punchNum_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.punchNum", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `categoryId` field in the `Business` table.
+  """
+  categoryId_min: Int @fdc_generated(from: "Business.categoryId", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `createdDatetime` field in the `Business` table.
+  """
+  createdDatetime_min: Timestamp @fdc_generated(from: "Business.createdDatetime", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `expirationDurationInDays` field in the `Business` table.
+  """
+  expirationDurationInDays_min: Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `punchNum` field in the `Business` table.
+  """
+  punchNum_min: Int @fdc_generated(from: "Business.punchNum", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `categoryId` field in the `Business` table.
+  """
+  categoryId_max: Int @fdc_generated(from: "Business.categoryId", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `createdDatetime` field in the `Business` table.
+  """
+  createdDatetime_max: Timestamp @fdc_generated(from: "Business.createdDatetime", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `expirationDurationInDays` field in the `Business` table.
+  """
+  expirationDurationInDays_max: Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `punchNum` field in the `Business` table.
+  """
+  punchNum_max: Int @fdc_generated(from: "Business.punchNum", purpose: QUERY_MAX)
+}
+extend type Punch {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "Punch", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `Punch` table.
+  """
+  _count: Int! @fdc_generated(from: "Punch", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Punch` table where the `cardId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cardId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Punch.cardId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Punch` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Punch.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Punch` table where the `punchTime` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  punchTime_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Punch.punchTime", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `punchTime` field in the `Punch` table.
+  """
+  punchTime_min: Timestamp @fdc_generated(from: "Punch.punchTime", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `punchTime` field in the `Punch` table.
+  """
+  punchTime_max: Timestamp @fdc_generated(from: "Punch.punchTime", purpose: QUERY_MAX)
+}
+extend type PunchCard {
+  """
+  ✨ List `Punch` objects in a one-to-many relationship (where `Punch`.`card` is this object).
+  """
+  punches_on_card(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Punch_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Punch_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Punch_Having
+  ): [Punch!]! @fdc_generated(from: "Punch.card", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `PunchCode` objects in a one-to-many relationship (where `PunchCode`.`card` is this object).
+  """
+  punchCodes_on_card(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCode_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCode_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCode_Having
+  ): [PunchCode!]! @fdc_generated(from: "PunchCode.card", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "PunchCard", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `PunchCard` table.
+  """
+  _count: Int! @fdc_generated(from: "PunchCard", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `businessId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  businessId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.businessId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `expiresAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  expiresAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.expiresAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `maxPunches` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  maxPunches_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCard` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `maxPunches` field in the `PunchCard` table.
+  """
+  maxPunches_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_SUM)
+  """
+  ✨ Average the `maxPunches` field in the `PunchCard` table.
+  """
+  maxPunches_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdAt` field in the `PunchCard` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "PunchCard.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `expiresAt` field in the `PunchCard` table.
+  """
+  expiresAt_min: Timestamp @fdc_generated(from: "PunchCard.expiresAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `maxPunches` field in the `PunchCard` table.
+  """
+  maxPunches_min: Int @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `PunchCard` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "PunchCard.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `expiresAt` field in the `PunchCard` table.
+  """
+  expiresAt_max: Timestamp @fdc_generated(from: "PunchCard.expiresAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `maxPunches` field in the `PunchCard` table.
+  """
+  maxPunches_max: Int @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_MAX)
+}
+extend type PunchCode {
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "PunchCode", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `PunchCode` table.
+  """
+  _count: Int! @fdc_generated(from: "PunchCode", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `businessId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  businessId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.businessId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `cardId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  cardId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.cardId", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `code` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  code_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.code", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.createdAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `expiresAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  expiresAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.expiresAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `isUsed` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  isUsed_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.isUsed", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `usedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  usedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.usedAt", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `PunchCode` table where the `userId` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  userId_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCode.userId", purpose: QUERY_COUNT)
+  """
+  ✨ Minimum of the `createdAt` field in the `PunchCode` table.
+  """
+  createdAt_min: Timestamp @fdc_generated(from: "PunchCode.createdAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `expiresAt` field in the `PunchCode` table.
+  """
+  expiresAt_min: Timestamp @fdc_generated(from: "PunchCode.expiresAt", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `usedAt` field in the `PunchCode` table.
+  """
+  usedAt_min: Timestamp @fdc_generated(from: "PunchCode.usedAt", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdAt` field in the `PunchCode` table.
+  """
+  createdAt_max: Timestamp @fdc_generated(from: "PunchCode.createdAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `expiresAt` field in the `PunchCode` table.
+  """
+  expiresAt_max: Timestamp @fdc_generated(from: "PunchCode.expiresAt", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `usedAt` field in the `PunchCode` table.
+  """
+  usedAt_max: Timestamp @fdc_generated(from: "PunchCode.usedAt", purpose: QUERY_MAX)
+}
+extend type User {
+  """
+  ✨ List `PunchCard` objects in a one-to-many relationship (where `PunchCard`.`user` is this object).
+  """
+  punchCards_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCard_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCard_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCard_Having
+  ): [PunchCard!]! @fdc_generated(from: "PunchCard.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  ✨ List `PunchCode` objects in a one-to-many relationship (where `PunchCode`.`user` is this object).
+  """
+  punchCodes_on_user(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCode_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCode_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCode_Having
+  ): [PunchCode!]! @fdc_generated(from: "PunchCode.user", purpose: QUERY_MULTIPLE_ONE_TO_MANY)
+  """
+  Implicit metadata field that cannot be written. It provides extra information about query results.
+  """
+  _metadata: _Metadata @fdc_generated(from: "User", purpose: METADATA_FIELD)
+  """
+  ✨ Count the number of rows in the `User` table.
+  """
+  _count: Int! @fdc_generated(from: "User", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `createdDatetime` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  createdDatetime_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.createdDatetime", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `email` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  email_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.email", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `favoriteCategory` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  favoriteCategory_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.favoriteCategory", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `id` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  id_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.id", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `User` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  name_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "User.name", purpose: QUERY_COUNT)
+  """
+  ✨ Sum the `favoriteCategory` field in the `User` table.
+  """
+  favoriteCategory_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Int @fdc_generated(from: "User.favoriteCategory", purpose: QUERY_SUM)
+  """
+  ✨ Average the `favoriteCategory` field in the `User` table.
+  """
+  favoriteCategory_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "User.favoriteCategory", purpose: QUERY_AVG)
+  """
+  ✨ Minimum of the `createdDatetime` field in the `User` table.
+  """
+  createdDatetime_min: Timestamp @fdc_generated(from: "User.createdDatetime", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `favoriteCategory` field in the `User` table.
+  """
+  favoriteCategory_min: Int @fdc_generated(from: "User.favoriteCategory", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `createdDatetime` field in the `User` table.
+  """
+  createdDatetime_max: Timestamp @fdc_generated(from: "User.createdDatetime", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `favoriteCategory` field in the `User` table.
+  """
+  favoriteCategory_max: Int @fdc_generated(from: "User.favoriteCategory", purpose: QUERY_MAX)
+}

@@ -1,0 +1,292 @@
+extend type Query {
+  """
+  ✨ Look up a single `Business` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  business(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Business_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Business_FirstRow
+  ): Business @fdc_generated(from: "Business", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `Punch` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  punch(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: Punch_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: Punch_FirstRow
+  ): Punch @fdc_generated(from: "Punch", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `PunchCard` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  punchCard(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCard_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCard_FirstRow
+  ): PunchCard @fdc_generated(from: "PunchCard", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `PunchCode` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  punchCode(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: PunchCode_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: PunchCode_FirstRow
+  ): PunchCode @fdc_generated(from: "PunchCode", purpose: QUERY_SINGLE)
+  """
+  ✨ Look up a single `User` based on `id`, `key` or `first` and return selected fields (or `null` if not found).
+  """
+  user(
+    """
+    The unique ID of the object.
+    """
+    id: String
+
+    """
+    ✨ `_expr` server value variant of `id` (The unique ID of the object.)
+    """
+    id_expr: String_Expr
+
+    """
+    The key used to identify the object.
+    """
+    key: User_Key
+
+    """
+    Fetch the first row based on the filters and ordering.
+    """
+    first: User_FirstRow
+  ): User @fdc_generated(from: "User", purpose: QUERY_SINGLE)
+  """
+  ✨ List `Business` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  businesses(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Business_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Business_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Business_Having
+  ): [Business!]! @fdc_generated(from: "Business", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `Punch` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  punches(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: Punch_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [Punch_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: Punch_Having
+  ): [Punch!]! @fdc_generated(from: "Punch", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `PunchCard` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  punchCards(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCard_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCard_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCard_Having
+  ): [PunchCard!]! @fdc_generated(from: "PunchCard", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `PunchCode` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  punchCodes(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: PunchCode_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [PunchCode_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: PunchCode_Having
+  ): [PunchCode!]! @fdc_generated(from: "PunchCode", purpose: QUERY_MULTIPLE)
+  """
+  ✨ List `User` objects in the table and return selected fields, optionally filtered by `where` conditions
+  """
+  users(
+    """
+    Filter condition to narrow down the query results.
+    """
+    where: User_Filter
+
+    """
+    Order the query results by specific fields.
+    """
+    orderBy: [User_Order!]
+
+    """
+    Number of rows to skip before starting to return the results.
+    """
+    offset: Int
+
+    """
+    Maximum number of rows to return (defaults to 100 rows).
+    """
+    limit: Int = 100
+
+    """
+    Set to true to return distinct results.
+    """
+    distinct: Boolean = false
+
+    """
+    Filter condition to apply to the groups of aggregate queries.
+    """
+    having: User_Having
+  ): [User!]! @fdc_generated(from: "User", purpose: QUERY_MULTIPLE)
+}

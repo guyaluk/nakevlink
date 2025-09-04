@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
+import { httpsCallable } from 'firebase/functions';
+import { functions } from '@/config/firebase';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -74,6 +76,16 @@ const SimpleCustomerSignup: React.FC = () => {
         favoriteCategory: formData.favoriteCategory ? parseInt(formData.favoriteCategory) : undefined
       });
       
+      // Set custom claims for customer role
+      try {
+        const setUserRole = httpsCallable(functions, 'setUserRole');
+        await setUserRole({ uid: user.uid, role: 'customer' });
+        console.log('Custom claims set for customer:', user.uid);
+      } catch (claimsError) {
+        console.error('Failed to set custom claims:', claimsError);
+        // Continue even if custom claims fail
+      }
+      
       console.log('Customer signup successful:', {
         uid: user.uid,
         name: formData.name,
@@ -92,7 +104,7 @@ const SimpleCustomerSignup: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-background flex items-center justify-center p-4 pb-16">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">

@@ -1,74 +1,65 @@
 # Firebase Data Connect Schema
 # Defines the database structure for the punch card application
 
-type Category @table {
-  id: Int @primaryKey @autoIncrement
-  name: String!
-  description: String!
-  image: String # Base64 encoded image
-  
-  # Relationships
-  businesses: [Business!]! @backRef(name: "category")
-  users: [User!]! @backRef(name: "favoriteCategory")
-}
-
-type User @table {
-  id: String! @primaryKey # Firebase Auth UID
+type User @table(key: "id") {
+  id: String! # Firebase Auth UID
   name: String!
   email: String! @unique
-  favorite_category: Int @ref(name: "favoriteCategory", fields: ["favorite_category"], references: ["id"])
-  created_datetime: Timestamp @default(expr: "request.time")
-  
-  # Relationships
-  favoriteCategory: Category
-  punchCards: [PunchCard!]! @backRef(name: "user")
+  favoriteCategory: Int # References hardcoded categories (1-7) from constants/categories.ts
+  createdDatetime: Timestamp @default(expr: "request.time")
 }
 
-type Business @table {
-  id: String! @primaryKey @default(expr: "uuidV4()")
+type Business @table(key: "id") {
+  id: String! @default(expr: "uuidV4()")
   name: String!
-  contact_name: String
+  contactName: String
   email: String
-  phone_number: String
+  phoneNumber: String
   address: String
-  category_id: Int! @ref(name: "category", fields: ["category_id"], references: ["id"])
+  categoryId: Int! # References hardcoded categories (1-7) from constants/categories.ts
   image: String # Base64 encoded image
-  created_datetime: Timestamp @default(expr: "request.time")
+  createdDatetime: Timestamp @default(expr: "request.time")
   description: String
-  punch_num: Int
-  expiration_duration_in_days: Int @default(value: 30)
-  
-  # Relationships
-  category: Category!
-  punchCards: [PunchCard!]! @backRef(name: "business")
+  punchNum: Int
+  expirationDurationInDays: Int @default(expr: "30")
 }
 
-type PunchCard @table {
-  id: Int @primaryKey @autoIncrement
-  business_id: String! @ref(name: "business", fields: ["business_id"], references: ["id"])
-  user_id: String! @ref(name: "user", fields: ["user_id"], references: ["id"])
-  max_punches: Int!
-  created_at: Timestamp @default(expr: "request.time")
-  expires_at: Timestamp!
+type PunchCard @table(key: "id") {
+  id: String! @default(expr: "uuidV4()")
+  businessId: String!
+  userId: String!
+  maxPunches: Int!
+  createdAt: Timestamp @default(expr: "request.time")
+  expiresAt: Timestamp!
   
   # Relationships
-  business: Business!
-  user: User!
-  punches: [Punch!]! @backRef(name: "card")
+  business: Business! @ref(fields: "businessId", references: "id")
+  user: User! @ref(fields: "userId", references: "id")
 }
 
-type Punch @table {
-  id: Int @primaryKey @autoIncrement
-  card_id: Int! @ref(name: "card", fields: ["card_id"], references: ["id"])
-  punch_time: Timestamp @default(expr: "request.time")
+type Punch @table(key: "id") {
+  id: String! @default(expr: "uuidV4()")
+  cardId: String!
+  punchTime: Timestamp @default(expr: "request.time")
   
   # Relationships
-  card: PunchCard!
+  card: PunchCard! @ref(fields: "cardId", references: "id")
 }
 
-# Indexes for better performance
-extend type PunchCard @index(name: "idx_punch_cards_user_id", fields: ["user_id"])
-extend type PunchCard @index(name: "idx_punch_cards_business_id", fields: ["business_id"])
-extend type Punch @index(name: "idx_punches_card_id", fields: ["card_id"])
-extend type Business @index(name: "idx_businesses_category_id", fields: ["category_id"])
-extend type User @index(name: "idx_users_favorite_category", fields: ["favorite_category"])
+type PunchCode @table(key: "id") {
+  id: String! @default(expr: "uuidV4()")
+  code: String! @unique # 6-digit code
+  cardId: String!
+  businessId: String!
+  userId: String!
+  createdAt: Timestamp @default(expr: "request.time")
+  expiresAt: Timestamp!
+  usedAt: Timestamp
+  isUsed: Boolean @default(value: false)
+  
+  # Relationships
+  card: PunchCard! @ref(fields: "cardId", references: "id")
+  business: Business! @ref(fields: "businessId", references: "id")
+  user: User! @ref(fields: "userId", references: "id")
+}
+
