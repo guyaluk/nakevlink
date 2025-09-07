@@ -270,3 +270,119 @@ query GetActivePunchCodes($userId: String!, $now: Timestamp!) @auth(level: USER)
     }
   }
 }
+
+# =============================================================================
+# RECOMMENDATION ALGORITHM QUERIES
+# =============================================================================
+
+# Get user profile with punch card data for recommendation algorithm
+query GetUserForRecommendations($userId: String!) @auth(level: USER) {
+  user(key: {id: $userId}) {
+    id
+    name
+    email
+    favoriteCategory
+    createdDatetime
+  }
+  punchCards(where: {userId: {eq: $userId}}) {
+    id
+    businessId
+    userId
+    maxPunches
+    createdAt
+    expiresAt
+    business {
+      id
+      name
+      description
+      categoryId
+      address
+      image
+      punchNum
+      expirationDurationInDays
+    }
+  }
+}
+
+# Get businesses with complete data for recommendations
+query GetBusinessesForRecommendations @auth(level: PUBLIC) {
+  businesses {
+    id
+    name
+    description
+    categoryId
+    address
+    image
+    punchNum
+    expirationDurationInDays
+    contactName
+    email
+    phoneNumber
+    createdDatetime
+  }
+}
+
+# Get businesses by multiple categories (for targeted recommendations)
+query GetBusinessesByCategories($categoryIds: [Int!]!) @auth(level: PUBLIC) {
+  businesses(where: {categoryId: {in: $categoryIds}}) {
+    id
+    name
+    description
+    categoryId
+    address
+    image
+    punchNum
+    expirationDurationInDays
+    contactName
+    email
+    phoneNumber
+  }
+}
+
+# Get user's behavioral data for weight calculation
+query GetUserBehavioralData($userId: String!) @auth(level: USER) {
+  punchCards(where: {userId: {eq: $userId}}) {
+    id
+    businessId
+    maxPunches
+    createdAt
+    business {
+      id
+      name
+      categoryId
+    }
+  }
+}
+
+# Get popular businesses (most punch cards) for new user fallback
+query GetPopularBusinesses($limit: Int!) @auth(level: PUBLIC) {
+  businesses(orderBy: {createdDatetime: DESC}, limit: $limit) {
+    id
+    name
+    description
+    categoryId
+    address
+    image
+    punchNum
+    expirationDurationInDays
+  }
+}
+
+# Get businesses similar to user's existing cards (same categories)
+query GetSimilarBusinesses($userId: String!, $excludeBusinessIds: [String!]!) @auth(level: USER) {
+  punchCards(where: {userId: {eq: $userId}}) {
+    business {
+      categoryId
+    }
+  }
+  businesses(where: {id: {not: {in: $excludeBusinessIds}}}) {
+    id
+    name
+    description
+    categoryId
+    address
+    image
+    punchNum
+    expirationDurationInDays
+  }
+}
