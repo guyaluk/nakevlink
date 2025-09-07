@@ -52,18 +52,14 @@ export interface RecommendationResult {
   score: number;
   categoryScore: number;
   distanceScore: number;
-  diversityBonus: number;
   explanations: string[];
 }
 
 export interface RecommendationConfig {
   maxDistance?: number; // km, default 10
   maxResults?: number; // default 20
-  minCategoryDiversity?: number; // minimum categories in results (0-8), default 3
-  categoryWeight: number; // 0-1, default 0.6
+  categoryWeight: number; // 0-1, default 0.7
   distanceWeight: number; // 0-1, default 0.3
-  diversityWeight: number; // 0-1, default 0.1
-  newUserFallbackWeight: number; // boost for new users, default 0.2
 }
 
 export interface CategoryWeights {
@@ -77,11 +73,8 @@ export interface CategoryWeights {
 const DEFAULT_CONFIG: RecommendationConfig = {
   maxDistance: 10, // 10km radius
   maxResults: 20,
-  minCategoryDiversity: 3,
-  categoryWeight: 0.6,
+  categoryWeight: 0.7,
   distanceWeight: 0.3,
-  diversityWeight: 0.1,
-  newUserFallbackWeight: 0.2,
 };
 
 // =============================================================================
@@ -191,57 +184,6 @@ export function calculateCategoryScore(
   return categoryWeights[business.categoryId] || 0;
 }
 
-// =============================================================================
-// DIVERSITY AND BONUS CALCULATIONS
-// =============================================================================
-
-/**
- * Calculate diversity bonus for businesses where user doesn't have cards
- */
-export function calculateDiversityBonus(
-  business: BusinessData,
-  user: UserProfile
-): number {
-  const hasCard = user.punchCards.some(card => card.businessId === business.id);
-  return hasCard ? 0 : 0.2; // 20% bonus for new businesses
-}
-
-/**
- * Ensure category diversity in results
- * Promotes businesses from underrepresented categories
- */
-export function promoteCategoryDiversity(
-  recommendations: RecommendationResult[],
-  minCategories: number
-): RecommendationResult[] {
-  const categoryCount: { [categoryId: number]: number } = {};
-  const result = [...recommendations];
-  
-  // Count categories in current results
-  result.forEach(rec => {
-    categoryCount[rec.business.categoryId] = (categoryCount[rec.business.categoryId] || 0) + 1;
-  });
-  
-  const representedCategories = Object.keys(categoryCount).length;
-  
-  if (representedCategories >= minCategories) {
-    return result; // Already diverse enough
-  }
-  
-  // Boost scores for businesses in underrepresented categories
-  const underrepresentedCategories = CATEGORIES
-    .map(cat => cat.id)
-    .filter(id => !categoryCount[id]);
-  
-  result.forEach(rec => {
-    if (underrepresentedCategories.includes(rec.business.categoryId)) {
-      rec.score *= 1.3; // 30% boost for diversity
-      rec.explanations.push('Diversity boost applied');
-    }
-  });
-  
-  return result.sort((a, b) => b.score - a.score);
-}
 
 // =============================================================================
 // MAIN RECOMMENDATION ENGINE
@@ -288,38 +230,22 @@ export function generateRecommendations(
       explanations.push('No location data available');
     }
     
-    // 3. Diversity Bonus
-    const diversityBonus = calculateDiversityBonus(business, user);
-    if (diversityBonus > 0) {
-      explanations.push(`New business bonus: ${Math.round(diversityBonus * 100)}%`);
-    }
-    
-    // 4. Calculate final weighted score
+    // 3. Calculate final weighted score (simplified to 2 factors)
     const score = 
       categoryScore * finalConfig.categoryWeight +
-      distanceScore * finalConfig.distanceWeight +
-      diversityBonus * finalConfig.diversityWeight;
+      distanceScore * finalConfig.distanceWeight;
     
     recommendations.push({
       business,
       score,
       categoryScore,
       distanceScore,
-      diversityBonus,
       explanations
     });
   }
   
   // Sort by score descending
   let sortedRecommendations = recommendations.sort((a, b) => b.score - a.score);
-  
-  // Apply diversity promotion
-  if (finalConfig.minCategoryDiversity) {
-    sortedRecommendations = promoteCategoryDiversity(
-      sortedRecommendations, 
-      finalConfig.minCategoryDiversity
-    );
-  }
   
   // Limit results
   if (finalConfig.maxResults) {

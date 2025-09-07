@@ -361,10 +361,6 @@ export function getSimpleRecommendationExplanation(result: RecommendationResult)
   const categoryName = getBusinessCategoryName(result.business);
   const score = Math.round(result.score * 100);
   
-  if (result.diversityBonus > 0) {
-    return `New ${categoryName.toLowerCase()} spot for you (${score}% match)`;
-  }
-  
   if (result.categoryScore > 0.7) {
     return `Perfect ${categoryName.toLowerCase()} match (${score}% match)`;
   }

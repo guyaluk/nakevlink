@@ -70,9 +70,7 @@ export async function example2_LocationBasedRecommendations() {
     maxDistance: 5, // 5km radius instead of default 10km
     maxResults: 15,
     distanceWeight: 0.4, // Increase distance importance
-    categoryWeight: 0.5, // Decrease category importance slightly
-    diversityWeight: 0.1,
-    minCategoryDiversity: 4 // Ensure at least 4 different categories
+    categoryWeight: 0.6, // Decrease category importance slightly
   };
   
   try {
@@ -121,7 +119,7 @@ export async function example3_CategorySpecificRecommendations() {
       {
         maxResults: 10,
         categoryWeight: 0.8, // High category weight since user filtered by category
-        diversityWeight: 0.2  // Still want some diversity between coffee/food
+        distanceWeight: 0.2   // Lower distance weight for category filtering
       }
     );
     
@@ -155,10 +153,8 @@ export async function example4_NewUserRecommendations() {
   // Configuration optimized for new users
   const newUserConfig: RecommendationConfig = {
     maxResults: 20,
-    categoryWeight: 0.4, // Lower category weight since no behavioral data
-    diversityWeight: 0.3, // Higher diversity to show variety
-    newUserFallbackWeight: 0.3, // Boost popular businesses
-    minCategoryDiversity: 6 // Show more categories for exploration
+    categoryWeight: 0.5, // Lower category weight since no behavioral data
+    distanceWeight: 0.5, // Equal weight to distance for exploration
   };
   
   try {
@@ -168,9 +164,9 @@ export async function example4_NewUserRecommendations() {
       newUserConfig
     );
     
-    console.log('New user recommendations (diverse & popular):');
+    console.log('New user recommendations (by category):');
     
-    // Group by category to show diversity
+    // Group by category to show variety
     const byCategory: { [category: number]: RecommendationResult[] } = {};
     recommendations.forEach(rec => {
       if (!byCategory[rec.business.categoryId]) {
@@ -286,8 +282,7 @@ export function usePersonalizedRecommendations(userLocation?: UserLocation) {
         user.uid,
         userLocation,
         {
-          maxResults: 15,
-          minCategoryDiversity: 3
+          maxResults: 15
         }
       );
       
