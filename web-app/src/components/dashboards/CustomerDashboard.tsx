@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../contexts/AuthContext';
 import { getCategoryById } from '../../constants/categories';
+import { RefreshCw } from 'lucide-react';
 import BottomNavigation from '../customer/BottomNavigation';
 
 interface PunchCard {
@@ -29,6 +30,7 @@ const CustomerDashboard: React.FC = () => {
   const [punchCards, setPunchCards] = useState<PunchCard[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [refreshing, setRefreshing] = useState(false);
   const [stats, setStats] = useState({
     activeCards: 0,
     totalPunches: 0,
@@ -36,80 +38,115 @@ const CustomerDashboard: React.FC = () => {
   });
 
   // Fetch user's active punch cards
-  useEffect(() => {
-    const fetchPunchCards = async () => {
-      if (!user) return;
+  const fetchPunchCards = async (isRefresh = false) => {
+    if (!user) return;
 
-      try {
+    try {
+      if (isRefresh) {
+        setRefreshing(true);
+      } else {
         setLoading(true);
-        setError(null);
-        console.log('CustomerDashboard: Fetching punch cards for user:', user.uid);
+      }
+      setError(null);
+      console.log(`CustomerDashboard: ${isRefresh ? 'Refreshing' : 'Fetching'} punch cards for user:`, user.uid);
 
-        const { getUserPunchCards, getPunchesForCard } = await import('../../lib/dataconnect');
-        
-        // Get all punch cards for the user
-        const cardsResult = await getUserPunchCards({ userId: user.uid });
-        console.log('CustomerDashboard: Raw cards result:', cardsResult);
+      const { getUserPunchCards, getPunchesForCard } = await import('../../lib/dataconnect');
+      
+      // Get all punch cards for the user
+      const cardsResult = await getUserPunchCards({ userId: user.uid });
+      console.log('CustomerDashboard: Raw cards result:', cardsResult);
 
-        if (!cardsResult?.data?.punchCards) {
-          console.log('CustomerDashboard: No punch cards found');
-          setPunchCards([]);
-          return;
-        }
+      if (!cardsResult?.data?.punchCards) {
+        console.log('CustomerDashboard: No punch cards found');
+        setPunchCards([]);
+        return;
+      }
 
-        const allCards = cardsResult.data.punchCards;
-        console.log('CustomerDashboard: Found cards:', allCards);
+      const allCards = cardsResult.data.punchCards;
+      console.log('CustomerDashboard: Found cards:', allCards);
 
-        // Filter active cards (non-expired)
-        const now = new Date();
-        const activeCards = allCards.filter(card => new Date(card.expiresAt) > now);
-        console.log('CustomerDashboard: Active cards after filtering:', activeCards);
+      // Filter active cards (non-expired)
+      const now = new Date();
+      const activeCards = allCards.filter(card => new Date(card.expiresAt) > now);
+      console.log('CustomerDashboard: Active cards after filtering:', activeCards);
 
-        // Get punch counts for each active card
-        const cardsWithPunches = await Promise.all(
-          activeCards.map(async (card) => {
-            try {
-              const punchesResult = await getPunchesForCard({ cardId: card.id });
-              const currentPunches = punchesResult?.data?.punches?.length || 0;
-              
-              return {
-                ...card,
-                currentPunches
-              };
-            } catch (error) {
-              console.error(`Error fetching punches for card ${card.id}:`, error);
-              return {
-                ...card,
-                currentPunches: 0
-              };
-            }
-          })
-        );
+      // Get punch counts for each active card from both Data Connect and Firestore
+      const cardsWithPunches = await Promise.all(
+        activeCards.map(async (card) => {
+          try {
+            // Get punch count from Data Connect
+            const punchesResult = await getPunchesForCard({ cardId: card.id });
+            const dataConnectPunches = punchesResult?.data?.punches?.length || 0;
+            
+            // Also get punch count from Firestore (where Cloud Functions write punches)
+            const { db } = await import('../../config/firebase');
+            const { collection, query, where, getDocs } = await import('firebase/firestore');
+            
+            const firestorePunchesQuery = query(
+              collection(db, 'punches'),
+              where('cardId', '==', card.id)
+            );
+            const firestorePunchesSnapshot = await getDocs(firestorePunchesQuery);
+            const firestorePunches = firestorePunchesSnapshot.size;
+            
+            // Use the higher count (handles both data sources)
+            const currentPunches = Math.max(dataConnectPunches, firestorePunches);
+            
+            console.log(`CustomerDashboard: Card ${card.id} - Data Connect: ${dataConnectPunches}, Firestore: ${firestorePunches}, Using: ${currentPunches}`);
+            
+            return {
+              ...card,
+              currentPunches
+            };
+          } catch (error) {
+            console.error(`Error fetching punches for card ${card.id}:`, error);
+            return {
+              ...card,
+              currentPunches: 0
+            };
+          }
+        })
+      );
 
-        console.log('CustomerDashboard: Cards with punch counts:', cardsWithPunches);
+      console.log('CustomerDashboard: Cards with punch counts:', cardsWithPunches);
 
-        setPunchCards(cardsWithPunches);
+      setPunchCards(cardsWithPunches);
 
-        // Calculate stats
-        const totalPunches = cardsWithPunches.reduce((sum, card) => sum + card.currentPunches, 0);
-        const rewardsEarned = cardsWithPunches.filter(card => card.currentPunches >= card.maxPunches).length;
+      // Calculate stats
+      const totalPunches = cardsWithPunches.reduce((sum, card) => sum + card.currentPunches, 0);
+      const rewardsEarned = cardsWithPunches.filter(card => card.currentPunches >= card.maxPunches).length;
 
-        setStats({
-          activeCards: cardsWithPunches.length,
-          totalPunches,
-          rewardsEarned
-        });
+      setStats({
+        activeCards: cardsWithPunches.length,
+        totalPunches,
+        rewardsEarned
+      });
 
       } catch (error) {
         console.error('CustomerDashboard: Error fetching punch cards:', error);
         setError('Failed to load your punch cards. Please try again.');
       } finally {
         setLoading(false);
+        setRefreshing(false);
       }
     };
 
+  useEffect(() => {
     fetchPunchCards();
   }, [user]);
+
+  // Page visibility - refresh when user comes back to the page
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !loading && !refreshing && punchCards.length > 0) {
+        console.log('CustomerDashboard: Page became visible, refreshing...');
+        fetchPunchCards(true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loading, refreshing, punchCards.length]);
 
   const handleLogout = async () => {
     try {
@@ -127,6 +164,10 @@ const CustomerDashboard: React.FC = () => {
     navigate('/customers/discovery');
   };
 
+  const handleRefresh = () => {
+    fetchPunchCards(true);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pb-20">
       {/* Header */}
@@ -139,12 +180,22 @@ const CustomerDashboard: React.FC = () => {
                 Customer
               </span>
             </div>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Logout
-            </button>
+            <div className="flex items-center space-x-3">
+              <button
+                onClick={handleRefresh}
+                disabled={loading || refreshing}
+                className="inline-flex items-center px-3 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <RefreshCw className={`w-4 h-4 mr-2 ${(loading || refreshing) ? 'animate-spin' : ''}`} />
+                {refreshing ? 'Refreshing...' : 'Refresh'}
+              </button>
+              <button
+                onClick={handleLogout}
+                className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
+              >
+                Logout
+              </button>
+            </div>
           </div>
         </div>
       </header>

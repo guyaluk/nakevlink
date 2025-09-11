@@ -42,7 +42,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     // Functions emulator
     try {
       connectFunctionsEmulator(functions, 'localhost', 5001);
-      console.log('Firebase: Successfully connected to Functions emulator');
+      console.log('Firebase: Successfully connected to Functions emulator on port 5001');
     } catch (functionsError: any) {
       if (functionsError.message?.includes('already')) {
         console.log('Firebase: Functions emulator already configured');

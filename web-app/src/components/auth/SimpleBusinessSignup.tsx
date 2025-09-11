@@ -190,6 +190,28 @@ const SimpleBusinessSignup: React.FC = () => {
           email: user.email,
           imageIncluded: !!businessData.image
         });
+
+        // Set business_owner role via Firebase Function
+        try {
+          console.log('Setting business_owner role for user:', user.uid);
+          const { functions } = await import('@/config/firebase');
+          const { httpsCallable } = await import('firebase/functions');
+          const setUserRole = httpsCallable(functions, 'setUserRole');
+          
+          await setUserRole({
+            uid: user.uid,
+            role: 'business_owner'
+          });
+          
+          console.log('Successfully set business_owner role');
+          
+          // Update local storage to reflect the role immediately
+          localStorage.setItem(`user_role_${user.uid}`, 'business_owner');
+          
+        } catch (roleError) {
+          console.error('Failed to set business_owner role:', roleError);
+          // Continue anyway - user can still access business features, just might not have proper role initially
+        }
       } catch (dbError) {
         console.error('Failed to save business data:', dbError);
         console.error('Business data that failed:', {

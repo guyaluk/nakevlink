@@ -100,6 +100,26 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
               ...firebaseUser,
               role: dbRole
             });
+            
+            // If database shows business_owner but custom claims don't match, set the role
+            if (dbRole === 'business_owner') {
+              try {
+                console.log('AuthContext: Setting business_owner custom claims for existing user');
+                const { functions } = await import('@/config/firebase');
+                const { httpsCallable } = await import('firebase/functions');
+                const setUserRole = httpsCallable(functions, 'setUserRole');
+                
+                await setUserRole({
+                  uid: firebaseUser.uid,
+                  role: 'business_owner'
+                });
+                
+                console.log('AuthContext: Successfully set custom claims for business owner');
+              } catch (roleError) {
+                console.error('AuthContext: Failed to set custom claims for business owner:', roleError);
+                // Continue anyway - user can still access business features with localStorage role
+              }
+            }
           } else {
             console.log('AuthContext: Role verified, no change needed');
           }

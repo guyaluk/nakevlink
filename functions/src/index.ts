@@ -150,8 +150,17 @@ export const updateUserProfile = functions.https.onCall(async (data, context) =>
 
 // Generate secure 6-digit punch code using DataConnect
 export const generatePunchCode = functions.https.onCall(async (data, context) => {
+  // Debug logging
+  console.log('generatePunchCode called with data:', data);
+  console.log('generatePunchCode auth context:', context.auth ? 'PRESENT' : 'MISSING');
+  if (context.auth) {
+    console.log('generatePunchCode user ID:', context.auth.uid);
+    console.log('generatePunchCode user email:', context.auth.token?.email);
+  }
+  
   // Check authentication
   if (!context.auth) {
+    console.error('generatePunchCode: Authentication context missing');
     throw new functions.https.HttpsError(
       "unauthenticated",
       "User must be authenticated"

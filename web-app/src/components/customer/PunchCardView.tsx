@@ -28,7 +28,43 @@ const PunchCardView: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [retryAttempt, setRetryAttempt] = useState(0);
   const [isRetrying, setIsRetrying] = useState(false);
+  const [isAutoRefreshing, setIsAutoRefreshing] = useState(false);
   
+  // Check if a specific code has been redeemed/used
+  const checkIfCodeIsUsed = async (codeToCheck: string) => {
+    if (!codeToCheck) return false;
+
+    try {
+      const { db } = await import('@/config/firebase');
+      const { collection, query, where, getDocs } = await import('firebase/firestore');
+      
+      const codeQuery = query(
+        collection(db, 'punchCodes'),
+        where('code', '==', codeToCheck)
+      );
+
+      const codeSnapshot = await getDocs(codeQuery);
+      
+      if (!codeSnapshot.empty) {
+        const codeDoc = codeSnapshot.docs[0];
+        const codeData = codeDoc.data();
+        
+        const isUsed = codeData.isUsed === true;
+        
+        if (isUsed) {
+          console.log('PunchCardView: Code has been redeemed:', codeToCheck);
+        }
+        
+        return isUsed;
+      }
+      
+      return false;
+    } catch (error) {
+      console.error('Error checking if code is used:', error);
+      return false;
+    }
+  };
+
   // Check for existing active punch code
   const checkForActivePunchCode = async () => {
     if (!cardId || !user) return null;
@@ -68,11 +104,13 @@ const PunchCardView: React.FC = () => {
   };
 
   // Data fetching function with retry logic
-  const fetchPunchCardData = async (isRetryAttempt = false) => {
+  const fetchPunchCardData = async (isRetryAttempt = false, isAutoRefresh = false) => {
     if (!cardId) return;
     
     try {
-      if (isRetryAttempt) {
+      if (isAutoRefresh) {
+        setIsAutoRefreshing(true);
+      } else if (isRetryAttempt) {
         setIsRetrying(true);
         setRetryAttempt(prev => prev + 1);
       } else {
@@ -162,6 +200,17 @@ const PunchCardView: React.FC = () => {
         console.log('PunchCardView: Found existing active code:', activeCode.code);
       }
       
+      // If we have a currently displayed code but no active code found, it might have been redeemed
+      if (!activeCode && generatedCode) {
+        console.log('PunchCardView: Checking if displayed code has been redeemed...');
+        const isUsed = await checkIfCodeIsUsed(generatedCode.code);
+        if (isUsed) {
+          console.log('PunchCardView: Code has been redeemed, clearing display');
+          setGeneratedCode(null);
+          setTimeLeft(0);
+        }
+      }
+      
     } catch (error) {
       console.error('Error fetching punch card:', error);
       
@@ -191,6 +240,7 @@ const PunchCardView: React.FC = () => {
     } finally {
       setLoading(false);
       setIsRetrying(false);
+      setIsAutoRefreshing(false);
     }
   };
 
@@ -198,6 +248,50 @@ const PunchCardView: React.FC = () => {
   useEffect(() => {
     fetchPunchCardData();
   }, [cardId]);
+
+  // Auto-refresh when user has active code (every 3 seconds for faster redemption detection)
+  useEffect(() => {
+    if (!generatedCode || timeLeft <= 0) return;
+
+    const autoRefreshTimer = setInterval(() => {
+      console.log('PunchCardView: Auto-refreshing punch count and checking code status...');
+      fetchPunchCardData(false, true);
+    }, 3000); // Refresh every 3 seconds when code is active for faster detection
+
+    return () => clearInterval(autoRefreshTimer);
+  }, [generatedCode, timeLeft, cardId]);
+
+  // Quick check for code redemption (every 2 seconds when code is active)
+  useEffect(() => {
+    if (!generatedCode || timeLeft <= 0) return;
+
+    const codeCheckTimer = setInterval(async () => {
+      console.log('PunchCardView: Checking if code has been redeemed...');
+      const isUsed = await checkIfCodeIsUsed(generatedCode.code);
+      if (isUsed) {
+        console.log('PunchCardView: Code redeemed, clearing immediately');
+        setGeneratedCode(null);
+        setTimeLeft(0);
+        // Also refresh punch count since a punch was likely added
+        fetchPunchCardData(false, true);
+      }
+    }, 2000); // Check every 2 seconds for even faster detection
+
+    return () => clearInterval(codeCheckTimer);
+  }, [generatedCode, timeLeft]);
+
+  // Page visibility - refresh when user comes back to the page
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !loading) {
+        console.log('PunchCardView: Page became visible, refreshing...');
+        fetchPunchCardData(false, true);
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loading, cardId]);
 
   // Simple countdown timer
   useEffect(() => {
@@ -210,6 +304,8 @@ const PunchCardView: React.FC = () => {
 
       if (remaining === 0) {
         setGeneratedCode(null);
+        // Refresh data when code expires to check for new punch count
+        fetchPunchCardData(false, true);
       }
     }, 1000);
 
@@ -277,12 +373,12 @@ const PunchCardView: React.FC = () => {
 
   // Manual refresh function
   const handleRefresh = () => {
-    fetchPunchCardData(false);
+    fetchPunchCardData(false, false);
   };
 
   // Manual retry function
   const handleRetry = () => {
-    fetchPunchCardData(true);
+    fetchPunchCardData(true, false);
   };
 
   // Use real data or fallback
@@ -370,9 +466,9 @@ const PunchCardView: React.FC = () => {
             disabled={loading || isRetrying}
             className="text-sm flex items-center space-x-2"
           >
-            <RefreshCw className={`w-4 h-4 ${(loading || isRetrying) ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-4 h-4 ${(loading || isRetrying || isAutoRefreshing) ? 'animate-spin' : ''}`} />
             <span>
-              {loading || isRetrying ? 'Loading...' : 'Refresh'}
+              {loading || isRetrying ? 'Loading...' : isAutoRefreshing ? 'Updating...' : 'Refresh'}
             </span>
           </Button>
         </div>
