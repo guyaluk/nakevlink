@@ -29,23 +29,23 @@
   },
   "emulators": {
     "auth": {
-      "port": 8199
+      "port": 9099
     },
     "firestore": {
-      "port": 7180
+      "port": 8080
     },
     "functions": {
-      "port": 6201
+      "port": 5001
     },
     "hosting": {
-      "port": 6200
+      "port": 5000
     },
     "dataconnect": {
-      "port": 8699
+      "port": 9399
     },
     "ui": {
       "enabled": true,
-      "port": 3200
+      "port": 4000
     },
     "singleProjectMode": true
   }

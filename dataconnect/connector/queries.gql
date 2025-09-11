@@ -375,7 +375,7 @@ query GetSimilarBusinesses($userId: String!, $excludeBusinessIds: [String!]!) @a
       categoryId
     }
   }
-  businesses(where: {id: {not: {in: $excludeBusinessIds}}}) {
+  businesses(where: {id: {nin: $excludeBusinessIds}}) {
     id
     name
     description

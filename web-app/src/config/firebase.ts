@@ -33,7 +33,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     
     // Auth emulator
     if (!auth.emulatorConfig) {
-      connectAuthEmulator(auth, 'http://localhost:8199');
+      connectAuthEmulator(auth, 'http://localhost:9099');
       console.log('Firebase: Successfully connected to Auth emulator');
     } else {
       console.log('Firebase: Auth emulator already configured');
@@ -41,7 +41,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     
     // Functions emulator
     try {
-      connectFunctionsEmulator(functions, 'localhost', 6201);
+      connectFunctionsEmulator(functions, 'localhost', 5001);
       console.log('Firebase: Successfully connected to Functions emulator');
     } catch (functionsError: any) {
       if (functionsError.message?.includes('already')) {
@@ -54,7 +54,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     // Firestore emulator
     try {
       const firestoreHost = import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_HOST || 'localhost';
-      const firestorePort = parseInt(import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_PORT || '7180');
+      const firestorePort = parseInt(import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_PORT || '8080');
       connectFirestoreEmulator(db, firestoreHost, firestorePort);
       console.log(`Firebase: Successfully connected to Firestore emulator at ${firestoreHost}:${firestorePort}`);
     } catch (firestoreError: any) {
@@ -67,7 +67,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     
     // Data Connect emulator
     try {
-      connectDataConnectEmulator(dataConnect, 'localhost', 8699);
+      connectDataConnectEmulator(dataConnect, 'localhost', 9399);
       console.log('Firebase: Successfully connected to Data Connect emulator');
     } catch (dataConnectError: any) {
       if (dataConnectError.message?.includes('already')) {

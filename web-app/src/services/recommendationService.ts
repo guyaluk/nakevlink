@@ -16,7 +16,7 @@ import {
   type UserProfile,
   type BusinessData 
 } from '@/utils/recommendations';
-import { retryWithExponentialBackoff } from '@/utils/retry';
+import { retryWithBackoff as retryWithExponentialBackoff } from '@/utils/retry';
 
 // =============================================================================
 // TYPE DEFINITIONS FOR DATA CONNECT INTEGRATION
@@ -54,6 +54,9 @@ interface DataConnectBusiness {
   phoneNumber?: string;
   createdDatetime?: any; // Timestamp
 }
+
+// Export types that are used by other components
+export type { RecommendationResult, UserLocation, RecommendationConfig } from '@/utils/recommendations';
 
 interface UserRecommendationData {
   user: DataConnectUser;

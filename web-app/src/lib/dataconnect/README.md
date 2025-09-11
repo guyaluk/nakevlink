@@ -23,6 +23,12 @@ This README will guide you through the process of using the generated JavaScript
   - [*GetPunchesForCard*](#getpunchesforcard)
   - [*GetPunchCodeByCode*](#getpunchcodebycode)
   - [*GetActivePunchCodes*](#getactivepunchcodes)
+  - [*GetUserForRecommendations*](#getuserforrecommendations)
+  - [*GetBusinessesForRecommendations*](#getbusinessesforrecommendations)
+  - [*GetBusinessesByCategories*](#getbusinessesbycategories)
+  - [*GetUserBehavioralData*](#getuserbehavioraldata)
+  - [*GetPopularBusinesses*](#getpopularbusinesses)
+  - [*GetSimilarBusinesses*](#getsimilarbusinesses)
 - [**Mutations**](#mutations)
   - [*CreateUser*](#createuser)
   - [*CreateBusiness*](#createbusiness)
@@ -1886,6 +1892,735 @@ console.log(data.punchCodes);
 executeQuery(ref).then((response) => {
   const data = response.data;
   console.log(data.punchCodes);
+});
+```
+
+## GetUserForRecommendations
+You can execute the `GetUserForRecommendations` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getUserForRecommendations(vars: GetUserForRecommendationsVariables): QueryPromise<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+
+interface GetUserForRecommendationsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserForRecommendationsVariables): QueryRef<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+}
+export const getUserForRecommendationsRef: GetUserForRecommendationsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getUserForRecommendations(dc: DataConnect, vars: GetUserForRecommendationsVariables): QueryPromise<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+
+interface GetUserForRecommendationsRef {
+  ...
+  (dc: DataConnect, vars: GetUserForRecommendationsVariables): QueryRef<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+}
+export const getUserForRecommendationsRef: GetUserForRecommendationsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getUserForRecommendationsRef:
+```typescript
+const name = getUserForRecommendationsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetUserForRecommendations` query requires an argument of type `GetUserForRecommendationsVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetUserForRecommendationsVariables {
+  userId: string;
+}
+```
+### Return Type
+Recall that executing the `GetUserForRecommendations` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetUserForRecommendationsData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetUserForRecommendationsData {
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    favoriteCategory?: number | null;
+    createdDatetime?: TimestampString | null;
+  } & User_Key;
+    punchCards: ({
+      id: string;
+      businessId: string;
+      userId: string;
+      maxPunches: number;
+      createdAt?: TimestampString | null;
+      expiresAt: TimestampString;
+      business: {
+        id: string;
+        name: string;
+        description?: string | null;
+        categoryId: number;
+        address?: string | null;
+        image?: string | null;
+        punchNum?: number | null;
+        expirationDurationInDays?: number | null;
+      } & Business_Key;
+    } & PunchCard_Key)[];
+}
+```
+### Using `GetUserForRecommendations`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getUserForRecommendations, GetUserForRecommendationsVariables } from '@nakevlink/dataconnect';
+
+// The `GetUserForRecommendations` query requires an argument of type `GetUserForRecommendationsVariables`:
+const getUserForRecommendationsVars: GetUserForRecommendationsVariables = {
+  userId: ..., 
+};
+
+// Call the `getUserForRecommendations()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getUserForRecommendations(getUserForRecommendationsVars);
+// Variables can be defined inline as well.
+const { data } = await getUserForRecommendations({ userId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getUserForRecommendations(dataConnect, getUserForRecommendationsVars);
+
+console.log(data.user);
+console.log(data.punchCards);
+
+// Or, you can use the `Promise` API.
+getUserForRecommendations(getUserForRecommendationsVars).then((response) => {
+  const data = response.data;
+  console.log(data.user);
+  console.log(data.punchCards);
+});
+```
+
+### Using `GetUserForRecommendations`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getUserForRecommendationsRef, GetUserForRecommendationsVariables } from '@nakevlink/dataconnect';
+
+// The `GetUserForRecommendations` query requires an argument of type `GetUserForRecommendationsVariables`:
+const getUserForRecommendationsVars: GetUserForRecommendationsVariables = {
+  userId: ..., 
+};
+
+// Call the `getUserForRecommendationsRef()` function to get a reference to the query.
+const ref = getUserForRecommendationsRef(getUserForRecommendationsVars);
+// Variables can be defined inline as well.
+const ref = getUserForRecommendationsRef({ userId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getUserForRecommendationsRef(dataConnect, getUserForRecommendationsVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.user);
+console.log(data.punchCards);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.user);
+  console.log(data.punchCards);
+});
+```
+
+## GetBusinessesForRecommendations
+You can execute the `GetBusinessesForRecommendations` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getBusinessesForRecommendations(): QueryPromise<GetBusinessesForRecommendationsData, undefined>;
+
+interface GetBusinessesForRecommendationsRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetBusinessesForRecommendationsData, undefined>;
+}
+export const getBusinessesForRecommendationsRef: GetBusinessesForRecommendationsRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getBusinessesForRecommendations(dc: DataConnect): QueryPromise<GetBusinessesForRecommendationsData, undefined>;
+
+interface GetBusinessesForRecommendationsRef {
+  ...
+  (dc: DataConnect): QueryRef<GetBusinessesForRecommendationsData, undefined>;
+}
+export const getBusinessesForRecommendationsRef: GetBusinessesForRecommendationsRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getBusinessesForRecommendationsRef:
+```typescript
+const name = getBusinessesForRecommendationsRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetBusinessesForRecommendations` query has no variables.
+### Return Type
+Recall that executing the `GetBusinessesForRecommendations` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetBusinessesForRecommendationsData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetBusinessesForRecommendationsData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+    contactName?: string | null;
+    email?: string | null;
+    phoneNumber?: string | null;
+    createdDatetime?: TimestampString | null;
+  } & Business_Key)[];
+}
+```
+### Using `GetBusinessesForRecommendations`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getBusinessesForRecommendations } from '@nakevlink/dataconnect';
+
+
+// Call the `getBusinessesForRecommendations()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getBusinessesForRecommendations();
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getBusinessesForRecommendations(dataConnect);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+getBusinessesForRecommendations().then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+### Using `GetBusinessesForRecommendations`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getBusinessesForRecommendationsRef } from '@nakevlink/dataconnect';
+
+
+// Call the `getBusinessesForRecommendationsRef()` function to get a reference to the query.
+const ref = getBusinessesForRecommendationsRef();
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getBusinessesForRecommendationsRef(dataConnect);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+## GetBusinessesByCategories
+You can execute the `GetBusinessesByCategories` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getBusinessesByCategories(vars: GetBusinessesByCategoriesVariables): QueryPromise<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+
+interface GetBusinessesByCategoriesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetBusinessesByCategoriesVariables): QueryRef<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+}
+export const getBusinessesByCategoriesRef: GetBusinessesByCategoriesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getBusinessesByCategories(dc: DataConnect, vars: GetBusinessesByCategoriesVariables): QueryPromise<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+
+interface GetBusinessesByCategoriesRef {
+  ...
+  (dc: DataConnect, vars: GetBusinessesByCategoriesVariables): QueryRef<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+}
+export const getBusinessesByCategoriesRef: GetBusinessesByCategoriesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getBusinessesByCategoriesRef:
+```typescript
+const name = getBusinessesByCategoriesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetBusinessesByCategories` query requires an argument of type `GetBusinessesByCategoriesVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetBusinessesByCategoriesVariables {
+  categoryIds: number[];
+}
+```
+### Return Type
+Recall that executing the `GetBusinessesByCategories` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetBusinessesByCategoriesData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetBusinessesByCategoriesData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+    contactName?: string | null;
+    email?: string | null;
+    phoneNumber?: string | null;
+  } & Business_Key)[];
+}
+```
+### Using `GetBusinessesByCategories`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getBusinessesByCategories, GetBusinessesByCategoriesVariables } from '@nakevlink/dataconnect';
+
+// The `GetBusinessesByCategories` query requires an argument of type `GetBusinessesByCategoriesVariables`:
+const getBusinessesByCategoriesVars: GetBusinessesByCategoriesVariables = {
+  categoryIds: ..., 
+};
+
+// Call the `getBusinessesByCategories()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getBusinessesByCategories(getBusinessesByCategoriesVars);
+// Variables can be defined inline as well.
+const { data } = await getBusinessesByCategories({ categoryIds: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getBusinessesByCategories(dataConnect, getBusinessesByCategoriesVars);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+getBusinessesByCategories(getBusinessesByCategoriesVars).then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+### Using `GetBusinessesByCategories`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getBusinessesByCategoriesRef, GetBusinessesByCategoriesVariables } from '@nakevlink/dataconnect';
+
+// The `GetBusinessesByCategories` query requires an argument of type `GetBusinessesByCategoriesVariables`:
+const getBusinessesByCategoriesVars: GetBusinessesByCategoriesVariables = {
+  categoryIds: ..., 
+};
+
+// Call the `getBusinessesByCategoriesRef()` function to get a reference to the query.
+const ref = getBusinessesByCategoriesRef(getBusinessesByCategoriesVars);
+// Variables can be defined inline as well.
+const ref = getBusinessesByCategoriesRef({ categoryIds: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getBusinessesByCategoriesRef(dataConnect, getBusinessesByCategoriesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+## GetUserBehavioralData
+You can execute the `GetUserBehavioralData` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getUserBehavioralData(vars: GetUserBehavioralDataVariables): QueryPromise<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+
+interface GetUserBehavioralDataRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserBehavioralDataVariables): QueryRef<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+}
+export const getUserBehavioralDataRef: GetUserBehavioralDataRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getUserBehavioralData(dc: DataConnect, vars: GetUserBehavioralDataVariables): QueryPromise<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+
+interface GetUserBehavioralDataRef {
+  ...
+  (dc: DataConnect, vars: GetUserBehavioralDataVariables): QueryRef<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+}
+export const getUserBehavioralDataRef: GetUserBehavioralDataRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getUserBehavioralDataRef:
+```typescript
+const name = getUserBehavioralDataRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetUserBehavioralData` query requires an argument of type `GetUserBehavioralDataVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetUserBehavioralDataVariables {
+  userId: string;
+}
+```
+### Return Type
+Recall that executing the `GetUserBehavioralData` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetUserBehavioralDataData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetUserBehavioralDataData {
+  punchCards: ({
+    id: string;
+    businessId: string;
+    maxPunches: number;
+    createdAt?: TimestampString | null;
+    business: {
+      id: string;
+      name: string;
+      categoryId: number;
+    } & Business_Key;
+  } & PunchCard_Key)[];
+}
+```
+### Using `GetUserBehavioralData`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getUserBehavioralData, GetUserBehavioralDataVariables } from '@nakevlink/dataconnect';
+
+// The `GetUserBehavioralData` query requires an argument of type `GetUserBehavioralDataVariables`:
+const getUserBehavioralDataVars: GetUserBehavioralDataVariables = {
+  userId: ..., 
+};
+
+// Call the `getUserBehavioralData()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getUserBehavioralData(getUserBehavioralDataVars);
+// Variables can be defined inline as well.
+const { data } = await getUserBehavioralData({ userId: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getUserBehavioralData(dataConnect, getUserBehavioralDataVars);
+
+console.log(data.punchCards);
+
+// Or, you can use the `Promise` API.
+getUserBehavioralData(getUserBehavioralDataVars).then((response) => {
+  const data = response.data;
+  console.log(data.punchCards);
+});
+```
+
+### Using `GetUserBehavioralData`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getUserBehavioralDataRef, GetUserBehavioralDataVariables } from '@nakevlink/dataconnect';
+
+// The `GetUserBehavioralData` query requires an argument of type `GetUserBehavioralDataVariables`:
+const getUserBehavioralDataVars: GetUserBehavioralDataVariables = {
+  userId: ..., 
+};
+
+// Call the `getUserBehavioralDataRef()` function to get a reference to the query.
+const ref = getUserBehavioralDataRef(getUserBehavioralDataVars);
+// Variables can be defined inline as well.
+const ref = getUserBehavioralDataRef({ userId: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getUserBehavioralDataRef(dataConnect, getUserBehavioralDataVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.punchCards);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.punchCards);
+});
+```
+
+## GetPopularBusinesses
+You can execute the `GetPopularBusinesses` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getPopularBusinesses(vars: GetPopularBusinessesVariables): QueryPromise<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+
+interface GetPopularBusinessesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetPopularBusinessesVariables): QueryRef<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+}
+export const getPopularBusinessesRef: GetPopularBusinessesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getPopularBusinesses(dc: DataConnect, vars: GetPopularBusinessesVariables): QueryPromise<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+
+interface GetPopularBusinessesRef {
+  ...
+  (dc: DataConnect, vars: GetPopularBusinessesVariables): QueryRef<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+}
+export const getPopularBusinessesRef: GetPopularBusinessesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getPopularBusinessesRef:
+```typescript
+const name = getPopularBusinessesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetPopularBusinesses` query requires an argument of type `GetPopularBusinessesVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetPopularBusinessesVariables {
+  limit: number;
+}
+```
+### Return Type
+Recall that executing the `GetPopularBusinesses` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetPopularBusinessesData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetPopularBusinessesData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+  } & Business_Key)[];
+}
+```
+### Using `GetPopularBusinesses`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getPopularBusinesses, GetPopularBusinessesVariables } from '@nakevlink/dataconnect';
+
+// The `GetPopularBusinesses` query requires an argument of type `GetPopularBusinessesVariables`:
+const getPopularBusinessesVars: GetPopularBusinessesVariables = {
+  limit: ..., 
+};
+
+// Call the `getPopularBusinesses()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getPopularBusinesses(getPopularBusinessesVars);
+// Variables can be defined inline as well.
+const { data } = await getPopularBusinesses({ limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getPopularBusinesses(dataConnect, getPopularBusinessesVars);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+getPopularBusinesses(getPopularBusinessesVars).then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+### Using `GetPopularBusinesses`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getPopularBusinessesRef, GetPopularBusinessesVariables } from '@nakevlink/dataconnect';
+
+// The `GetPopularBusinesses` query requires an argument of type `GetPopularBusinessesVariables`:
+const getPopularBusinessesVars: GetPopularBusinessesVariables = {
+  limit: ..., 
+};
+
+// Call the `getPopularBusinessesRef()` function to get a reference to the query.
+const ref = getPopularBusinessesRef(getPopularBusinessesVars);
+// Variables can be defined inline as well.
+const ref = getPopularBusinessesRef({ limit: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getPopularBusinessesRef(dataConnect, getPopularBusinessesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.businesses);
+});
+```
+
+## GetSimilarBusinesses
+You can execute the `GetSimilarBusinesses` query using the following action shortcut function, or by calling `executeQuery()` after calling the following `QueryRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+getSimilarBusinesses(vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+
+interface GetSimilarBusinessesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetSimilarBusinessesVariables): QueryRef<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+}
+export const getSimilarBusinessesRef: GetSimilarBusinessesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `QueryRef` function.
+```typescript
+getSimilarBusinesses(dc: DataConnect, vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+
+interface GetSimilarBusinessesRef {
+  ...
+  (dc: DataConnect, vars: GetSimilarBusinessesVariables): QueryRef<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+}
+export const getSimilarBusinessesRef: GetSimilarBusinessesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the getSimilarBusinessesRef:
+```typescript
+const name = getSimilarBusinessesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `GetSimilarBusinesses` query requires an argument of type `GetSimilarBusinessesVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface GetSimilarBusinessesVariables {
+  userId: string;
+  excludeBusinessIds: string[];
+}
+```
+### Return Type
+Recall that executing the `GetSimilarBusinesses` query returns a `QueryPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `GetSimilarBusinessesData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface GetSimilarBusinessesData {
+  punchCards: ({
+    business: {
+      categoryId: number;
+    };
+  })[];
+    businesses: ({
+      id: string;
+      name: string;
+      description?: string | null;
+      categoryId: number;
+      address?: string | null;
+      image?: string | null;
+      punchNum?: number | null;
+      expirationDurationInDays?: number | null;
+    } & Business_Key)[];
+}
+```
+### Using `GetSimilarBusinesses`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, getSimilarBusinesses, GetSimilarBusinessesVariables } from '@nakevlink/dataconnect';
+
+// The `GetSimilarBusinesses` query requires an argument of type `GetSimilarBusinessesVariables`:
+const getSimilarBusinessesVars: GetSimilarBusinessesVariables = {
+  userId: ..., 
+  excludeBusinessIds: ..., 
+};
+
+// Call the `getSimilarBusinesses()` function to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await getSimilarBusinesses(getSimilarBusinessesVars);
+// Variables can be defined inline as well.
+const { data } = await getSimilarBusinesses({ userId: ..., excludeBusinessIds: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await getSimilarBusinesses(dataConnect, getSimilarBusinessesVars);
+
+console.log(data.punchCards);
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+getSimilarBusinesses(getSimilarBusinessesVars).then((response) => {
+  const data = response.data;
+  console.log(data.punchCards);
+  console.log(data.businesses);
+});
+```
+
+### Using `GetSimilarBusinesses`'s `QueryRef` function
+
+```typescript
+import { getDataConnect, executeQuery } from 'firebase/data-connect';
+import { connectorConfig, getSimilarBusinessesRef, GetSimilarBusinessesVariables } from '@nakevlink/dataconnect';
+
+// The `GetSimilarBusinesses` query requires an argument of type `GetSimilarBusinessesVariables`:
+const getSimilarBusinessesVars: GetSimilarBusinessesVariables = {
+  userId: ..., 
+  excludeBusinessIds: ..., 
+};
+
+// Call the `getSimilarBusinessesRef()` function to get a reference to the query.
+const ref = getSimilarBusinessesRef(getSimilarBusinessesVars);
+// Variables can be defined inline as well.
+const ref = getSimilarBusinessesRef({ userId: ..., excludeBusinessIds: ..., });
+
+// You can also pass in a `DataConnect` instance to the `QueryRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = getSimilarBusinessesRef(dataConnect, getSimilarBusinessesVars);
+
+// Call `executeQuery()` on the reference to execute the query.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeQuery(ref);
+
+console.log(data.punchCards);
+console.log(data.businesses);
+
+// Or, you can use the `Promise` API.
+executeQuery(ref).then((response) => {
+  const data = response.data;
+  console.log(data.punchCards);
+  console.log(data.businesses);
 });
 ```
 

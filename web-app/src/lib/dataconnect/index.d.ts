@@ -233,6 +233,26 @@ export interface GetBusinessVariables {
   id: string;
 }
 
+export interface GetBusinessesByCategoriesData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+    contactName?: string | null;
+    email?: string | null;
+    phoneNumber?: string | null;
+  } & Business_Key)[];
+}
+
+export interface GetBusinessesByCategoriesVariables {
+  categoryIds: number[];
+}
+
 export interface GetBusinessesByCategoryData {
   businesses: ({
     id: string;
@@ -246,6 +266,40 @@ export interface GetBusinessesByCategoryData {
 
 export interface GetBusinessesByCategoryVariables {
   categoryId: number;
+}
+
+export interface GetBusinessesForRecommendationsData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+    contactName?: string | null;
+    email?: string | null;
+    phoneNumber?: string | null;
+    createdDatetime?: TimestampString | null;
+  } & Business_Key)[];
+}
+
+export interface GetPopularBusinessesData {
+  businesses: ({
+    id: string;
+    name: string;
+    description?: string | null;
+    categoryId: number;
+    address?: string | null;
+    image?: string | null;
+    punchNum?: number | null;
+    expirationDurationInDays?: number | null;
+  } & Business_Key)[];
+}
+
+export interface GetPopularBusinessesVariables {
+  limit: number;
 }
 
 export interface GetPunchCardByIdData {
@@ -321,6 +375,47 @@ export interface GetPunchesForCardVariables {
   cardId: string;
 }
 
+export interface GetSimilarBusinessesData {
+  punchCards: ({
+    business: {
+      categoryId: number;
+    };
+  })[];
+    businesses: ({
+      id: string;
+      name: string;
+      description?: string | null;
+      categoryId: number;
+      address?: string | null;
+      image?: string | null;
+      punchNum?: number | null;
+      expirationDurationInDays?: number | null;
+    } & Business_Key)[];
+}
+
+export interface GetSimilarBusinessesVariables {
+  userId: string;
+  excludeBusinessIds: string[];
+}
+
+export interface GetUserBehavioralDataData {
+  punchCards: ({
+    id: string;
+    businessId: string;
+    maxPunches: number;
+    createdAt?: TimestampString | null;
+    business: {
+      id: string;
+      name: string;
+      categoryId: number;
+    } & Business_Key;
+  } & PunchCard_Key)[];
+}
+
+export interface GetUserBehavioralDataVariables {
+  userId: string;
+}
+
 export interface GetUserData {
   user?: {
     id: string;
@@ -329,6 +424,38 @@ export interface GetUserData {
     favoriteCategory?: number | null;
     createdDatetime?: TimestampString | null;
   } & User_Key;
+}
+
+export interface GetUserForRecommendationsData {
+  user?: {
+    id: string;
+    name: string;
+    email: string;
+    favoriteCategory?: number | null;
+    createdDatetime?: TimestampString | null;
+  } & User_Key;
+    punchCards: ({
+      id: string;
+      businessId: string;
+      userId: string;
+      maxPunches: number;
+      createdAt?: TimestampString | null;
+      expiresAt: TimestampString;
+      business: {
+        id: string;
+        name: string;
+        description?: string | null;
+        categoryId: number;
+        address?: string | null;
+        image?: string | null;
+        punchNum?: number | null;
+        expirationDurationInDays?: number | null;
+      } & Business_Key;
+    } & PunchCard_Key)[];
+}
+
+export interface GetUserForRecommendationsVariables {
+  userId: string;
 }
 
 export interface GetUserPunchCardForBusinessData {
@@ -662,4 +789,76 @@ export const getActivePunchCodesRef: GetActivePunchCodesRef;
 
 export function getActivePunchCodes(vars: GetActivePunchCodesVariables): QueryPromise<GetActivePunchCodesData, GetActivePunchCodesVariables>;
 export function getActivePunchCodes(dc: DataConnect, vars: GetActivePunchCodesVariables): QueryPromise<GetActivePunchCodesData, GetActivePunchCodesVariables>;
+
+interface GetUserForRecommendationsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserForRecommendationsVariables): QueryRef<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUserForRecommendationsVariables): QueryRef<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+  operationName: string;
+}
+export const getUserForRecommendationsRef: GetUserForRecommendationsRef;
+
+export function getUserForRecommendations(vars: GetUserForRecommendationsVariables): QueryPromise<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+export function getUserForRecommendations(dc: DataConnect, vars: GetUserForRecommendationsVariables): QueryPromise<GetUserForRecommendationsData, GetUserForRecommendationsVariables>;
+
+interface GetBusinessesForRecommendationsRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (): QueryRef<GetBusinessesForRecommendationsData, undefined>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect): QueryRef<GetBusinessesForRecommendationsData, undefined>;
+  operationName: string;
+}
+export const getBusinessesForRecommendationsRef: GetBusinessesForRecommendationsRef;
+
+export function getBusinessesForRecommendations(): QueryPromise<GetBusinessesForRecommendationsData, undefined>;
+export function getBusinessesForRecommendations(dc: DataConnect): QueryPromise<GetBusinessesForRecommendationsData, undefined>;
+
+interface GetBusinessesByCategoriesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetBusinessesByCategoriesVariables): QueryRef<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetBusinessesByCategoriesVariables): QueryRef<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+  operationName: string;
+}
+export const getBusinessesByCategoriesRef: GetBusinessesByCategoriesRef;
+
+export function getBusinessesByCategories(vars: GetBusinessesByCategoriesVariables): QueryPromise<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+export function getBusinessesByCategories(dc: DataConnect, vars: GetBusinessesByCategoriesVariables): QueryPromise<GetBusinessesByCategoriesData, GetBusinessesByCategoriesVariables>;
+
+interface GetUserBehavioralDataRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetUserBehavioralDataVariables): QueryRef<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetUserBehavioralDataVariables): QueryRef<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+  operationName: string;
+}
+export const getUserBehavioralDataRef: GetUserBehavioralDataRef;
+
+export function getUserBehavioralData(vars: GetUserBehavioralDataVariables): QueryPromise<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+export function getUserBehavioralData(dc: DataConnect, vars: GetUserBehavioralDataVariables): QueryPromise<GetUserBehavioralDataData, GetUserBehavioralDataVariables>;
+
+interface GetPopularBusinessesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetPopularBusinessesVariables): QueryRef<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetPopularBusinessesVariables): QueryRef<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+  operationName: string;
+}
+export const getPopularBusinessesRef: GetPopularBusinessesRef;
+
+export function getPopularBusinesses(vars: GetPopularBusinessesVariables): QueryPromise<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+export function getPopularBusinesses(dc: DataConnect, vars: GetPopularBusinessesVariables): QueryPromise<GetPopularBusinessesData, GetPopularBusinessesVariables>;
+
+interface GetSimilarBusinessesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: GetSimilarBusinessesVariables): QueryRef<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: GetSimilarBusinessesVariables): QueryRef<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+  operationName: string;
+}
+export const getSimilarBusinessesRef: GetSimilarBusinessesRef;
+
+export function getSimilarBusinesses(vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
+export function getSimilarBusinesses(dc: DataConnect, vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
 

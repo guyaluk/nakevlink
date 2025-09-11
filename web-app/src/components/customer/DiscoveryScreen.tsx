@@ -7,6 +7,7 @@ import { Input } from '@/components/ui/input';
 import { CATEGORIES, getCategoryById } from '@/constants/categories';
 import { ArrowLeft, Search, MapPin } from 'lucide-react';
 import BottomNavigation from './BottomNavigation';
+import { getPersonalizedRecommendations, type RecommendationResult } from '@/services/recommendationService';
 
 interface Business {
   id: string;
@@ -28,6 +29,8 @@ const DiscoveryScreen: React.FC = () => {
   const [filteredBusinesses, setFilteredBusinesses] = useState<Business[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [recommendations, setRecommendations] = useState<RecommendationResult[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(true);
 
   // Fetch all businesses on component mount
   useEffect(() => {
@@ -91,6 +94,30 @@ const DiscoveryScreen: React.FC = () => {
 
     fetchBusinesses();
   }, []);
+
+  // Fetch personalized recommendations
+  useEffect(() => {
+    const fetchRecommendations = async () => {
+      if (!user) return;
+      
+      try {
+        setLoadingRecommendations(true);
+        const recs = await getPersonalizedRecommendations(
+          user.uid,
+          undefined, // No location for now
+          { maxResults: 8 } // Limit to 8 recommendations
+        );
+        setRecommendations(recs);
+      } catch (error) {
+        console.error('Failed to load recommendations:', error);
+        // Gracefully fail - don't show error to user for recommendations
+      } finally {
+        setLoadingRecommendations(false);
+      }
+    };
+    
+    fetchRecommendations();
+  }, [user]);
 
   // Filter businesses based on search query and selected category
   useEffect(() => {
@@ -207,6 +234,88 @@ const DiscoveryScreen: React.FC = () => {
           ))}
         </div>
       </div>
+
+      {/* Recommended for You Section */}
+      {!selectedCategory && !searchQuery && recommendations.length > 0 && (
+        <div className="mx-4 mb-4 p-4 bg-gradient-to-r from-primary/5 to-primary/10 rounded-xl">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-lg font-semibold flex items-center">
+              <span className="mr-2">✨</span>
+              Recommended for You
+            </h2>
+            <span className="text-sm text-muted-foreground">
+              Based on your preferences
+            </span>
+          </div>
+          
+          {loadingRecommendations ? (
+            <div className="flex items-center justify-center py-8">
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+              <span className="ml-3 text-sm text-muted-foreground">Loading recommendations...</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {recommendations.slice(0, 6).map((rec) => {
+                const category = getCategoryById(rec.business.categoryId);
+                return (
+                  <Card 
+                    key={rec.business.id}
+                    className="cursor-pointer hover:shadow-lg transition-all duration-200 border-primary/20 bg-white/95"
+                    onClick={() => handleBusinessClick(rec.business)}
+                  >
+                    <CardContent className="p-4">
+                      <div className="flex items-start space-x-3">
+                        {/* Business Image/Logo */}
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-br from-primary/20 to-primary/10 flex items-center justify-center flex-shrink-0">
+                          {rec.business.image?.startsWith('data:') ? (
+                            <img 
+                              src={rec.business.image} 
+                              alt={rec.business.name}
+                              className="w-12 h-12 rounded-full object-cover"
+                            />
+                          ) : (
+                            <span className="text-2xl">{category?.emoji || '🏢'}</span>
+                          )}
+                        </div>
+                        
+                        {/* Business Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center justify-between">
+                            <h3 className="font-semibold text-foreground truncate">
+                              {rec.business.name}
+                            </h3>
+                            <span className="text-xs font-medium text-primary bg-primary/10 px-2 py-1 rounded-full">
+                              {Math.round(rec.score * 100)}% match
+                            </span>
+                          </div>
+                          {rec.business.description && (
+                            <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
+                              {rec.business.description}
+                            </p>
+                          )}
+                          <div className="flex items-center justify-between mt-2">
+                            <span className="text-xs text-muted-foreground">
+                              {category?.name} • {rec.business.punchNum || 10} punches
+                            </span>
+                            {rec.business.address && (
+                              <div className="flex items-center text-xs text-muted-foreground">
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span className="truncate max-w-20">
+                                  {rec.business.address.split(',')[0]}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
+          )}
+        </div>
+      )}
 
       {/* Businesses Section */}
       <div className="flex-1 p-4">

@@ -258,3 +258,75 @@ exports.getActivePunchCodesRef = getActivePunchCodesRef;
 exports.getActivePunchCodes = function getActivePunchCodes(dcOrVars, vars) {
   return executeQuery(getActivePunchCodesRef(dcOrVars, vars));
 };
+
+const getUserForRecommendationsRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUserForRecommendations', inputVars);
+}
+getUserForRecommendationsRef.operationName = 'GetUserForRecommendations';
+exports.getUserForRecommendationsRef = getUserForRecommendationsRef;
+
+exports.getUserForRecommendations = function getUserForRecommendations(dcOrVars, vars) {
+  return executeQuery(getUserForRecommendationsRef(dcOrVars, vars));
+};
+
+const getBusinessesForRecommendationsRef = (dc) => {
+  const { dc: dcInstance} = validateArgs(connectorConfig, dc, undefined);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetBusinessesForRecommendations');
+}
+getBusinessesForRecommendationsRef.operationName = 'GetBusinessesForRecommendations';
+exports.getBusinessesForRecommendationsRef = getBusinessesForRecommendationsRef;
+
+exports.getBusinessesForRecommendations = function getBusinessesForRecommendations(dc) {
+  return executeQuery(getBusinessesForRecommendationsRef(dc));
+};
+
+const getBusinessesByCategoriesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetBusinessesByCategories', inputVars);
+}
+getBusinessesByCategoriesRef.operationName = 'GetBusinessesByCategories';
+exports.getBusinessesByCategoriesRef = getBusinessesByCategoriesRef;
+
+exports.getBusinessesByCategories = function getBusinessesByCategories(dcOrVars, vars) {
+  return executeQuery(getBusinessesByCategoriesRef(dcOrVars, vars));
+};
+
+const getUserBehavioralDataRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetUserBehavioralData', inputVars);
+}
+getUserBehavioralDataRef.operationName = 'GetUserBehavioralData';
+exports.getUserBehavioralDataRef = getUserBehavioralDataRef;
+
+exports.getUserBehavioralData = function getUserBehavioralData(dcOrVars, vars) {
+  return executeQuery(getUserBehavioralDataRef(dcOrVars, vars));
+};
+
+const getPopularBusinessesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetPopularBusinesses', inputVars);
+}
+getPopularBusinessesRef.operationName = 'GetPopularBusinesses';
+exports.getPopularBusinessesRef = getPopularBusinessesRef;
+
+exports.getPopularBusinesses = function getPopularBusinesses(dcOrVars, vars) {
+  return executeQuery(getPopularBusinessesRef(dcOrVars, vars));
+};
+
+const getSimilarBusinessesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return queryRef(dcInstance, 'GetSimilarBusinesses', inputVars);
+}
+getSimilarBusinessesRef.operationName = 'GetSimilarBusinesses';
+exports.getSimilarBusinessesRef = getSimilarBusinessesRef;
+
+exports.getSimilarBusinesses = function getSimilarBusinesses(dcOrVars, vars) {
+  return executeQuery(getSimilarBusinessesRef(dcOrVars, vars));
+};
