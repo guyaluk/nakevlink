@@ -31,18 +31,24 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
   try {
     console.log('Firebase: Attempting to connect to emulators');
     
+    // Determine the emulator host - use the current page's hostname if not localhost
+    const isLocalhost = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    const emulatorHost = isLocalhost ? 'localhost' : window.location.hostname;
+    
+    console.log(`Firebase: Using emulator host: ${emulatorHost} (detected from ${window.location.hostname})`);
+    
     // Auth emulator
     if (!auth.emulatorConfig) {
-      connectAuthEmulator(auth, 'http://localhost:9099');
-      console.log('Firebase: Successfully connected to Auth emulator');
+      connectAuthEmulator(auth, `http://${emulatorHost}:9099`);
+      console.log(`Firebase: Successfully connected to Auth emulator at ${emulatorHost}:9099`);
     } else {
       console.log('Firebase: Auth emulator already configured');
     }
     
     // Functions emulator
     try {
-      connectFunctionsEmulator(functions, 'localhost', 5001);
-      console.log('Firebase: Successfully connected to Functions emulator on port 5001');
+      connectFunctionsEmulator(functions, emulatorHost, 5001);
+      console.log(`Firebase: Successfully connected to Functions emulator at ${emulatorHost}:5001`);
     } catch (functionsError: any) {
       if (functionsError.message?.includes('already')) {
         console.log('Firebase: Functions emulator already configured');
@@ -53,7 +59,7 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     
     // Firestore emulator
     try {
-      const firestoreHost = import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_HOST || 'localhost';
+      const firestoreHost = import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_HOST || emulatorHost;
       const firestorePort = parseInt(import.meta.env.VITE_FIREBASE_FIRESTORE_EMULATOR_PORT || '8080');
       connectFirestoreEmulator(db, firestoreHost, firestorePort);
       console.log(`Firebase: Successfully connected to Firestore emulator at ${firestoreHost}:${firestorePort}`);
@@ -67,8 +73,8 @@ if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
     
     // Data Connect emulator
     try {
-      connectDataConnectEmulator(dataConnect, 'localhost', 9399);
-      console.log('Firebase: Successfully connected to Data Connect emulator');
+      connectDataConnectEmulator(dataConnect, emulatorHost, 9399);
+      console.log(`Firebase: Successfully connected to Data Connect emulator at ${emulatorHost}:9399`);
     } catch (dataConnectError: any) {
       if (dataConnectError.message?.includes('already')) {
         console.log('Firebase: Data Connect emulator already configured');

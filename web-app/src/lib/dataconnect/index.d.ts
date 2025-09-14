@@ -117,6 +117,7 @@ export interface GetActiveUserPunchCardForBusinessData {
       address?: string | null;
       phoneNumber?: string | null;
       punchNum?: number | null;
+      expirationDurationInDays?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -319,6 +320,7 @@ export interface GetPunchCardByIdData {
       address?: string | null;
       phoneNumber?: string | null;
       punchNum?: number | null;
+      expirationDurationInDays?: number | null;
     } & Business_Key;
       user: {
         id: string;
@@ -509,6 +511,15 @@ export interface GetUserVariables {
   id: string;
 }
 
+export interface MarkPunchCardCompletedData {
+  punchCard_update?: PunchCard_Key | null;
+}
+
+export interface MarkPunchCardCompletedVariables {
+  cardId: string;
+  completedAt?: TimestampString | null;
+}
+
 export interface PunchCard_Key {
   id: string;
   __typename?: 'PunchCard_Key';
@@ -609,6 +620,18 @@ export const addPunchRef: AddPunchRef;
 
 export function addPunch(vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
 export function addPunch(dc: DataConnect, vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
+
+interface MarkPunchCardCompletedRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+  operationName: string;
+}
+export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
+
+export function markPunchCardCompleted(vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+export function markPunchCardCompleted(dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
 
 interface GetUserRef {
   /* Allow users to create refs without passing in DataConnect */

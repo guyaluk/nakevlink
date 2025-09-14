@@ -399,7 +399,10 @@ const PunchStation: React.FC = () => {
                 )}
               </CardContent>
             </Card>
+          </div>
 
+          {/* Bottom Row - Stats and Instructions */}
+          <div className="lg:col-span-3 grid grid-cols-1 lg:grid-cols-2 gap-4">
             {/* Quick Stats */}
             <Card>
               <CardContent className="p-4 text-center">

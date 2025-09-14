@@ -29,6 +29,7 @@ const PunchCardView: React.FC = () => {
   const [retryAttempt, setRetryAttempt] = useState(0);
   const [isRetrying, setIsRetrying] = useState(false);
   const [isAutoRefreshing, setIsAutoRefreshing] = useState(false);
+  const [creatingNewCard, setCreatingNewCard] = useState(false);
   
   // Check if a specific code has been redeemed/used
   const checkIfCodeIsUsed = async (codeToCheck: string) => {
@@ -185,7 +186,8 @@ const PunchCardView: React.FC = () => {
           id: card.business.id,
           name: card.business.name,
           image: card.business.image,
-          categoryId: card.business.categoryId
+          categoryId: card.business.categoryId,
+          expirationDurationInDays: card.business.expirationDurationInDays || 30
         }
       };
       
@@ -379,6 +381,59 @@ const PunchCardView: React.FC = () => {
   // Manual retry function
   const handleRetry = () => {
     fetchPunchCardData(true, false);
+  };
+
+  // Create a new punch card for the same business after completing the current one
+  const handleCreateNewCard = async () => {
+    if (!cardId || !user || !punchCardData) return;
+
+    try {
+      setCreatingNewCard(true);
+      setError('');
+
+      console.log('PunchCardView: Creating new punch card for business:', punchCardData.business.id);
+
+      // First, mark the current card as completed
+      const { markPunchCardCompleted, createPunchCard } = await import('@/lib/dataconnect');
+      
+      const now = new Date();
+      await markPunchCardCompleted({ 
+        cardId: cardId,
+        completedAt: now
+      });
+
+      // Calculate new expiration date (use business settings or default 30 days)
+      const expirationDays = punchCardData.business.expirationDurationInDays || 30;
+      const expiresAt = new Date();
+      expiresAt.setDate(expiresAt.getDate() + expirationDays);
+
+      // Create the new punch card
+      const result = await createPunchCard({
+        businessId: punchCardData.business.id,
+        userId: user.uid,
+        maxPunches: punchCardData.maxPunches,
+        expiresAt: expiresAt,
+        createdAt: now
+      });
+
+      console.log('PunchCardView: New card created:', result);
+
+      if (result?.data?.punchCard_insert) {
+        const newCardId = result.data.punchCard_insert.id;
+        console.log('PunchCardView: Redirecting to new card:', newCardId);
+        
+        // Navigate to the new card
+        navigate(`/customers/cards/${newCardId}`, { replace: true });
+      } else {
+        throw new Error('Failed to create new punch card');
+      }
+
+    } catch (error: any) {
+      console.error('Error creating new card:', error);
+      setError('Failed to create new punch card. Please try again.');
+    } finally {
+      setCreatingNewCard(false);
+    }
   };
 
   // Use real data or fallback
@@ -617,10 +672,19 @@ const PunchCardView: React.FC = () => {
             {/* Complete Card Button */}
             {isComplete && (
               <Button
+                onClick={handleCreateNewCard}
+                disabled={creatingNewCard}
                 className="w-full py-4 text-lg font-semibold bg-green-600 hover:bg-green-700"
                 size="lg"
               >
-                Claim Your Free {mockPunchCard.businessName} Reward 🎁
+                {creatingNewCard ? (
+                  <>
+                    <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                    Creating New Card...
+                  </>
+                ) : (
+                  'Create New Card'
+                )}
               </Button>
             )}
 

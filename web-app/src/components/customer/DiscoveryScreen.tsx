@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CATEGORIES, getCategoryById } from '@/constants/categories';
 import { ArrowLeft, Search, MapPin } from 'lucide-react';
-import BottomNavigation from './BottomNavigation';
+import CustomerLayout from '../layouts/CustomerLayout';
 import { getPersonalizedRecommendations, type RecommendationResult } from '@/services/recommendationService';
 
 interface Business {
@@ -173,29 +173,28 @@ const DiscoveryScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background flex flex-col pb-16">
-      {/* Header Section */}
-      <div className="bg-white border-b border-gray-200 px-4 py-4">
-        <div className="flex items-center space-x-4 mb-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => navigate('/customers')}
-            className="p-2"
-          >
-            <ArrowLeft className="w-4 h-4" />
+    <CustomerLayout 
+      showHeader={true} 
+      title="Discover"
+      headerActions={
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => navigate('/customers')}
+          className="p-2"
+        >
+          <ArrowLeft className="w-4 h-4" />
+        </Button>
+      }
+    >
+      <div className="bg-white border-b border-gray-200 -mx-4 px-4 py-4 mb-4">
+        <div className="flex items-center justify-between mb-4">
+          <p className="text-sm text-muted-foreground">
+            Welcome back, {user?.displayName?.split(' ')[0] || user?.email?.split('@')[0]}!
+          </p>
+          <Button onClick={handleLogout} variant="outline" size="sm">
+            Sign Out
           </Button>
-          <div>
-            <h1 className="text-2xl font-bold text-foreground">Discover</h1>
-            <p className="text-sm text-muted-foreground">
-              Welcome back, {user?.displayName?.split(' ')[0] || user?.email?.split('@')[0]}!
-            </p>
-          </div>
-          <div className="ml-auto">
-            <Button onClick={handleLogout} variant="outline" size="sm">
-              Sign Out
-            </Button>
-          </div>
         </div>
 
         {/* Search Field */}
@@ -423,10 +422,7 @@ const DiscoveryScreen: React.FC = () => {
           </div>
         )}
       </div>
-
-      {/* Bottom Navigation */}
-      <BottomNavigation />
-    </div>
+    </CustomerLayout>
   );
 };
 

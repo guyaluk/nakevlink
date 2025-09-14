@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { getCategoryById } from '@/constants/categories';
-import BottomNavigation from './BottomNavigation';
+import CustomerLayout from '../layouts/CustomerLayout';
 
 interface PunchCard {
   id: string;
@@ -60,12 +60,29 @@ const OnePunchLeftScreen: React.FC = () => {
         const activeCards = allCards.filter(card => new Date(card.expiresAt) > now);
         console.log('OnePunchLeftScreen: Active cards after filtering:', activeCards);
 
-        // Get punch counts for each active card
+        // Get punch counts for each active card from both Data Connect and Firestore
         const cardsWithPunches = await Promise.all(
           activeCards.map(async (card) => {
             try {
+              // Get punch count from Data Connect
               const punchesResult = await getPunchesForCard({ cardId: card.id });
-              const currentPunches = punchesResult?.data?.punches?.length || 0;
+              const dataConnectPunches = punchesResult?.data?.punches?.length || 0;
+              
+              // Also get punch count from Firestore (where Cloud Functions write punches)
+              const { db } = await import('@/config/firebase');
+              const { collection, query, where, getDocs } = await import('firebase/firestore');
+              
+              const firestorePunchesQuery = query(
+                collection(db, 'punches'),
+                where('cardId', '==', card.id)
+              );
+              const firestorePunchesSnapshot = await getDocs(firestorePunchesQuery);
+              const firestorePunches = firestorePunchesSnapshot.size;
+              
+              // Use the higher count (handles both data sources)
+              const currentPunches = Math.max(dataConnectPunches, firestorePunches);
+              
+              console.log(`OnePunchLeftScreen: Card ${card.id} (${card.business.name}) - Data Connect: ${dataConnectPunches}, Firestore: ${firestorePunches}, Using: ${currentPunches}`);
               
               return {
                 ...card,
@@ -101,14 +118,6 @@ const OnePunchLeftScreen: React.FC = () => {
     fetchOnePunchLeftCards();
   }, [user]);
 
-  const handleLogout = async () => {
-    try {
-      await logout();
-    } catch (error) {
-      console.error('Failed to logout:', error);
-    }
-  };
-
   const handleCardClick = (cardId: string) => {
     navigate(`/customers/cards/${cardId}`);
   };
@@ -118,30 +127,16 @@ const OnePunchLeftScreen: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pb-20">
-      {/* Header */}
-      <header className="bg-white shadow">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-4">
-            <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-gray-900">One Punch Left</h1>
-              <span className="ml-3 px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
-                Almost There!
-              </span>
-            </div>
-            <button
-              onClick={handleLogout}
-              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
-            >
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
-      {/* Main Content */}
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
+    <CustomerLayout 
+      showHeader={true} 
+      title="One Punch Left"
+      headerActions={
+        <span className="px-2 py-1 text-xs font-medium bg-orange-100 text-orange-800 rounded-full">
+          Almost There!
+        </span>
+      }
+    >
+      <div className="py-6">
           {/* Info Section */}
           <div className="bg-white overflow-hidden shadow rounded-lg mb-6">
             <div className="px-4 py-5 sm:p-6">
@@ -269,11 +264,7 @@ const OnePunchLeftScreen: React.FC = () => {
             </div>
           </div>
         </div>
-      </main>
-
-      {/* Bottom Navigation */}
-      <BottomNavigation />
-    </div>
+    </CustomerLayout>
   );
 };
 

@@ -208,6 +208,9 @@ const SimpleBusinessSignup: React.FC = () => {
           // Update local storage to reflect the role immediately
           localStorage.setItem(`user_role_${user.uid}`, 'business_owner');
           
+          // Force immediate role update in AuthContext to prevent customer redirect
+          console.log('Business signup: Role set to business_owner, preparing navigation');
+          
         } catch (roleError) {
           console.error('Failed to set business_owner role:', roleError);
           // Continue anyway - user can still access business features, just might not have proper role initially
@@ -226,8 +229,30 @@ const SimpleBusinessSignup: React.FC = () => {
         return; // Don't navigate if business creation failed
       }
       
+      // Small delay to ensure role is set before navigation
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
+      // DEBUG: Check final state before navigation
+      const finalStoredRole = localStorage.getItem(`user_role_${user.uid}`);
+      console.log('🚨 BUSINESS SIGNUP DEBUG - BEFORE NAVIGATION:', {
+        userUid: user.uid,
+        userEmail: user.email,
+        storedRole: finalStoredRole,
+        currentPath: window.location.pathname,
+        aboutToNavigateTo: '/business'
+      });
+      
       // Navigate to business dashboard
+      console.log('Business signup: Navigating to /business dashboard');
       navigate('/business');
+      
+      // DEBUG: Check state right after navigate call
+      setTimeout(() => {
+        console.log('🚨 BUSINESS SIGNUP DEBUG - AFTER NAVIGATION:', {
+          currentPath: window.location.pathname,
+          storedRole: localStorage.getItem(`user_role_${user.uid}`)
+        });
+      }, 200);
       
     } catch (err: any) {
       console.error('Business signup error:', err);

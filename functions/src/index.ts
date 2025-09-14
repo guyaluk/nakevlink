@@ -326,16 +326,31 @@ export const validateAndPunch = functions.https.onCall(async (data, context) => 
 
     console.log(`Punch code validation: user=${userEmail}, cardId=${punchCodeData.cardId}`);
 
+    // Get customer information from Firebase Auth
+    let customerName = 'Unknown Customer';
+    let customerEmail = 'unknown@example.com';
+    
+    try {
+      const customerUser = await admin.auth().getUser(punchCodeData.userId);
+      customerName = customerUser.displayName || customerUser.email || 'Unknown Customer';
+      customerEmail = customerUser.email || 'unknown@example.com';
+      console.log(`Found customer info: ${customerName} (${customerEmail})`);
+    } catch (customerError) {
+      console.warn('Could not fetch customer info, using defaults:', customerError);
+    }
+
     // Mark code as used and add punch
     await punchCodeDoc.ref.update({
       isUsed: true,
       usedAt: new Date()
     });
 
-    // Add punch record (simplified)
+    // Add punch record with customer information
     await db.collection('punches').add({
       cardId: punchCodeData.cardId,
       userId: punchCodeData.userId,
+      customerName: customerName,
+      customerEmail: customerEmail,
       businessEmail: userEmail,
       punchTime: new Date()
     });
@@ -346,11 +361,11 @@ export const validateAndPunch = functions.https.onCall(async (data, context) => 
       success: true,
       message: "Punch recorded successfully",
       customer: {
-        name: "Customer", // Simplified for now
-        email: "customer@example.com"
+        name: customerName,
+        email: customerEmail
       },
       business: {
-        name: "Business" // Simplified for now
+        name: "Business" // TODO: Get actual business name
       },
       punches: 1, // Simplified - would need to count actual punches
       maxPunches: 10, // Simplified

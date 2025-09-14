@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { getCategoryById } from '@/constants/categories';
 import { ArrowLeft, MapPin, ExternalLink } from 'lucide-react';
+import CustomerLayout from '../layouts/CustomerLayout';
 import BottomNavigation from './BottomNavigation';
 
 interface Business {

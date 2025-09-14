@@ -1,5 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../contexts/AuthContext';
+import PunchDataMigrator from '../test/PunchDataMigrator';
+import PunchDataDebugger from '../test/PunchDataDebugger';
 
 const BusinessDashboard: React.FC = () => {
   const { user, logout } = useAuth();
@@ -149,6 +151,16 @@ const BusinessDashboard: React.FC = () => {
                   View Reports
                 </button>
               </div>
+            </div>
+          </div>
+
+          {/* Data Migration Tool */}
+          <div className="bg-white shadow rounded-lg mb-6">
+            <div className="px-4 py-5 sm:p-6">
+              <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
+                🔧 Fix Customer Names in Punch History
+              </h3>
+              <PunchDataMigrator />
             </div>
           </div>
 

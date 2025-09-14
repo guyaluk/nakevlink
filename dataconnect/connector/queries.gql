@@ -180,6 +180,7 @@ query GetActiveUserPunchCardForBusiness($userId: String!, $businessId: String!, 
       address
       phoneNumber
       punchNum
+      expirationDurationInDays
     }
   }
 }
@@ -202,6 +203,7 @@ query GetPunchCardById($id: String!) @auth(level: USER) {
       address
       phoneNumber
       punchNum
+      expirationDurationInDays
     }
     user {
       id

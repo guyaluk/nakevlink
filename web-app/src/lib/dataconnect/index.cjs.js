@@ -79,6 +79,18 @@ exports.addPunch = function addPunch(dcOrVars, vars) {
   return executeMutation(addPunchRef(dcOrVars, vars));
 };
 
+const markPunchCardCompletedRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'MarkPunchCardCompleted', inputVars);
+}
+markPunchCardCompletedRef.operationName = 'MarkPunchCardCompleted';
+exports.markPunchCardCompletedRef = markPunchCardCompletedRef;
+
+exports.markPunchCardCompleted = function markPunchCardCompleted(dcOrVars, vars) {
+  return executeMutation(markPunchCardCompletedRef(dcOrVars, vars));
+};
+
 const getUserRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

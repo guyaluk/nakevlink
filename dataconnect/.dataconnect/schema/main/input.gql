@@ -791,6 +791,22 @@ input PunchCard_Data {
   """
   user: User_Key
   """
+  ✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`
+  """
+  completedAt: Timestamp
+  """
+  ✨ `_expr` server value variant of `completedAt` (✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`)
+  """
+  completedAt_expr: Timestamp_Expr
+  """
+  ✨ `_time` server value variant of `completedAt` (✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`)
+  """
+  completedAt_time: Timestamp_Relative
+  """
+  ✨ `_update` server value variant of `completedAt` (✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`)
+  """
+  completedAt_update: [Timestamp_Update!]
+  """
   ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
   """
   createdAt: Timestamp
@@ -872,6 +888,10 @@ input PunchCard_Filter {
   """
   user: User_Filter
   """
+  ✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`
+  """
+  completedAt: Timestamp_Filter
+  """
   ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
   """
   createdAt: Timestamp_Filter
@@ -934,6 +954,10 @@ input PunchCard_Having {
   """
   businessId_count: Int_Filter
   """
+  ✨ Generated from Field `PunchCard`.`completedAt_count` of type `Int!`
+  """
+  completedAt_count: Int_Filter
+  """
   ✨ Generated from Field `PunchCard`.`createdAt_count` of type `Int!`
   """
   createdAt_count: Int_Filter
@@ -962,6 +986,10 @@ input PunchCard_Having {
   """
   maxPunches_avg: Float_Filter
   """
+  ✨ Generated from Field `PunchCard`.`completedAt_min` of type `Timestamp`
+  """
+  completedAt_min: Timestamp_Filter
+  """
   ✨ Generated from Field `PunchCard`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: Timestamp_Filter
@@ -973,6 +1001,10 @@ input PunchCard_Having {
   ✨ Generated from Field `PunchCard`.`maxPunches_min` of type `Int`
   """
   maxPunches_min: Int_Filter
+  """
+  ✨ Generated from Field `PunchCard`.`completedAt_max` of type `Timestamp`
+  """
+  completedAt_max: Timestamp_Filter
   """
   ✨ Generated from Field `PunchCard`.`createdAt_max` of type `Timestamp`
   """
@@ -1037,6 +1069,10 @@ input PunchCard_Order {
   """
   user: User_Order
   """
+  ✨ Generated from Field `PunchCard`.`completedAt` of type `Timestamp`
+  """
+  completedAt: OrderDirection
+  """
   ✨ Generated from Field `PunchCard`.`createdAt` of type `Timestamp`
   """
   createdAt: OrderDirection
@@ -1056,6 +1092,10 @@ input PunchCard_Order {
   ✨ Generated from Field `PunchCard`.`businessId_count` of type `Int!`
   """
   businessId_count: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`completedAt_count` of type `Int!`
+  """
+  completedAt_count: OrderDirection
   """
   ✨ Generated from Field `PunchCard`.`createdAt_count` of type `Int!`
   """
@@ -1085,6 +1125,10 @@ input PunchCard_Order {
   """
   maxPunches_avg: OrderDirection
   """
+  ✨ Generated from Field `PunchCard`.`completedAt_min` of type `Timestamp`
+  """
+  completedAt_min: OrderDirection
+  """
   ✨ Generated from Field `PunchCard`.`createdAt_min` of type `Timestamp`
   """
   createdAt_min: OrderDirection
@@ -1096,6 +1140,10 @@ input PunchCard_Order {
   ✨ Generated from Field `PunchCard`.`maxPunches_min` of type `Int`
   """
   maxPunches_min: OrderDirection
+  """
+  ✨ Generated from Field `PunchCard`.`completedAt_max` of type `Timestamp`
+  """
+  completedAt_max: OrderDirection
   """
   ✨ Generated from Field `PunchCard`.`createdAt_max` of type `Timestamp`
   """

@@ -31,6 +31,7 @@ type PunchCard @table(key: "id") {
   maxPunches: Int!
   createdAt: Timestamp @default(expr: "request.time")
   expiresAt: Timestamp!
+  completedAt: Timestamp # When the card was fully redeemed/completed
   
   # Relationships
   business: Business! @ref(fields: "businessId", references: "id")

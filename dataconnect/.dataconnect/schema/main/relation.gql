@@ -402,6 +402,15 @@ extend type PunchCard {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "PunchCard.businessId", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `PunchCard` table where the `completedAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  completedAt_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "PunchCard.completedAt", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `PunchCard` table where the `createdAt` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   createdAt_count(
@@ -465,6 +474,10 @@ extend type PunchCard {
     distinct: Boolean = false
   ): Float @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_AVG)
   """
+  ✨ Minimum of the `completedAt` field in the `PunchCard` table.
+  """
+  completedAt_min: Timestamp @fdc_generated(from: "PunchCard.completedAt", purpose: QUERY_MIN)
+  """
   ✨ Minimum of the `createdAt` field in the `PunchCard` table.
   """
   createdAt_min: Timestamp @fdc_generated(from: "PunchCard.createdAt", purpose: QUERY_MIN)
@@ -476,6 +489,10 @@ extend type PunchCard {
   ✨ Minimum of the `maxPunches` field in the `PunchCard` table.
   """
   maxPunches_min: Int @fdc_generated(from: "PunchCard.maxPunches", purpose: QUERY_MIN)
+  """
+  ✨ Maximum of the `completedAt` field in the `PunchCard` table.
+  """
+  completedAt_max: Timestamp @fdc_generated(from: "PunchCard.completedAt", purpose: QUERY_MAX)
   """
   ✨ Maximum of the `createdAt` field in the `PunchCard` table.
   """

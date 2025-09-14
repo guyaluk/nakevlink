@@ -9,7 +9,9 @@ import DiscoveryScreen from '@/components/customer/DiscoveryScreen';
 import BusinessDetailsScreen from '@/components/customer/BusinessDetailsScreen';
 import OnePunchLeftScreen from '@/components/customer/OnePunchLeftScreen';
 import PunchStation from '@/components/business/PunchStation';
+import BusinessPunchHistory from '@/components/business/BusinessPunchHistory';
 import CustomerDashboard from '@/components/dashboards/CustomerDashboard';
+import CustomerPunchHistory from '@/components/customer/CustomerPunchHistory';
 import ErrorBoundary from '@/components/ErrorBoundary';
 // import ProtectedRoute from '@/components/ProtectedRoute';
 import { Button } from '@/components/ui/button';
@@ -35,15 +37,21 @@ const SimpleLogin = () => {
       console.log('SimpleLogin: User authenticated, details:', {
         email: user.email,
         role: user.role,
-        uid: user.uid
+        uid: user.uid,
+        currentPath: window.location.pathname
       });
       
-      if (user.role === 'business_owner') {
-        console.log('SimpleLogin: Navigating to business dashboard');
-        navigate('/business');
+      // Only redirect if we're on login/root pages to avoid interfering with signup navigation
+      if (window.location.pathname === '/login' || window.location.pathname === '/') {
+        if (user.role === 'business_owner') {
+          console.log('SimpleLogin: Navigating to business dashboard because role is business_owner');
+          navigate('/business');
+        } else {
+          console.log('SimpleLogin: Navigating to customer dashboard because role is:', user.role);
+          navigate('/customers');
+        }
       } else {
-        console.log('SimpleLogin: Navigating to customer dashboard');
-        navigate('/customers');
+        console.log('SimpleLogin: User authenticated but not on login page, skipping redirect');
       }
     }
   }, [user, navigate]);
@@ -184,7 +192,8 @@ const BusinessDashboard = () => {
   });
 
   // Helper function to get category emoji
-  const getCategoryEmoji = (categoryId: number) => {
+  const getCategoryEmoji = (categoryId?: number) => {
+    if (!categoryId) return '🏢';
     const categoryEmojis: { [key: number]: string } = {
       1: '💪', // Fitness Studios
       2: '☕', // Coffee Shops  
@@ -198,7 +207,8 @@ const BusinessDashboard = () => {
   };
 
   // Helper function to get category name
-  const getCategoryName = (categoryId: number) => {
+  const getCategoryName = (categoryId?: number) => {
+    if (!categoryId) return 'Business';
     const categoryNames: { [key: number]: string } = {
       1: 'Fitness Studio',
       2: 'Coffee Shop',
@@ -220,27 +230,58 @@ const BusinessDashboard = () => {
   };
 
   // Calculate metrics from punch cards data
-  const calculateMetrics = (punchCards: { expiresAt: string; maxPunches: number; createdAt?: string | null }[]) => {
+  const calculateMetrics = async (punchCards: { id: string; expiresAt: string; maxPunches: number; createdAt?: string | null }[], businessEmail?: string) => {
     const now = new Date();
     
-    // Active punch cards (not expired, not fully punched)
+    // Active punch cards (not expired)
     const activePunchCards = punchCards.filter(card => {
       const expiresAt = new Date(card.expiresAt);
       return expiresAt > now; // Not expired
     }).length;
     
-    // Almost complete cards (at max punches - 1)
-    const almostCompleteCards = punchCards.filter(card => {
-      const expiresAt = new Date(card.expiresAt);
-      // For now, we'll estimate based on card age - this would need actual punch count
-      return expiresAt > now; // Active cards that might be almost complete
-    }).length;
+    // Count today's punches from Firestore
+    let punchesToday = 0;
+    if (businessEmail) {
+      try {
+        const { db } = await import('@/config/firebase');
+        const { collection, query, where, getDocs } = await import('firebase/firestore');
+        
+        // Get start and end of today
+        const startOfToday = new Date();
+        startOfToday.setHours(0, 0, 0, 0);
+        const endOfToday = new Date();
+        endOfToday.setHours(23, 59, 59, 999);
+        
+        console.log('BusinessDashboard: Counting punches for business:', businessEmail, 'from', startOfToday, 'to', endOfToday);
+        
+        const punchesQuery = query(
+          collection(db, 'punches'),
+          where('businessEmail', '==', businessEmail),
+          where('punchTime', '>=', startOfToday),
+          where('punchTime', '<=', endOfToday)
+        );
+        
+        const punchesSnapshot = await getDocs(punchesQuery);
+        punchesToday = punchesSnapshot.size;
+        
+        console.log('BusinessDashboard: Found', punchesToday, 'punches today');
+      } catch (error) {
+        console.error('BusinessDashboard: Error counting today\'s punches:', error);
+        punchesToday = 0;
+      }
+    }
+    
+    // Almost complete cards (simplified calculation)
+    const almostCompleteCards = Math.min(
+      punchCards.filter(card => new Date(card.expiresAt) > now).length,
+      Math.floor(activePunchCards * 0.3)
+    );
     
     return {
       activePunchCards,
-      punchesToday: 0, // Would need to count actual punches made today
+      punchesToday,
       averageTimeToReward: '5 days', // Placeholder calculation
-      almostCompleteCards: Math.min(almostCompleteCards, Math.floor(activePunchCards * 0.3))
+      almostCompleteCards
     };
   };
 
@@ -268,7 +309,7 @@ const BusinessDashboard = () => {
         const punchCards = punchCardsResult.data?.punchCards || [];
         
         // Calculate metrics
-        const calculatedMetrics = calculateMetrics(punchCards);
+        const calculatedMetrics = await calculateMetrics(punchCards, user.email);
         setMetrics(calculatedMetrics);
         
         console.log('BusinessDashboard: Data loaded', {
@@ -306,6 +347,19 @@ const BusinessDashboard = () => {
   React.useEffect(() => {
     fetchBusinessData();
   }, [fetchBusinessData]);
+
+  // Page visibility - refresh when user comes back to the page  
+  React.useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (!document.hidden && !loading && businessData) {
+        console.log('BusinessDashboard: Page became visible, refreshing metrics...');
+        fetchBusinessData();
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [loading, businessData, fetchBusinessData]);
 
   const handleLogout = async () => {
     await logout();
@@ -358,46 +412,65 @@ const BusinessDashboard = () => {
   }
 
   const businessImage = businessData ? getBusinessImage(businessData) : null;
-  const categoryEmoji = getCategoryEmoji(businessData?.categoryId || 7);
-  const categoryName = getCategoryName(businessData?.categoryId || 7);
+  const categoryEmoji = getCategoryEmoji(businessData?.categoryId);
+  const categoryName = getCategoryName(businessData?.categoryId);
 
   return (
     <div className="min-h-screen bg-background pb-16">
       {/* Hero Section */}
       <div className="relative">
-        {/* Business Image Banner */}
-        <div className="h-48 bg-gradient-to-r from-primary/20 to-primary/30 relative overflow-hidden">
+        {/* Business Header with Background and Logo */}
+        <div className="h-48 md:h-64 bg-gradient-to-r from-primary/20 to-primary/30 relative overflow-hidden">
+          {/* Background Image (Blurred) */}
           {businessImage ? (
-            <img 
-              src={businessImage} 
-              alt={businessData?.name}
-              className="w-full h-full object-cover"
-            />
+            <>
+              <img 
+                src={businessImage} 
+                alt={businessData?.name}
+                className="absolute inset-0 w-full h-full object-cover blur-sm opacity-30"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/40 to-primary/20"></div>
+            </>
           ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-6xl">{categoryEmoji}</span>
-            </div>
+            <div className="absolute inset-0 bg-gradient-to-r from-primary/30 to-primary/20"></div>
           )}
           
           {/* Overlay for text readability */}
           <div className="absolute inset-0 bg-black/30"></div>
         </div>
         
-        {/* Business Info Overlay */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white">
-          <div className="flex justify-between items-end">
-            <div>
-              <h1 className="text-3xl font-bold mb-2">{businessData?.name || 'Your Business'}</h1>
-              <div className="flex items-center space-x-4 text-sm">
-                <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
-                  {categoryName}
-                </span>
-                {businessData?.address && (
-                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
+        {/* Business Info with Logo */}
+        <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+          <div className="flex items-end space-x-4">
+            {/* Business Logo */}
+            <div className="flex-shrink-0">
+              {businessImage ? (
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-white rounded-lg p-2 shadow-lg">
+                  <img 
+                    src={businessImage} 
+                    alt={businessData?.name}
+                    className="w-full h-full object-contain rounded-md"
+                  />
+                </div>
+              ) : (
+                <div className="w-20 h-20 md:w-24 md:h-24 bg-white/90 backdrop-blur-sm rounded-lg flex items-center justify-center shadow-lg">
+                  <span className="text-3xl md:text-4xl">{categoryEmoji}</span>
+                </div>
+              )}
+            </div>
+            
+            {/* Business Info */}
+            <div className="flex-1 min-w-0 pb-2">
+              <h1 className="text-2xl md:text-3xl font-bold mb-1 text-white drop-shadow-lg">
+                {businessData?.name || 'Your Business'}
+              </h1>
+              {businessData?.address && (
+                <div className="flex items-center space-x-3 text-sm">
+                  <span className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-white/90">
                     📍 {businessData.address}
                   </span>
-                )}
-              </div>
+                </div>
+              )}
             </div>
             
             <div className="flex space-x-2">
@@ -502,6 +575,7 @@ const BusinessDashboard = () => {
               </p>
               <Button 
                 onClick={() => navigate('/business/punch-station')} 
+                variant="outline"
                 className="w-full"
               >
                 Open Punch Station
@@ -528,6 +602,26 @@ const BusinessDashboard = () => {
               </Button>
             </CardContent>
           </Card>
+
+          {/* History */}
+          <Card>
+            <CardContent className="p-6 text-center">
+              <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <span className="text-3xl">📜</span>
+              </div>
+              <h3 className="text-lg font-semibold mb-2">History</h3>
+              <p className="text-muted-foreground text-sm mb-4">
+                View all punch transactions
+              </p>
+              <Button 
+                onClick={() => navigate('/business/history')} 
+                variant="outline" 
+                className="w-full"
+              >
+                View History
+              </Button>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>
@@ -550,10 +644,12 @@ function App() {
             <Route path="/customers" element={<CustomerDashboard />} />
             <Route path="/customers/discovery" element={<DiscoveryScreen />} />
             <Route path="/customers/one-punch-left" element={<OnePunchLeftScreen />} />
+            <Route path="/customers/history" element={<CustomerPunchHistory />} />
             <Route path="/customers/business/:businessId" element={<BusinessDetailsScreen />} />
             <Route path="/customers/cards/:cardId" element={<PunchCardView />} />
             <Route path="/business" element={<BusinessDashboard />} />
             <Route path="/business/punch-station" element={<PunchStation />} />
+            <Route path="/business/history" element={<BusinessPunchHistory />} />
             <Route path="/business/insights" element={<div className="p-4 text-center"><h1>Business Insights (Coming Soon)</h1></div>} />
           </Routes>
         </Router>

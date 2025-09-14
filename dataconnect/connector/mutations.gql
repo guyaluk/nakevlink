@@ -68,3 +68,10 @@ mutation AddPunch($cardId: String!, $punchTime: Timestamp) @auth(level: USER) {
     punchTime: $punchTime
   })
 }
+
+# Mark a punch card as completed/redeemed (add completedAt field)
+mutation MarkPunchCardCompleted($cardId: String!, $completedAt: Timestamp) @auth(level: USER) {
+  punchCard_update(id: $cardId, data: {
+    completedAt: $completedAt
+  })
+}

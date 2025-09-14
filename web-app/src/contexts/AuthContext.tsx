@@ -46,7 +46,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`) as UserRole;
     const role = (cachedRole === 'business_owner' || cachedRole === 'customer') ? cachedRole : 'customer';
     
-    console.log('AuthContext: Instant role for', firebaseUser.email, ':', role);
+    console.log('🚨 AuthContext: Instant role detection for', firebaseUser.email, ':', {
+      uid: firebaseUser.uid,
+      cachedRole,
+      finalRole: role,
+      localStorage_debug: localStorage.getItem(`user_role_${firebaseUser.uid}`)
+    });
     
     return {
       ...firebaseUser,
@@ -59,28 +64,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       console.log('AuthContext: Background verification for:', firebaseUser.email);
       
-      // Check custom claims first
-      try {
-        const idTokenResult = await firebaseUser.getIdTokenResult();
-        if (idTokenResult.claims.role) {
-          const claimsRole = idTokenResult.claims.role as UserRole;
-          console.log('AuthContext: Found custom claims role:', claimsRole);
-          
-          const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`);
-          if (cachedRole !== claimsRole) {
-            console.log('AuthContext: Role changed via custom claims:', cachedRole, '→', claimsRole);
-            localStorage.setItem(`user_role_${firebaseUser.uid}`, claimsRole);
-            setUser({
-              ...firebaseUser,
-              role: claimsRole
-            });
-          }
-          return;
-        }
-      } catch (claimsError) {
-        console.log('AuthContext: No custom claims, checking database');
-      }
-      
       // Database check with retries
       let attempts = 0;
       const maxAttempts = 3;
@@ -88,37 +71,76 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       while (attempts < maxAttempts) {
         try {
           const { getBusinessByEmail } = await import('@/lib/dataconnect');
-          const business = await getBusinessByEmail({ email: firebaseUser.email || '' });
+          const businessResult = await getBusinessByEmail({ email: firebaseUser.email || '' });
           
-          const dbRole: UserRole = business ? 'business_owner' : 'customer';
+          console.log('AuthContext: Business lookup result for', firebaseUser.email, ':', {
+            hasData: !!businessResult?.data,
+            hasBusinesses: !!(businessResult?.data?.businesses),
+            businessCount: businessResult?.data?.businesses?.length || 0,
+            businesses: businessResult?.data?.businesses || []
+          });
+          
+          const hasBusinesses = businessResult?.data?.businesses && businessResult.data.businesses.length > 0;
+          const dbRole: UserRole = hasBusinesses ? 'business_owner' : 'customer';
           const cachedRole = localStorage.getItem(`user_role_${firebaseUser.uid}`);
           
-          if (cachedRole !== dbRole) {
-            console.log('AuthContext: Role changed via database:', cachedRole, '→', dbRole);
-            localStorage.setItem(`user_role_${firebaseUser.uid}`, dbRole);
+          // For new accounts (within 60 seconds), trust localStorage over database to avoid race conditions
+          const timeSinceAccountCreated = Date.now() - (firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime).getTime() : 0);
+          const isVeryNewAccount = timeSinceAccountCreated < 60000; // Within 60 seconds
+          
+          console.log('AuthContext: Account age check:', {
+            creationTime: firebaseUser.metadata.creationTime,
+            timeSinceCreated: timeSinceAccountCreated,
+            isVeryNewAccount,
+            cachedRole,
+            dbRole
+          });
+          
+          // If account is very new and we have a cached business_owner role, trust it
+          const finalRole = (isVeryNewAccount && cachedRole === 'business_owner') ? cachedRole : dbRole;
+          
+          if (cachedRole !== finalRole) {
+            console.log('AuthContext: Role update needed:', cachedRole, '→', finalRole);
+            localStorage.setItem(`user_role_${firebaseUser.uid}`, finalRole);
             setUser({
               ...firebaseUser,
-              role: dbRole
+              role: finalRole
             });
             
-            // If database shows business_owner but custom claims don't match, set the role
-            if (dbRole === 'business_owner') {
-              try {
-                console.log('AuthContext: Setting business_owner custom claims for existing user');
-                const { functions } = await import('@/config/firebase');
-                const { httpsCallable } = await import('firebase/functions');
-                const setUserRole = httpsCallable(functions, 'setUserRole');
-                
-                await setUserRole({
-                  uid: firebaseUser.uid,
-                  role: 'business_owner'
-                });
-                
-                console.log('AuthContext: Successfully set custom claims for business owner');
-              } catch (roleError) {
-                console.error('AuthContext: Failed to set custom claims for business owner:', roleError);
-                // Continue anyway - user can still access business features with localStorage role
+            // Force navigation redirect when role changes - but only if we're confident about the role
+            const correctPath = finalRole === 'business_owner' ? '/business' : '/customers';
+            if (window.location.pathname !== correctPath) {
+              console.log('AuthContext: Role change detected, should redirect to:', correctPath, 'but checking if safe to redirect');
+              
+              // Don't redirect immediately after signup - let the signup component handle navigation
+              const isOnSignupPath = window.location.pathname.includes('/signup');
+              const timeSinceAccountCreated = Date.now() - (firebaseUser.metadata.creationTime ? new Date(firebaseUser.metadata.creationTime).getTime() : 0);
+              const isNewAccount = timeSinceAccountCreated < 30000; // Within 30 seconds of account creation
+              
+              if (!isOnSignupPath && !isNewAccount) {
+                console.log('AuthContext: Safe to redirect, navigating to:', correctPath);
+                window.location.href = correctPath;
+              } else {
+                console.log('AuthContext: Skipping redirect - on signup path or new account, letting signup handle navigation');
               }
+            }
+            
+            // Update custom claims to match final role
+            try {
+              console.log('AuthContext: Updating custom claims to match final role:', finalRole);
+              const { functions } = await import('@/config/firebase');
+              const { httpsCallable } = await import('firebase/functions');
+              const setUserRole = httpsCallable(functions, 'setUserRole');
+              
+              await setUserRole({
+                uid: firebaseUser.uid,
+                role: finalRole
+              });
+              
+              console.log('AuthContext: Successfully updated custom claims to:', finalRole);
+            } catch (roleError) {
+              console.error('AuthContext: Failed to update custom claims:', roleError);
+              // Continue anyway - user can still access features with localStorage role
             }
           } else {
             console.log('AuthContext: Role verified, no change needed');

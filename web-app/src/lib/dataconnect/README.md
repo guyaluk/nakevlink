@@ -36,6 +36,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*CreatePunchCode*](#createpunchcode)
   - [*RedeemPunchCode*](#redeempunchcode)
   - [*AddPunch*](#addpunch)
+  - [*MarkPunchCardCompleted*](#markpunchcardcompleted)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `nakevlink-connector`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -1325,6 +1326,7 @@ export interface GetActiveUserPunchCardForBusinessData {
       address?: string | null;
       phoneNumber?: string | null;
       punchNum?: number | null;
+      expirationDurationInDays?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -1455,6 +1457,7 @@ export interface GetPunchCardByIdData {
       address?: string | null;
       phoneNumber?: string | null;
       punchNum?: number | null;
+      expirationDurationInDays?: number | null;
     } & Business_Key;
       user: {
         id: string;
@@ -3368,6 +3371,118 @@ console.log(data.punch_insert);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.punch_insert);
+});
+```
+
+## MarkPunchCardCompleted
+You can execute the `MarkPunchCardCompleted` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+markPunchCardCompleted(vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+
+interface MarkPunchCardCompletedRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+}
+export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+markPunchCardCompleted(dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+
+interface MarkPunchCardCompletedRef {
+  ...
+  (dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+}
+export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the markPunchCardCompletedRef:
+```typescript
+const name = markPunchCardCompletedRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `MarkPunchCardCompleted` mutation requires an argument of type `MarkPunchCardCompletedVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface MarkPunchCardCompletedVariables {
+  cardId: string;
+  completedAt?: TimestampString | null;
+}
+```
+### Return Type
+Recall that executing the `MarkPunchCardCompleted` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `MarkPunchCardCompletedData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface MarkPunchCardCompletedData {
+  punchCard_update?: PunchCard_Key | null;
+}
+```
+### Using `MarkPunchCardCompleted`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, markPunchCardCompleted, MarkPunchCardCompletedVariables } from '@nakevlink/dataconnect';
+
+// The `MarkPunchCardCompleted` mutation requires an argument of type `MarkPunchCardCompletedVariables`:
+const markPunchCardCompletedVars: MarkPunchCardCompletedVariables = {
+  cardId: ..., 
+  completedAt: ..., // optional
+};
+
+// Call the `markPunchCardCompleted()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await markPunchCardCompleted(markPunchCardCompletedVars);
+// Variables can be defined inline as well.
+const { data } = await markPunchCardCompleted({ cardId: ..., completedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await markPunchCardCompleted(dataConnect, markPunchCardCompletedVars);
+
+console.log(data.punchCard_update);
+
+// Or, you can use the `Promise` API.
+markPunchCardCompleted(markPunchCardCompletedVars).then((response) => {
+  const data = response.data;
+  console.log(data.punchCard_update);
+});
+```
+
+### Using `MarkPunchCardCompleted`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, markPunchCardCompletedRef, MarkPunchCardCompletedVariables } from '@nakevlink/dataconnect';
+
+// The `MarkPunchCardCompleted` mutation requires an argument of type `MarkPunchCardCompletedVariables`:
+const markPunchCardCompletedVars: MarkPunchCardCompletedVariables = {
+  cardId: ..., 
+  completedAt: ..., // optional
+};
+
+// Call the `markPunchCardCompletedRef()` function to get a reference to the mutation.
+const ref = markPunchCardCompletedRef(markPunchCardCompletedVars);
+// Variables can be defined inline as well.
+const ref = markPunchCardCompletedRef({ cardId: ..., completedAt: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = markPunchCardCompletedRef(dataConnect, markPunchCardCompletedVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.punchCard_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.punchCard_update);
 });
 ```
 
