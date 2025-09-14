@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { UserRole } from '../../contexts/AuthContext';
+import type { UserRole } from '../../contexts/AuthContext';
 import CustomerSignupForm from './CustomerSignupForm';
 import BusinessSignupForm from './BusinessSignupForm';
 

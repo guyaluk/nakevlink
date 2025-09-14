@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "tsc -b && vite build",
+    "build:prod": "VITE_FIREBASE_USE_EMULATOR=false VITE_FIREBASE_API_KEY=AIzaSyBuHFe6F-rxiueTcuo9iz5Ab68hmZHY7UE VITE_FIREBASE_AUTH_DOMAIN=nakevlink.firebaseapp.com VITE_FIREBASE_PROJECT_ID=nakevlink VITE_FIREBASE_STORAGE_BUCKET=nakevlink.firebasestorage.app VITE_FIREBASE_MESSAGING_SENDER_ID=1042642208032 VITE_FIREBASE_APP_ID=1:1042642208032:web:e2d08787f2c846fa944345 VITE_FIREBASE_MEASUREMENT_ID=G-DKNQF9J46F vite build",
     "lint": "eslint .",
     "preview": "vite preview",
     "emulators": "firebase emulators:start",

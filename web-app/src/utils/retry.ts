@@ -6,13 +6,18 @@ export interface RetryOptions {
 }
 
 export class RetryError extends Error {
+  public lastError: any;
+  public attemptsMade: number;
+
   constructor(
     message: string,
-    public lastError: any,
-    public attemptsMade: number
+    lastError: any,
+    attemptsMade: number
   ) {
     super(message);
     this.name = 'RetryError';
+    this.lastError = lastError;
+    this.attemptsMade = attemptsMade;
   }
 }
 
