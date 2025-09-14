@@ -39,8 +39,22 @@ The Firebase configuration (API keys, project ID, etc.) is already included in t
 The GitHub Actions workflow (`.github/workflows/firebase-deploy.yml`) will:
 
 1. **Trigger**: On push to `master` branch
-2. **Build**: Install dependencies and run `npm run build:prod` (which has all Firebase config built-in)
-3. **Deploy**: Deploy to Firebase Hosting at https://nakevlink.web.app
+2. **Setup**: Node.js 20 (required for Firebase CLI 14+)
+3. **Build**:
+   - Install web app and functions dependencies
+   - Build production web app with `npm run build:prod` (includes Firebase config)
+   - Build functions with TypeScript compilation
+4. **Deploy**: Deploy hosting, functions, and Firestore to Firebase
+   - Web app at https://nakevlink.web.app
+   - All 6 Firebase Functions for authentication and punch cards
+   - Firestore database with security rules for data storage
+
+## Recent Updates
+
+- **Node.js 20**: Updated from Node.js 18 to support Firebase CLI 14+
+- **Functions Deployment**: Now deploys hosting, functions, AND Firestore automatically
+- **Firestore Database**: Created and configured with security rules
+- **Firebase CLI**: Pinned to v13.20.2 for stability
 
 ## Manual Deployment
 
