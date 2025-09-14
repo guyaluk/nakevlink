@@ -9,6 +9,6 @@ schema:
     postgresql:
       database: "nakevlink"
       cloudSql:
-        instanceId: "nakevlink:us-central1:nakevlink-db"
+        instanceId: "nakevlink-db"
       
 connectorDirs: ["./connector"]
