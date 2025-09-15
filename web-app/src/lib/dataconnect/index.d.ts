@@ -549,6 +549,90 @@ export interface User_Key {
   __typename?: 'User_Key';
 }
 
+interface CreateUserRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateUserVariables): MutationRef<CreateUserData, CreateUserVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateUserVariables): MutationRef<CreateUserData, CreateUserVariables>;
+  operationName: string;
+}
+export const createUserRef: CreateUserRef;
+
+export function createUser(vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
+export function createUser(dc: DataConnect, vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
+
+interface CreateBusinessRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreateBusinessVariables): MutationRef<CreateBusinessData, CreateBusinessVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreateBusinessVariables): MutationRef<CreateBusinessData, CreateBusinessVariables>;
+  operationName: string;
+}
+export const createBusinessRef: CreateBusinessRef;
+
+export function createBusiness(vars: CreateBusinessVariables): MutationPromise<CreateBusinessData, CreateBusinessVariables>;
+export function createBusiness(dc: DataConnect, vars: CreateBusinessVariables): MutationPromise<CreateBusinessData, CreateBusinessVariables>;
+
+interface CreatePunchCardRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreatePunchCardVariables): MutationRef<CreatePunchCardData, CreatePunchCardVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreatePunchCardVariables): MutationRef<CreatePunchCardData, CreatePunchCardVariables>;
+  operationName: string;
+}
+export const createPunchCardRef: CreatePunchCardRef;
+
+export function createPunchCard(vars: CreatePunchCardVariables): MutationPromise<CreatePunchCardData, CreatePunchCardVariables>;
+export function createPunchCard(dc: DataConnect, vars: CreatePunchCardVariables): MutationPromise<CreatePunchCardData, CreatePunchCardVariables>;
+
+interface CreatePunchCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: CreatePunchCodeVariables): MutationRef<CreatePunchCodeData, CreatePunchCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: CreatePunchCodeVariables): MutationRef<CreatePunchCodeData, CreatePunchCodeVariables>;
+  operationName: string;
+}
+export const createPunchCodeRef: CreatePunchCodeRef;
+
+export function createPunchCode(vars: CreatePunchCodeVariables): MutationPromise<CreatePunchCodeData, CreatePunchCodeVariables>;
+export function createPunchCode(dc: DataConnect, vars: CreatePunchCodeVariables): MutationPromise<CreatePunchCodeData, CreatePunchCodeVariables>;
+
+interface RedeemPunchCodeRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: RedeemPunchCodeVariables): MutationRef<RedeemPunchCodeData, RedeemPunchCodeVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: RedeemPunchCodeVariables): MutationRef<RedeemPunchCodeData, RedeemPunchCodeVariables>;
+  operationName: string;
+}
+export const redeemPunchCodeRef: RedeemPunchCodeRef;
+
+export function redeemPunchCode(vars: RedeemPunchCodeVariables): MutationPromise<RedeemPunchCodeData, RedeemPunchCodeVariables>;
+export function redeemPunchCode(dc: DataConnect, vars: RedeemPunchCodeVariables): MutationPromise<RedeemPunchCodeData, RedeemPunchCodeVariables>;
+
+interface AddPunchRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: AddPunchVariables): MutationRef<AddPunchData, AddPunchVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: AddPunchVariables): MutationRef<AddPunchData, AddPunchVariables>;
+  operationName: string;
+}
+export const addPunchRef: AddPunchRef;
+
+export function addPunch(vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
+export function addPunch(dc: DataConnect, vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
+
+interface MarkPunchCardCompletedRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+  operationName: string;
+}
+export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
+
+export function markPunchCardCompleted(vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+export function markPunchCardCompleted(dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+
 interface GetUserRef {
   /* Allow users to create refs without passing in DataConnect */
   (vars: GetUserVariables): QueryRef<GetUserData, GetUserVariables>;
@@ -800,88 +884,4 @@ export const getSimilarBusinessesRef: GetSimilarBusinessesRef;
 
 export function getSimilarBusinesses(vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
 export function getSimilarBusinesses(dc: DataConnect, vars: GetSimilarBusinessesVariables): QueryPromise<GetSimilarBusinessesData, GetSimilarBusinessesVariables>;
-
-interface CreateUserRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateUserVariables): MutationRef<CreateUserData, CreateUserVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateUserVariables): MutationRef<CreateUserData, CreateUserVariables>;
-  operationName: string;
-}
-export const createUserRef: CreateUserRef;
-
-export function createUser(vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
-export function createUser(dc: DataConnect, vars: CreateUserVariables): MutationPromise<CreateUserData, CreateUserVariables>;
-
-interface CreateBusinessRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreateBusinessVariables): MutationRef<CreateBusinessData, CreateBusinessVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreateBusinessVariables): MutationRef<CreateBusinessData, CreateBusinessVariables>;
-  operationName: string;
-}
-export const createBusinessRef: CreateBusinessRef;
-
-export function createBusiness(vars: CreateBusinessVariables): MutationPromise<CreateBusinessData, CreateBusinessVariables>;
-export function createBusiness(dc: DataConnect, vars: CreateBusinessVariables): MutationPromise<CreateBusinessData, CreateBusinessVariables>;
-
-interface CreatePunchCardRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreatePunchCardVariables): MutationRef<CreatePunchCardData, CreatePunchCardVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreatePunchCardVariables): MutationRef<CreatePunchCardData, CreatePunchCardVariables>;
-  operationName: string;
-}
-export const createPunchCardRef: CreatePunchCardRef;
-
-export function createPunchCard(vars: CreatePunchCardVariables): MutationPromise<CreatePunchCardData, CreatePunchCardVariables>;
-export function createPunchCard(dc: DataConnect, vars: CreatePunchCardVariables): MutationPromise<CreatePunchCardData, CreatePunchCardVariables>;
-
-interface CreatePunchCodeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: CreatePunchCodeVariables): MutationRef<CreatePunchCodeData, CreatePunchCodeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: CreatePunchCodeVariables): MutationRef<CreatePunchCodeData, CreatePunchCodeVariables>;
-  operationName: string;
-}
-export const createPunchCodeRef: CreatePunchCodeRef;
-
-export function createPunchCode(vars: CreatePunchCodeVariables): MutationPromise<CreatePunchCodeData, CreatePunchCodeVariables>;
-export function createPunchCode(dc: DataConnect, vars: CreatePunchCodeVariables): MutationPromise<CreatePunchCodeData, CreatePunchCodeVariables>;
-
-interface RedeemPunchCodeRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: RedeemPunchCodeVariables): MutationRef<RedeemPunchCodeData, RedeemPunchCodeVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: RedeemPunchCodeVariables): MutationRef<RedeemPunchCodeData, RedeemPunchCodeVariables>;
-  operationName: string;
-}
-export const redeemPunchCodeRef: RedeemPunchCodeRef;
-
-export function redeemPunchCode(vars: RedeemPunchCodeVariables): MutationPromise<RedeemPunchCodeData, RedeemPunchCodeVariables>;
-export function redeemPunchCode(dc: DataConnect, vars: RedeemPunchCodeVariables): MutationPromise<RedeemPunchCodeData, RedeemPunchCodeVariables>;
-
-interface AddPunchRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: AddPunchVariables): MutationRef<AddPunchData, AddPunchVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: AddPunchVariables): MutationRef<AddPunchData, AddPunchVariables>;
-  operationName: string;
-}
-export const addPunchRef: AddPunchRef;
-
-export function addPunch(vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
-export function addPunch(dc: DataConnect, vars: AddPunchVariables): MutationPromise<AddPunchData, AddPunchVariables>;
-
-interface MarkPunchCardCompletedRef {
-  /* Allow users to create refs without passing in DataConnect */
-  (vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
-  /* Allow users to pass in custom DataConnect instances */
-  (dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationRef<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
-  operationName: string;
-}
-export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
-
-export function markPunchCardCompleted(vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
-export function markPunchCardCompleted(dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
 

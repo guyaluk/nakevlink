@@ -5,8 +5,6 @@ import { getCategoryById } from '../../constants/categories';
 import { RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CustomerLayout from '../layouts/CustomerLayout';
-import TestDataCreator from '../test/TestDataCreator';
-import FirebaseConnectionTest from '../test/FirebaseConnectionTest';
 
 interface PunchCard {
   id: string;
@@ -308,16 +306,6 @@ const CustomerDashboard: React.FC = () => {
                   <p className="text-gray-600 mb-8 max-w-md mx-auto">
                     Start collecting punch cards from your favorite businesses to earn rewards!
                   </p>
-                  
-                  {/* Firebase Connection Test */}
-                  <div className="mb-8">
-                    <FirebaseConnectionTest />
-                  </div>
-                  
-                  {/* Test Data Creator */}
-                  <div className="mb-8">
-                    <TestDataCreator />
-                  </div>
                   
                   <button 
                     onClick={handleDiscoveryClick}

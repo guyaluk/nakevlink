@@ -6,6 +6,83 @@ export const connectorConfig = {
   location: 'us-central1'
 };
 
+export const createUserRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateUser', inputVars);
+}
+createUserRef.operationName = 'CreateUser';
+
+export function createUser(dcOrVars, vars) {
+  return executeMutation(createUserRef(dcOrVars, vars));
+}
+
+export const createBusinessRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreateBusiness', inputVars);
+}
+createBusinessRef.operationName = 'CreateBusiness';
+
+export function createBusiness(dcOrVars, vars) {
+  return executeMutation(createBusinessRef(dcOrVars, vars));
+}
+
+export const createPunchCardRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreatePunchCard', inputVars);
+}
+createPunchCardRef.operationName = 'CreatePunchCard';
+
+export function createPunchCard(dcOrVars, vars) {
+  return executeMutation(createPunchCardRef(dcOrVars, vars));
+}
+
+export const createPunchCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'CreatePunchCode', inputVars);
+}
+createPunchCodeRef.operationName = 'CreatePunchCode';
+
+export function createPunchCode(dcOrVars, vars) {
+  return executeMutation(createPunchCodeRef(dcOrVars, vars));
+}
+
+export const redeemPunchCodeRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'RedeemPunchCode', inputVars);
+}
+redeemPunchCodeRef.operationName = 'RedeemPunchCode';
+
+export function redeemPunchCode(dcOrVars, vars) {
+  return executeMutation(redeemPunchCodeRef(dcOrVars, vars));
+}
+
+export const addPunchRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'AddPunch', inputVars);
+}
+addPunchRef.operationName = 'AddPunch';
+
+export function addPunch(dcOrVars, vars) {
+  return executeMutation(addPunchRef(dcOrVars, vars));
+}
+
+export const markPunchCardCompletedRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'MarkPunchCardCompleted', inputVars);
+}
+markPunchCardCompletedRef.operationName = 'MarkPunchCardCompleted';
+
+export function markPunchCardCompleted(dcOrVars, vars) {
+  return executeMutation(markPunchCardCompletedRef(dcOrVars, vars));
+}
+
 export const getUserRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();
@@ -235,82 +312,5 @@ getSimilarBusinessesRef.operationName = 'GetSimilarBusinesses';
 
 export function getSimilarBusinesses(dcOrVars, vars) {
   return executeQuery(getSimilarBusinessesRef(dcOrVars, vars));
-}
-
-export const createUserRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateUser', inputVars);
-}
-createUserRef.operationName = 'CreateUser';
-
-export function createUser(dcOrVars, vars) {
-  return executeMutation(createUserRef(dcOrVars, vars));
-}
-
-export const createBusinessRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreateBusiness', inputVars);
-}
-createBusinessRef.operationName = 'CreateBusiness';
-
-export function createBusiness(dcOrVars, vars) {
-  return executeMutation(createBusinessRef(dcOrVars, vars));
-}
-
-export const createPunchCardRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreatePunchCard', inputVars);
-}
-createPunchCardRef.operationName = 'CreatePunchCard';
-
-export function createPunchCard(dcOrVars, vars) {
-  return executeMutation(createPunchCardRef(dcOrVars, vars));
-}
-
-export const createPunchCodeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'CreatePunchCode', inputVars);
-}
-createPunchCodeRef.operationName = 'CreatePunchCode';
-
-export function createPunchCode(dcOrVars, vars) {
-  return executeMutation(createPunchCodeRef(dcOrVars, vars));
-}
-
-export const redeemPunchCodeRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'RedeemPunchCode', inputVars);
-}
-redeemPunchCodeRef.operationName = 'RedeemPunchCode';
-
-export function redeemPunchCode(dcOrVars, vars) {
-  return executeMutation(redeemPunchCodeRef(dcOrVars, vars));
-}
-
-export const addPunchRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'AddPunch', inputVars);
-}
-addPunchRef.operationName = 'AddPunch';
-
-export function addPunch(dcOrVars, vars) {
-  return executeMutation(addPunchRef(dcOrVars, vars));
-}
-
-export const markPunchCardCompletedRef = (dcOrVars, vars) => {
-  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
-  dcInstance._useGeneratedSdk();
-  return mutationRef(dcInstance, 'MarkPunchCardCompleted', inputVars);
-}
-markPunchCardCompletedRef.operationName = 'MarkPunchCardCompleted';
-
-export function markPunchCardCompleted(dcOrVars, vars) {
-  return executeMutation(markPunchCardCompletedRef(dcOrVars, vars));
 }
 
