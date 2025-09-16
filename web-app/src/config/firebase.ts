@@ -27,7 +27,13 @@ export const dataConnect = getDataConnect(app, connectorConfig);
 console.log('Firebase config: USE_EMULATOR =', import.meta.env.VITE_FIREBASE_USE_EMULATOR);
 console.log('Firebase config: PROJECT_ID =', import.meta.env.VITE_FIREBASE_PROJECT_ID);
 
-if (import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true') {
+// Only use emulators if explicitly set to 'true' AND we're not in production
+const useEmulators = import.meta.env.VITE_FIREBASE_USE_EMULATOR === 'true' &&
+                    (import.meta.env.DEV || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
+
+console.log('Firebase: useEmulators =', useEmulators, 'DEV =', import.meta.env.DEV, 'hostname =', window.location.hostname);
+
+if (useEmulators) {
   try {
     console.log('Firebase: Attempting to connect to emulators');
     
