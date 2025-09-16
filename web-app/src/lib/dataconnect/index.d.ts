@@ -40,6 +40,8 @@ export interface CreateBusinessVariables {
   description?: string | null;
   punchNum?: number | null;
   expirationDurationInDays?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   createdDatetime?: TimestampString | null;
 }
 
@@ -118,6 +120,8 @@ export interface GetActiveUserPunchCardForBusinessData {
       phoneNumber?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -138,6 +142,8 @@ export interface GetAllBusinessesData {
     categoryId: number;
     image?: string | null;
     address?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 
@@ -154,6 +160,8 @@ export interface GetBusinessByEmailData {
     description?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key)[];
 }
@@ -175,6 +183,8 @@ export interface GetBusinessData {
     description?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key;
 }
@@ -247,6 +257,8 @@ export interface GetBusinessesByCategoriesData {
     contactName?: string | null;
     email?: string | null;
     phoneNumber?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 
@@ -282,6 +294,8 @@ export interface GetBusinessesForRecommendationsData {
     contactName?: string | null;
     email?: string | null;
     phoneNumber?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key)[];
 }
@@ -296,6 +310,8 @@ export interface GetPopularBusinessesData {
     image?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 
@@ -321,6 +337,8 @@ export interface GetPunchCardByIdData {
       phoneNumber?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
       user: {
         id: string;
@@ -392,6 +410,8 @@ export interface GetSimilarBusinessesData {
       image?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key)[];
 }
 
@@ -452,6 +472,8 @@ export interface GetUserForRecommendationsData {
         image?: string | null;
         punchNum?: number | null;
         expirationDurationInDays?: number | null;
+        latitude?: number | null;
+        longitude?: number | null;
       } & Business_Key;
     } & PunchCard_Key)[];
 }
@@ -475,6 +497,8 @@ export interface GetUserPunchCardForBusinessData {
       image?: string | null;
       description?: string | null;
       address?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -499,6 +523,8 @@ export interface GetUserPunchCardsData {
       image?: string | null;
       description?: string | null;
       address?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -542,6 +568,16 @@ export interface RedeemPunchCodeData {
 export interface RedeemPunchCodeVariables {
   codeId: string;
   usedAt: TimestampString;
+}
+
+export interface UpdateBusinessCoordinatesData {
+  business_update?: Business_Key | null;
+}
+
+export interface UpdateBusinessCoordinatesVariables {
+  businessId: string;
+  latitude: number;
+  longitude: number;
 }
 
 export interface User_Key {
@@ -632,6 +668,18 @@ export const markPunchCardCompletedRef: MarkPunchCardCompletedRef;
 
 export function markPunchCardCompleted(vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
 export function markPunchCardCompleted(dc: DataConnect, vars: MarkPunchCardCompletedVariables): MutationPromise<MarkPunchCardCompletedData, MarkPunchCardCompletedVariables>;
+
+interface UpdateBusinessCoordinatesRef {
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateBusinessCoordinatesVariables): MutationRef<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+  /* Allow users to pass in custom DataConnect instances */
+  (dc: DataConnect, vars: UpdateBusinessCoordinatesVariables): MutationRef<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+  operationName: string;
+}
+export const updateBusinessCoordinatesRef: UpdateBusinessCoordinatesRef;
+
+export function updateBusinessCoordinates(vars: UpdateBusinessCoordinatesVariables): MutationPromise<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+export function updateBusinessCoordinates(dc: DataConnect, vars: UpdateBusinessCoordinatesVariables): MutationPromise<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
 
 interface GetUserRef {
   /* Allow users to create refs without passing in DataConnect */

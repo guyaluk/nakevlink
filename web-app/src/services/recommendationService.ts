@@ -5,7 +5,7 @@
  * and provides a clean API for the UI components to consume personalized recommendations.
  */
 
-import { 
+import {
   generateRecommendations,
   buildUserProfile,
   getRecommendationStats,
@@ -14,9 +14,10 @@ import {
   type RecommendationConfig,
   type UserLocation,
   type UserProfile,
-  type BusinessData 
+  type BusinessData
 } from '@/utils/recommendations';
 import { retryWithBackoff as retryWithExponentialBackoff } from '@/utils/retry';
+import { geocodeAddressWithRetry } from '@/services/geocodingService';
 
 // =============================================================================
 // TYPE DEFINITIONS FOR DATA CONNECT INTEGRATION
@@ -52,6 +53,8 @@ interface DataConnectBusiness {
   contactName?: string;
   email?: string;
   phoneNumber?: string;
+  latitude?: number;
+  longitude?: number;
   createdDatetime?: any; // Timestamp
 }
 
@@ -88,7 +91,7 @@ export class RecommendationService {
     config?: Partial<RecommendationConfig>
   ): Promise<RecommendationResult[]> {
     const cacheKey = `${userId}-${userLocation?.latitude || 'no-lat'}-${userLocation?.longitude || 'no-lon'}`;
-    
+
     // Check cache first
     const cached = this.cachedRecommendations.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
@@ -99,10 +102,15 @@ export class RecommendationService {
     try {
       // Get user profile and punch cards
       const userProfile = await this.getUserProfileForRecommendations(userId);
-      
+
       // Get all available businesses
-      const businesses = await this.getBusinessesForRecommendations();
-      
+      let businesses = await this.getBusinessesForRecommendations();
+
+      // Lazy migration: geocode businesses without coordinates if user location is available
+      if (userLocation) {
+        businesses = await this.ensureBusinessCoordinates(businesses);
+      }
+
       // Generate recommendations
       const recommendations = generateRecommendations(
         userProfile,
@@ -122,7 +130,7 @@ export class RecommendationService {
 
     } catch (error) {
       console.error('Error generating recommendations:', error);
-      
+
       // Fallback to popular businesses if recommendation fails
       return this.getFallbackRecommendations(userId);
     }
@@ -193,6 +201,75 @@ export class RecommendationService {
   clearAllCache(): void {
     this.cachedRecommendations.clear();
     console.log('Cleared all recommendation cache');
+  }
+
+  /**
+   * Lazy migration: Ensure businesses have coordinates by geocoding missing ones
+   */
+  private async ensureBusinessCoordinates(businesses: BusinessData[]): Promise<BusinessData[]> {
+    const businessesToGeocode = businesses.filter(business =>
+      business.address &&
+      business.address.trim().length > 0 &&
+      (business.latitude === null || business.latitude === undefined || business.longitude === null || business.longitude === undefined)
+    );
+
+    if (businessesToGeocode.length === 0) {
+      return businesses;
+    }
+
+    console.log(`Lazy migration: Found ${businessesToGeocode.length} businesses without coordinates, geocoding...`);
+
+    // Process businesses in small batches to respect rate limits
+    const batchSize = 3;
+    const updatedBusinesses = [...businesses];
+
+    for (let i = 0; i < businessesToGeocode.length; i += batchSize) {
+      const batch = businessesToGeocode.slice(i, i + batchSize);
+
+      await Promise.all(batch.map(async (business) => {
+        try {
+          console.log(`Geocoding business: ${business.name} at ${business.address}`);
+
+          const coordinates = await geocodeAddressWithRetry(business.address!.trim());
+
+          if (coordinates) {
+            // Update the business in the database
+            const { updateBusinessCoordinates } = await import('@/lib/dataconnect');
+            await updateBusinessCoordinates({
+              businessId: business.id,
+              latitude: coordinates.latitude,
+              longitude: coordinates.longitude
+            });
+
+            // Update the business in our local array
+            const businessIndex = updatedBusinesses.findIndex(b => b.id === business.id);
+            if (businessIndex !== -1) {
+              updatedBusinesses[businessIndex] = {
+                ...updatedBusinesses[businessIndex],
+                latitude: coordinates.latitude,
+                longitude: coordinates.longitude
+              };
+            }
+
+            console.log(`Successfully geocoded ${business.name}: ${coordinates.latitude}, ${coordinates.longitude}`);
+          } else {
+            console.warn(`Failed to geocode business: ${business.name} at ${business.address}`);
+          }
+        } catch (error) {
+          console.error(`Error geocoding business ${business.name}:`, error);
+        }
+      }));
+
+      // Add a small delay between batches to respect rate limits
+      if (i + batchSize < businessesToGeocode.length) {
+        await new Promise(resolve => setTimeout(resolve, 1200)); // 1.2 seconds between batches
+      }
+    }
+
+    // Clear cache after updating coordinates to ensure fresh data
+    this.clearAllCache();
+
+    return updatedBusinesses;
   }
 
   // =============================================================================
@@ -270,8 +347,8 @@ export class RecommendationService {
       image: business.image,
       punchNum: business.punchNum,
       expirationDurationInDays: business.expirationDurationInDays,
-      // Note: latitude/longitude not available in current schema
-      // These can be added later when location data is integrated
+      latitude: business.latitude,
+      longitude: business.longitude,
     };
   }
 }

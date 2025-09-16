@@ -91,6 +91,18 @@ exports.markPunchCardCompleted = function markPunchCardCompleted(dcOrVars, vars)
   return executeMutation(markPunchCardCompletedRef(dcOrVars, vars));
 };
 
+const updateBusinessCoordinatesRef = (dcOrVars, vars) => {
+  const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
+  dcInstance._useGeneratedSdk();
+  return mutationRef(dcInstance, 'UpdateBusinessCoordinates', inputVars);
+}
+updateBusinessCoordinatesRef.operationName = 'UpdateBusinessCoordinates';
+exports.updateBusinessCoordinatesRef = updateBusinessCoordinatesRef;
+
+exports.updateBusinessCoordinates = function updateBusinessCoordinates(dcOrVars, vars) {
+  return executeMutation(updateBusinessCoordinatesRef(dcOrVars, vars));
+};
+
 const getUserRef = (dcOrVars, vars) => {
   const { dc: dcInstance, vars: inputVars} = validateArgs(connectorConfig, dcOrVars, vars, true);
   dcInstance._useGeneratedSdk();

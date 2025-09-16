@@ -121,6 +121,30 @@ input Business_Data {
   """
   image_expr: String_Expr
   """
+  ✨ Generated from Field `Business`.`latitude` of type `Float`
+  """
+  latitude: Float
+  """
+  ✨ `_expr` server value variant of `latitude` (✨ Generated from Field `Business`.`latitude` of type `Float`)
+  """
+  latitude_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `latitude` (✨ Generated from Field `Business`.`latitude` of type `Float`)
+  """
+  latitude_update: [Float_Update!]
+  """
+  ✨ Generated from Field `Business`.`longitude` of type `Float`
+  """
+  longitude: Float
+  """
+  ✨ `_expr` server value variant of `longitude` (✨ Generated from Field `Business`.`longitude` of type `Float`)
+  """
+  longitude_expr: Float_Expr
+  """
+  ✨ `_update` server value variant of `longitude` (✨ Generated from Field `Business`.`longitude` of type `Float`)
+  """
+  longitude_update: [Float_Update!]
+  """
   ✨ Generated from Field `Business`.`name` of type `String!`
   """
   name: String
@@ -201,6 +225,14 @@ input Business_Filter {
   ✨ Generated from Field `Business`.`image` of type `String`
   """
   image: String_Filter
+  """
+  ✨ Generated from Field `Business`.`latitude` of type `Float`
+  """
+  latitude: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude` of type `Float`
+  """
+  longitude: Float_Filter
   """
   ✨ Generated from Field `Business`.`name` of type `String!`
   """
@@ -296,6 +328,14 @@ input Business_Having {
   """
   image_count: Int_Filter
   """
+  ✨ Generated from Field `Business`.`latitude_count` of type `Int!`
+  """
+  latitude_count: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude_count` of type `Int!`
+  """
+  longitude_count: Int_Filter
+  """
   ✨ Generated from Field `Business`.`name_count` of type `Int!`
   """
   name_count: Int_Filter
@@ -316,6 +356,14 @@ input Business_Having {
   """
   expirationDurationInDays_sum: Int_Filter
   """
+  ✨ Generated from Field `Business`.`latitude_sum` of type `Float`
+  """
+  latitude_sum: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude_sum` of type `Float`
+  """
+  longitude_sum: Float_Filter
+  """
   ✨ Generated from Field `Business`.`punchNum_sum` of type `Int`
   """
   punchNum_sum: Int_Filter
@@ -327,6 +375,14 @@ input Business_Having {
   ✨ Generated from Field `Business`.`expirationDurationInDays_avg` of type `Float`
   """
   expirationDurationInDays_avg: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`latitude_avg` of type `Float`
+  """
+  latitude_avg: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude_avg` of type `Float`
+  """
+  longitude_avg: Float_Filter
   """
   ✨ Generated from Field `Business`.`punchNum_avg` of type `Float`
   """
@@ -344,6 +400,14 @@ input Business_Having {
   """
   expirationDurationInDays_min: Int_Filter
   """
+  ✨ Generated from Field `Business`.`latitude_min` of type `Float`
+  """
+  latitude_min: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude_min` of type `Float`
+  """
+  longitude_min: Float_Filter
+  """
   ✨ Generated from Field `Business`.`punchNum_min` of type `Int`
   """
   punchNum_min: Int_Filter
@@ -359,6 +423,14 @@ input Business_Having {
   ✨ Generated from Field `Business`.`expirationDurationInDays_max` of type `Int`
   """
   expirationDurationInDays_max: Int_Filter
+  """
+  ✨ Generated from Field `Business`.`latitude_max` of type `Float`
+  """
+  latitude_max: Float_Filter
+  """
+  ✨ Generated from Field `Business`.`longitude_max` of type `Float`
+  """
+  longitude_max: Float_Filter
   """
   ✨ Generated from Field `Business`.`punchNum_max` of type `Int`
   """
@@ -431,6 +503,14 @@ input Business_Order {
   """
   image: OrderDirection
   """
+  ✨ Generated from Field `Business`.`latitude` of type `Float`
+  """
+  latitude: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude` of type `Float`
+  """
+  longitude: OrderDirection
+  """
   ✨ Generated from Field `Business`.`name` of type `String!`
   """
   name: OrderDirection
@@ -483,6 +563,14 @@ input Business_Order {
   """
   image_count: OrderDirection
   """
+  ✨ Generated from Field `Business`.`latitude_count` of type `Int!`
+  """
+  latitude_count: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude_count` of type `Int!`
+  """
+  longitude_count: OrderDirection
+  """
   ✨ Generated from Field `Business`.`name_count` of type `Int!`
   """
   name_count: OrderDirection
@@ -503,6 +591,14 @@ input Business_Order {
   """
   expirationDurationInDays_sum: OrderDirection
   """
+  ✨ Generated from Field `Business`.`latitude_sum` of type `Float`
+  """
+  latitude_sum: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude_sum` of type `Float`
+  """
+  longitude_sum: OrderDirection
+  """
   ✨ Generated from Field `Business`.`punchNum_sum` of type `Int`
   """
   punchNum_sum: OrderDirection
@@ -514,6 +610,14 @@ input Business_Order {
   ✨ Generated from Field `Business`.`expirationDurationInDays_avg` of type `Float`
   """
   expirationDurationInDays_avg: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`latitude_avg` of type `Float`
+  """
+  latitude_avg: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude_avg` of type `Float`
+  """
+  longitude_avg: OrderDirection
   """
   ✨ Generated from Field `Business`.`punchNum_avg` of type `Float`
   """
@@ -531,6 +635,14 @@ input Business_Order {
   """
   expirationDurationInDays_min: OrderDirection
   """
+  ✨ Generated from Field `Business`.`latitude_min` of type `Float`
+  """
+  latitude_min: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude_min` of type `Float`
+  """
+  longitude_min: OrderDirection
+  """
   ✨ Generated from Field `Business`.`punchNum_min` of type `Int`
   """
   punchNum_min: OrderDirection
@@ -546,6 +658,14 @@ input Business_Order {
   ✨ Generated from Field `Business`.`expirationDurationInDays_max` of type `Int`
   """
   expirationDurationInDays_max: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`latitude_max` of type `Float`
+  """
+  latitude_max: OrderDirection
+  """
+  ✨ Generated from Field `Business`.`longitude_max` of type `Float`
+  """
+  longitude_max: OrderDirection
   """
   ✨ Generated from Field `Business`.`punchNum_max` of type `Int`
   """

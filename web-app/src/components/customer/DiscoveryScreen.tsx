@@ -5,9 +5,10 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { CATEGORIES, getCategoryById } from '@/constants/categories';
-import { ArrowLeft, Search, MapPin } from 'lucide-react';
+import { ArrowLeft, Search, MapPin, MapPinOff } from 'lucide-react';
 import CustomerLayout from '../layouts/CustomerLayout';
-import { getPersonalizedRecommendations, type RecommendationResult } from '@/services/recommendationService';
+import { getPersonalizedRecommendations, type RecommendationResult, type UserLocation } from '@/services/recommendationService';
+import { calculateDistance } from '@/utils/recommendations';
 
 interface Business {
   id: string;
@@ -17,6 +18,8 @@ interface Business {
   image?: string;
   address?: string;
   punchNum?: number;
+  latitude?: number;
+  longitude?: number;
 }
 
 const DiscoveryScreen: React.FC = () => {
@@ -31,6 +34,9 @@ const DiscoveryScreen: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [recommendations, setRecommendations] = useState<RecommendationResult[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(true);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
+  const [locationPermissionAsked, setLocationPermissionAsked] = useState(false);
 
   // Fetch all businesses on component mount
   useEffect(() => {
@@ -95,17 +101,113 @@ const DiscoveryScreen: React.FC = () => {
     fetchBusinesses();
   }, []);
 
-  // Fetch personalized recommendations
+  // Get user location with caching
+  useEffect(() => {
+    const LOCATION_CACHE_KEY = 'nakevlink_user_location';
+    const LOCATION_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
+    const getUserLocation = () => {
+      // Check for cached location first
+      try {
+        const cachedLocationStr = localStorage.getItem(LOCATION_CACHE_KEY);
+        if (cachedLocationStr) {
+          const cachedData = JSON.parse(cachedLocationStr);
+          const isExpired = Date.now() - cachedData.timestamp > LOCATION_CACHE_DURATION;
+
+          if (!isExpired && cachedData.location) {
+            console.log('Using cached user location:', cachedData.location);
+            setUserLocation(cachedData.location);
+            setLocationError(null);
+            return; // Use cached location, don't request new one
+          }
+        }
+      } catch (error) {
+        console.warn('Failed to parse cached location:', error);
+        localStorage.removeItem(LOCATION_CACHE_KEY);
+      }
+
+      // Request fresh location if no valid cache
+      if (!navigator.geolocation) {
+        setLocationError('Geolocation is not supported by this browser');
+        return;
+      }
+
+      setLocationPermissionAsked(true);
+
+      const timeoutId = setTimeout(() => {
+        setLocationError('Location request timed out');
+      }, 10000); // 10 second timeout
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          clearTimeout(timeoutId);
+          const location: UserLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+
+          // Cache the location
+          try {
+            const cacheData = {
+              location,
+              timestamp: Date.now()
+            };
+            localStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(cacheData));
+            console.log('User location obtained and cached:', location);
+          } catch (error) {
+            console.warn('Failed to cache location:', error);
+          }
+
+          setUserLocation(location);
+          setLocationError(null);
+        },
+        (error) => {
+          clearTimeout(timeoutId);
+          console.warn('Geolocation error:', error);
+
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              setLocationError('Location access denied');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              setLocationError('Location information unavailable');
+              break;
+            case error.TIMEOUT:
+              setLocationError('Location request timed out');
+              break;
+            default:
+              setLocationError('Failed to get location');
+              break;
+          }
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 8000,
+          maximumAge: 300000 // 5 minutes
+        }
+      );
+    };
+
+    // Request location on component mount
+    getUserLocation();
+  }, []);
+
+  // Fetch personalized recommendations (react to user and location changes)
   useEffect(() => {
     const fetchRecommendations = async () => {
       if (!user) return;
-      
+
       try {
         setLoadingRecommendations(true);
+        console.log('Fetching recommendations with location:', userLocation);
+
         const recs = await getPersonalizedRecommendations(
           user.uid,
-          undefined, // No location for now
-          { maxResults: 8 } // Limit to 8 recommendations
+          userLocation || undefined, // Use user location if available
+          {
+            maxResults: 8, // Limit to 8 recommendations
+            maxDistance: userLocation ? 25 : undefined // 25km radius if location available
+          }
         );
         setRecommendations(recs);
       } catch (error) {
@@ -115,11 +217,11 @@ const DiscoveryScreen: React.FC = () => {
         setLoadingRecommendations(false);
       }
     };
-    
-    fetchRecommendations();
-  }, [user]);
 
-  // Filter businesses based on search query and selected category
+    fetchRecommendations();
+  }, [user, userLocation]); // React to both user and location changes
+
+  // Filter and sort businesses based on search query, selected category, and distance
   useEffect(() => {
     let filtered = [...businesses];
 
@@ -138,8 +240,23 @@ const DiscoveryScreen: React.FC = () => {
       );
     }
 
+    // Sort by distance if user location is available
+    if (userLocation) {
+      filtered.sort((a, b) => {
+        const distanceA = (a.latitude && a.longitude)
+          ? calculateDistance(userLocation.latitude, userLocation.longitude, a.latitude, a.longitude)
+          : Infinity;
+        const distanceB = (b.latitude && b.longitude)
+          ? calculateDistance(userLocation.latitude, userLocation.longitude, b.latitude, b.longitude)
+          : Infinity;
+
+        // Sort closest first, businesses without coordinates go to the end
+        return distanceA - distanceB;
+      });
+    }
+
     setFilteredBusinesses(filtered);
-  }, [businesses, searchQuery, selectedCategory]);
+  }, [businesses, searchQuery, selectedCategory, userLocation]);
 
   const handleCategorySelect = (categoryId: number) => {
     if (selectedCategory === categoryId) {
@@ -169,6 +286,28 @@ const DiscoveryScreen: React.FC = () => {
       navigate('/login');
     } catch (error) {
       console.error('Failed to logout:', error);
+    }
+  };
+
+  const getDistanceText = (business: { latitude?: number | null; longitude?: number | null }) => {
+    // Only show distance if we have both user location and business coordinates
+    if (!userLocation ||
+        business.latitude === null || business.latitude === undefined ||
+        business.longitude === null || business.longitude === undefined) {
+      return null;
+    }
+
+    const distance = calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      business.latitude,
+      business.longitude
+    );
+
+    if (distance < 1) {
+      return `${Math.round(distance * 1000)}m`;
+    } else {
+      return `${distance.toFixed(1)}km`;
     }
   };
 
@@ -243,7 +382,10 @@ const DiscoveryScreen: React.FC = () => {
               Recommended for You
             </h2>
             <span className="text-sm text-muted-foreground">
-              Based on your preferences
+              {userLocation
+                ? 'Based on your preferences & location'
+                : 'Based on your preferences'
+              }
             </span>
           </div>
           
@@ -296,14 +438,21 @@ const DiscoveryScreen: React.FC = () => {
                             <span className="text-xs text-muted-foreground">
                               {category?.name} • {rec.business.punchNum || 10} punches
                             </span>
-                            {rec.business.address && (
-                              <div className="flex items-center text-xs text-muted-foreground">
-                                <MapPin className="w-3 h-3 mr-1" />
-                                <span className="truncate max-w-20">
-                                  {rec.business.address.split(',')[0]}
-                                </span>
-                              </div>
-                            )}
+                            <div className="flex items-center text-xs text-muted-foreground">
+                              {getDistanceText(rec.business) ? (
+                                <>
+                                  <MapPin className="w-3 h-3 mr-1 text-green-600" />
+                                  <span className="font-medium">{getDistanceText(rec.business)}</span>
+                                </>
+                              ) : rec.business.address ? (
+                                <>
+                                  <MapPin className="w-3 h-3 mr-1" />
+                                  <span className="truncate max-w-20">
+                                    {rec.business.address.split(',')[0]}
+                                  </span>
+                                </>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -328,8 +477,27 @@ const DiscoveryScreen: React.FC = () => {
             }
           </h2>
           <div className="flex items-center text-sm text-muted-foreground">
-            <MapPin className="w-4 h-4 mr-1" />
-            <span>Near you</span>
+            {userLocation ? (
+              <>
+                <MapPin className="w-4 h-4 mr-1 text-green-600" />
+                <span>Near you</span>
+              </>
+            ) : locationError ? (
+              <>
+                <MapPinOff className="w-4 h-4 mr-1 text-red-500" />
+                <span>Location unavailable</span>
+              </>
+            ) : locationPermissionAsked ? (
+              <>
+                <div className="w-4 h-4 mr-1 animate-spin rounded-full border-2 border-muted-foreground border-t-transparent"></div>
+                <span>Getting location...</span>
+              </>
+            ) : (
+              <>
+                <MapPinOff className="w-4 h-4 mr-1" />
+                <span>All businesses</span>
+              </>
+            )}
           </div>
         </div>
 
@@ -404,14 +572,21 @@ const DiscoveryScreen: React.FC = () => {
                           <span className="text-xs text-muted-foreground">
                             {category?.name} • {business.punchNum || 10} punches
                           </span>
-                          {business.address && (
-                            <div className="flex items-center text-xs text-muted-foreground">
-                              <MapPin className="w-3 h-3 mr-1" />
-                              <span className="truncate max-w-20">
-                                {business.address.split(',')[0]}
-                              </span>
-                            </div>
-                          )}
+                          <div className="flex items-center text-xs text-muted-foreground">
+                            {getDistanceText(business) ? (
+                              <>
+                                <MapPin className="w-3 h-3 mr-1 text-green-600" />
+                                <span className="font-medium">{getDistanceText(business)}</span>
+                              </>
+                            ) : business.address ? (
+                              <>
+                                <MapPin className="w-3 h-3 mr-1" />
+                                <span className="truncate max-w-20">
+                                  {business.address.split(',')[0]}
+                                </span>
+                              </>
+                            ) : null}
+                          </div>
                         </div>
                       </div>
                     </div>

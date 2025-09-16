@@ -157,6 +157,24 @@ extend type Business {
     distinct: Boolean = false
   ): Int! @fdc_generated(from: "Business.image", purpose: QUERY_COUNT)
   """
+  ✨ Count the number of rows in the `Business` table where the `latitude` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  latitude_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.latitude", purpose: QUERY_COUNT)
+  """
+  ✨ Count the number of rows in the `Business` table where the `longitude` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
+  """
+  longitude_count(
+    """
+    Set to true to count the number of distinct values.
+    """
+    distinct: Boolean = false
+  ): Int! @fdc_generated(from: "Business.longitude", purpose: QUERY_COUNT)
+  """
   ✨ Count the number of rows in the `Business` table where the `name` field is non-null. Pass the `distinct` argument to instead count the number of distinct values.
   """
   name_count(
@@ -202,6 +220,24 @@ extend type Business {
     distinct: Boolean = false
   ): Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_SUM)
   """
+  ✨ Sum the `latitude` field in the `Business` table.
+  """
+  latitude_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.latitude", purpose: QUERY_SUM)
+  """
+  ✨ Sum the `longitude` field in the `Business` table.
+  """
+  longitude_sum(
+    """
+    Set to true to sum the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.longitude", purpose: QUERY_SUM)
+  """
   ✨ Sum the `punchNum` field in the `Business` table.
   """
   punchNum_sum(
@@ -229,6 +265,24 @@ extend type Business {
     distinct: Boolean = false
   ): Float @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_AVG)
   """
+  ✨ Average the `latitude` field in the `Business` table.
+  """
+  latitude_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.latitude", purpose: QUERY_AVG)
+  """
+  ✨ Average the `longitude` field in the `Business` table.
+  """
+  longitude_avg(
+    """
+    Set to true to average the distinct values.
+    """
+    distinct: Boolean = false
+  ): Float @fdc_generated(from: "Business.longitude", purpose: QUERY_AVG)
+  """
   ✨ Average the `punchNum` field in the `Business` table.
   """
   punchNum_avg(
@@ -250,6 +304,14 @@ extend type Business {
   """
   expirationDurationInDays_min: Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_MIN)
   """
+  ✨ Minimum of the `latitude` field in the `Business` table.
+  """
+  latitude_min: Float @fdc_generated(from: "Business.latitude", purpose: QUERY_MIN)
+  """
+  ✨ Minimum of the `longitude` field in the `Business` table.
+  """
+  longitude_min: Float @fdc_generated(from: "Business.longitude", purpose: QUERY_MIN)
+  """
   ✨ Minimum of the `punchNum` field in the `Business` table.
   """
   punchNum_min: Int @fdc_generated(from: "Business.punchNum", purpose: QUERY_MIN)
@@ -265,6 +327,14 @@ extend type Business {
   ✨ Maximum of the `expirationDurationInDays` field in the `Business` table.
   """
   expirationDurationInDays_max: Int @fdc_generated(from: "Business.expirationDurationInDays", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `latitude` field in the `Business` table.
+  """
+  latitude_max: Float @fdc_generated(from: "Business.latitude", purpose: QUERY_MAX)
+  """
+  ✨ Maximum of the `longitude` field in the `Business` table.
+  """
+  longitude_max: Float @fdc_generated(from: "Business.longitude", purpose: QUERY_MAX)
   """
   ✨ Maximum of the `punchNum` field in the `Business` table.
   """

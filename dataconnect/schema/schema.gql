@@ -22,6 +22,9 @@ type Business @table(key: "id") {
   description: String
   punchNum: Int
   expirationDurationInDays: Int @default(expr: "30")
+  # Location coordinates for distance calculations
+  latitude: Float
+  longitude: Float
 }
 
 type PunchCard @table(key: "id") {

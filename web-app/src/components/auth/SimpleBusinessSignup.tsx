@@ -12,6 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ArrowLeft } from 'lucide-react';
 import { CATEGORIES } from '@/constants/categories';
 import { createBusiness } from '@/lib/dataconnect/esm/index.esm.js';
+import { geocodeAddressWithRetry } from '@/services/geocodingService';
 
 interface BusinessFormData {
   name: string;
@@ -177,6 +178,24 @@ const SimpleBusinessSignup: React.FC = () => {
           businessData.image = formData.businessImage;
         } else if (formData.businessImage) {
           console.warn('Image too large for Firestore, skipping image upload');
+        }
+
+        // Geocode the address to get coordinates
+        if (formData.address && formData.address.trim().length > 0) {
+          console.log('Geocoding business address:', formData.address);
+          try {
+            const coordinates = await geocodeAddressWithRetry(formData.address.trim());
+            if (coordinates) {
+              businessData.latitude = coordinates.latitude;
+              businessData.longitude = coordinates.longitude;
+              console.log('Geocoding successful:', coordinates);
+            } else {
+              console.warn('Geocoding failed for address:', formData.address);
+            }
+          } catch (geocodingError) {
+            console.error('Geocoding error:', geocodingError);
+            // Continue without coordinates - business creation shouldn't fail due to geocoding
+          }
         }
 
         console.log('Creating business with data:', businessData);

@@ -12,7 +12,7 @@ mutation CreateUser($id: String!, $name: String!, $email: String!, $favoriteCate
 }
 
 # Insert a new business
-mutation CreateBusiness($id: String, $name: String!, $contactName: String, $email: String, $phoneNumber: String, $address: String, $categoryId: Int!, $image: String, $description: String, $punchNum: Int, $expirationDurationInDays: Int, $createdDatetime: Timestamp) @auth(level: USER) {
+mutation CreateBusiness($id: String, $name: String!, $contactName: String, $email: String, $phoneNumber: String, $address: String, $categoryId: Int!, $image: String, $description: String, $punchNum: Int, $expirationDurationInDays: Int, $latitude: Float, $longitude: Float, $createdDatetime: Timestamp) @auth(level: USER) {
   business_insert(data: {
     id: $id,
     name: $name,
@@ -25,6 +25,8 @@ mutation CreateBusiness($id: String, $name: String!, $contactName: String, $emai
     description: $description,
     punchNum: $punchNum,
     expirationDurationInDays: $expirationDurationInDays,
+    latitude: $latitude,
+    longitude: $longitude,
     createdDatetime: $createdDatetime
   })
 }
@@ -73,5 +75,13 @@ mutation AddPunch($cardId: String!, $punchTime: Timestamp) @auth(level: USER) {
 mutation MarkPunchCardCompleted($cardId: String!, $completedAt: Timestamp) @auth(level: USER) {
   punchCard_update(id: $cardId, data: {
     completedAt: $completedAt
+  })
+}
+
+# Update business coordinates (for lazy migration)
+mutation UpdateBusinessCoordinates($businessId: String!, $latitude: Float!, $longitude: Float!) @auth(level: USER) {
+  business_update(id: $businessId, data: {
+    latitude: $latitude,
+    longitude: $longitude
   })
 }

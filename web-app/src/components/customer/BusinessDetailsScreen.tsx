@@ -7,6 +7,12 @@ import { getCategoryById } from '@/constants/categories';
 import { ArrowLeft, MapPin, ExternalLink } from 'lucide-react';
 import CustomerLayout from '../layouts/CustomerLayout';
 import BottomNavigation from './BottomNavigation';
+import { calculateDistance } from '@/utils/recommendations';
+
+type UserLocation = {
+  latitude: number;
+  longitude: number;
+};
 
 interface Business {
   id: string;
@@ -20,6 +26,8 @@ interface Business {
   description?: string | null;
   punchNum?: number | null;
   expirationDurationInDays?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   createdDatetime?: string | null;
 }
 
@@ -49,52 +57,92 @@ const BusinessDetailsScreen: React.FC = () => {
 
   const [business, setBusiness] = useState<Business | null>(null);
   const [existingCard, setExistingCard] = useState<PunchCard | null>(null);
-  const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
-  const [distance, setDistance] = useState<string>('');
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const [locationError, setLocationError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [creatingCard, setCreatingCard] = useState(false);
 
-  // Calculate distance between two coordinates using Haversine formula
-  const calculateDistance = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
-    const R = 6371; // Radius of the Earth in kilometers
-    const dLat = (lat2 - lat1) * Math.PI / 180;
-    const dLon = (lon2 - lon1) * Math.PI / 180;
-    const a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2);
-    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-    return R * c;
-  };
-
-  // Get user's current location
+  // Get user location with caching
   useEffect(() => {
+    const LOCATION_CACHE_KEY = 'nakevlink_user_location';
+    const LOCATION_CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+
     const getUserLocation = () => {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            setUserLocation({ lat: latitude, lng: longitude });
-            
-            // Mock business coordinates for distance calculation
-            // In a real app, these would come from the business data
-            const mockBusinessLat = latitude + (Math.random() - 0.5) * 0.01; // Nearby mock location
-            const mockBusinessLng = longitude + (Math.random() - 0.5) * 0.01;
-            
-            const dist = calculateDistance(latitude, longitude, mockBusinessLat, mockBusinessLng);
-            setDistance(dist < 1 ? `${Math.round(dist * 1000)}m` : `${dist.toFixed(1)}km`);
-          },
-          (error) => {
-            console.log('Location access denied:', error);
-            setDistance('Location unavailable');
+      // Check for cached location first
+      try {
+        const cachedLocationStr = localStorage.getItem(LOCATION_CACHE_KEY);
+        if (cachedLocationStr) {
+          const cachedData = JSON.parse(cachedLocationStr);
+          const isExpired = Date.now() - cachedData.timestamp > LOCATION_CACHE_DURATION;
+
+          if (!isExpired && cachedData.location) {
+            console.log('Using cached user location:', cachedData.location);
+            setUserLocation(cachedData.location);
+            setLocationError(null);
+            return; // Use cached location, don't request new one
           }
-        );
-      } else {
-        setDistance('Location not supported');
+        }
+      } catch (error) {
+        console.warn('Failed to parse cached location:', error);
+        localStorage.removeItem(LOCATION_CACHE_KEY);
       }
+
+      // Request fresh location if no valid cache
+      if (!navigator.geolocation) {
+        setLocationError('Geolocation is not supported by this browser');
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const location: UserLocation = {
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude
+          };
+
+          // Cache the location
+          try {
+            const cacheData = {
+              location,
+              timestamp: Date.now()
+            };
+            localStorage.setItem(LOCATION_CACHE_KEY, JSON.stringify(cacheData));
+            console.log('User location obtained and cached:', location);
+          } catch (error) {
+            console.warn('Failed to cache location:', error);
+          }
+
+          setUserLocation(location);
+          setLocationError(null);
+        },
+        (error) => {
+          console.warn('Geolocation error:', error);
+
+          switch (error.code) {
+            case error.PERMISSION_DENIED:
+              setLocationError('Location access denied');
+              break;
+            case error.POSITION_UNAVAILABLE:
+              setLocationError('Location information unavailable');
+              break;
+            case error.TIMEOUT:
+              setLocationError('Location request timed out');
+              break;
+            default:
+              setLocationError('Failed to get location');
+              break;
+          }
+        },
+        {
+          enableHighAccuracy: false,
+          timeout: 8000,
+          maximumAge: 300000 // 5 minutes
+        }
+      );
     };
 
+    // Request location on component mount
     getUserLocation();
   }, []);
 
@@ -207,6 +255,28 @@ const BusinessDetailsScreen: React.FC = () => {
   const handleViewCard = () => {
     if (existingCard) {
       navigate(`/customers/cards/${existingCard.id}`);
+    }
+  };
+
+  const getDistanceText = () => {
+    // Only show distance if we have both user location and business coordinates
+    if (!userLocation ||
+        business?.latitude === null || business?.latitude === undefined ||
+        business?.longitude === null || business?.longitude === undefined) {
+      return null;
+    }
+
+    const distance = calculateDistance(
+      userLocation.latitude,
+      userLocation.longitude,
+      business.latitude,
+      business.longitude
+    );
+
+    if (distance < 1) {
+      return `${Math.round(distance * 1000)}m`;
+    } else {
+      return `${distance.toFixed(1)}km`;
     }
   };
 
@@ -362,9 +432,9 @@ const BusinessDetailsScreen: React.FC = () => {
                   <MapPin className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                   <div className="flex-1">
                     <p className="text-foreground">{business.address}</p>
-                    {distance && (
+                    {getDistanceText() && (
                       <p className="text-sm text-muted-foreground mt-1">
-                        {distance} away
+                        {getDistanceText()} away
                       </p>
                     )}
                   </div>

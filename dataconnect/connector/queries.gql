@@ -25,6 +25,8 @@ query GetBusiness($id: String!) @auth(level: USER) {
     description
     punchNum
     expirationDurationInDays
+    latitude
+    longitude
     createdDatetime
   }
 }
@@ -52,6 +54,8 @@ query GetAllBusinesses @auth(level: PUBLIC) {
     categoryId
     image
     address
+    latitude
+    longitude
   }
 }
 
@@ -69,6 +73,8 @@ query GetBusinessByEmail($email: String!) @auth(level: USER) {
     description
     punchNum
     expirationDurationInDays
+    latitude
+    longitude
     createdDatetime
   }
 }
@@ -130,6 +136,8 @@ query GetUserPunchCards($userId: String!) @auth(level: USER) {
       image
       description
       address
+      latitude
+      longitude
     }
   }
 }
@@ -150,6 +158,8 @@ query GetUserPunchCardForBusiness($userId: String!, $businessId: String!) @auth(
       image
       description
       address
+      latitude
+      longitude
     }
   }
 }
@@ -181,6 +191,8 @@ query GetActiveUserPunchCardForBusiness($userId: String!, $businessId: String!, 
       phoneNumber
       punchNum
       expirationDurationInDays
+      latitude
+      longitude
     }
   }
 }
@@ -204,6 +216,8 @@ query GetPunchCardById($id: String!) @auth(level: USER) {
       phoneNumber
       punchNum
       expirationDurationInDays
+      latitude
+      longitude
     }
     user {
       id
@@ -302,6 +316,8 @@ query GetUserForRecommendations($userId: String!) @auth(level: USER) {
       image
       punchNum
       expirationDurationInDays
+      latitude
+      longitude
     }
   }
 }
@@ -320,6 +336,8 @@ query GetBusinessesForRecommendations @auth(level: PUBLIC) {
     contactName
     email
     phoneNumber
+    latitude
+    longitude
     createdDatetime
   }
 }
@@ -338,6 +356,8 @@ query GetBusinessesByCategories($categoryIds: [Int!]!) @auth(level: PUBLIC) {
     contactName
     email
     phoneNumber
+    latitude
+    longitude
   }
 }
 
@@ -367,6 +387,8 @@ query GetPopularBusinesses($limit: Int!) @auth(level: PUBLIC) {
     image
     punchNum
     expirationDurationInDays
+    latitude
+    longitude
   }
 }
 
@@ -386,5 +408,7 @@ query GetSimilarBusinesses($userId: String!, $excludeBusinessIds: [String!]!) @a
     image
     punchNum
     expirationDurationInDays
+    latitude
+    longitude
   }
 }

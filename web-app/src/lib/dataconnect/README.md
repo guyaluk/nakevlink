@@ -37,6 +37,7 @@ This README will guide you through the process of using the generated JavaScript
   - [*RedeemPunchCode*](#redeempunchcode)
   - [*AddPunch*](#addpunch)
   - [*MarkPunchCardCompleted*](#markpunchcardcompleted)
+  - [*UpdateBusinessCoordinates*](#updatebusinesscoordinates)
 
 # Accessing the connector
 A connector is a collection of Queries and Mutations. One SDK is generated for each connector - this SDK is generated for the connector `nakevlink-connector`. You can find more information about connectors in the [Data Connect documentation](https://firebase.google.com/docs/data-connect#how-does).
@@ -253,6 +254,8 @@ export interface GetBusinessData {
     description?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key;
 }
@@ -482,6 +485,8 @@ export interface GetAllBusinessesData {
     categoryId: number;
     image?: string | null;
     address?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 ```
@@ -591,6 +596,8 @@ export interface GetBusinessByEmailData {
     description?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key)[];
 }
@@ -1071,6 +1078,8 @@ export interface GetUserPunchCardsData {
       image?: string | null;
       description?: string | null;
       address?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -1196,6 +1205,8 @@ export interface GetUserPunchCardForBusinessData {
       image?: string | null;
       description?: string | null;
       address?: string | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -1327,6 +1338,8 @@ export interface GetActiveUserPunchCardForBusinessData {
       phoneNumber?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
   } & PunchCard_Key)[];
 }
@@ -1458,6 +1471,8 @@ export interface GetPunchCardByIdData {
       phoneNumber?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key;
       user: {
         id: string;
@@ -1964,6 +1979,8 @@ export interface GetUserForRecommendationsData {
         image?: string | null;
         punchNum?: number | null;
         expirationDurationInDays?: number | null;
+        latitude?: number | null;
+        longitude?: number | null;
       } & Business_Key;
     } & PunchCard_Key)[];
 }
@@ -2084,6 +2101,8 @@ export interface GetBusinessesForRecommendationsData {
     contactName?: string | null;
     email?: string | null;
     phoneNumber?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
     createdDatetime?: TimestampString | null;
   } & Business_Key)[];
 }
@@ -2194,6 +2213,8 @@ export interface GetBusinessesByCategoriesData {
     contactName?: string | null;
     email?: string | null;
     phoneNumber?: string | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 ```
@@ -2431,6 +2452,8 @@ export interface GetPopularBusinessesData {
     image?: string | null;
     punchNum?: number | null;
     expirationDurationInDays?: number | null;
+    latitude?: number | null;
+    longitude?: number | null;
   } & Business_Key)[];
 }
 ```
@@ -2555,6 +2578,8 @@ export interface GetSimilarBusinessesData {
       image?: string | null;
       punchNum?: number | null;
       expirationDurationInDays?: number | null;
+      latitude?: number | null;
+      longitude?: number | null;
     } & Business_Key)[];
 }
 ```
@@ -2808,6 +2833,8 @@ export interface CreateBusinessVariables {
   description?: string | null;
   punchNum?: number | null;
   expirationDurationInDays?: number | null;
+  latitude?: number | null;
+  longitude?: number | null;
   createdDatetime?: TimestampString | null;
 }
 ```
@@ -2839,6 +2866,8 @@ const createBusinessVars: CreateBusinessVariables = {
   description: ..., // optional
   punchNum: ..., // optional
   expirationDurationInDays: ..., // optional
+  latitude: ..., // optional
+  longitude: ..., // optional
   createdDatetime: ..., // optional
 };
 
@@ -2846,7 +2875,7 @@ const createBusinessVars: CreateBusinessVariables = {
 // You can use the `await` keyword to wait for the promise to resolve.
 const { data } = await createBusiness(createBusinessVars);
 // Variables can be defined inline as well.
-const { data } = await createBusiness({ id: ..., name: ..., contactName: ..., email: ..., phoneNumber: ..., address: ..., categoryId: ..., image: ..., description: ..., punchNum: ..., expirationDurationInDays: ..., createdDatetime: ..., });
+const { data } = await createBusiness({ id: ..., name: ..., contactName: ..., email: ..., phoneNumber: ..., address: ..., categoryId: ..., image: ..., description: ..., punchNum: ..., expirationDurationInDays: ..., latitude: ..., longitude: ..., createdDatetime: ..., });
 
 // You can also pass in a `DataConnect` instance to the action shortcut function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -2880,13 +2909,15 @@ const createBusinessVars: CreateBusinessVariables = {
   description: ..., // optional
   punchNum: ..., // optional
   expirationDurationInDays: ..., // optional
+  latitude: ..., // optional
+  longitude: ..., // optional
   createdDatetime: ..., // optional
 };
 
 // Call the `createBusinessRef()` function to get a reference to the mutation.
 const ref = createBusinessRef(createBusinessVars);
 // Variables can be defined inline as well.
-const ref = createBusinessRef({ id: ..., name: ..., contactName: ..., email: ..., phoneNumber: ..., address: ..., categoryId: ..., image: ..., description: ..., punchNum: ..., expirationDurationInDays: ..., createdDatetime: ..., });
+const ref = createBusinessRef({ id: ..., name: ..., contactName: ..., email: ..., phoneNumber: ..., address: ..., categoryId: ..., image: ..., description: ..., punchNum: ..., expirationDurationInDays: ..., latitude: ..., longitude: ..., createdDatetime: ..., });
 
 // You can also pass in a `DataConnect` instance to the `MutationRef` function.
 const dataConnect = getDataConnect(connectorConfig);
@@ -3483,6 +3514,121 @@ console.log(data.punchCard_update);
 executeMutation(ref).then((response) => {
   const data = response.data;
   console.log(data.punchCard_update);
+});
+```
+
+## UpdateBusinessCoordinates
+You can execute the `UpdateBusinessCoordinates` mutation using the following action shortcut function, or by calling `executeMutation()` after calling the following `MutationRef` function, both of which are defined in [dataconnect/index.d.ts](./index.d.ts):
+```typescript
+updateBusinessCoordinates(vars: UpdateBusinessCoordinatesVariables): MutationPromise<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+
+interface UpdateBusinessCoordinatesRef {
+  ...
+  /* Allow users to create refs without passing in DataConnect */
+  (vars: UpdateBusinessCoordinatesVariables): MutationRef<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+}
+export const updateBusinessCoordinatesRef: UpdateBusinessCoordinatesRef;
+```
+You can also pass in a `DataConnect` instance to the action shortcut function or `MutationRef` function.
+```typescript
+updateBusinessCoordinates(dc: DataConnect, vars: UpdateBusinessCoordinatesVariables): MutationPromise<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+
+interface UpdateBusinessCoordinatesRef {
+  ...
+  (dc: DataConnect, vars: UpdateBusinessCoordinatesVariables): MutationRef<UpdateBusinessCoordinatesData, UpdateBusinessCoordinatesVariables>;
+}
+export const updateBusinessCoordinatesRef: UpdateBusinessCoordinatesRef;
+```
+
+If you need the name of the operation without creating a ref, you can retrieve the operation name by calling the `operationName` property on the updateBusinessCoordinatesRef:
+```typescript
+const name = updateBusinessCoordinatesRef.operationName;
+console.log(name);
+```
+
+### Variables
+The `UpdateBusinessCoordinates` mutation requires an argument of type `UpdateBusinessCoordinatesVariables`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+
+```typescript
+export interface UpdateBusinessCoordinatesVariables {
+  businessId: string;
+  latitude: number;
+  longitude: number;
+}
+```
+### Return Type
+Recall that executing the `UpdateBusinessCoordinates` mutation returns a `MutationPromise` that resolves to an object with a `data` property.
+
+The `data` property is an object of type `UpdateBusinessCoordinatesData`, which is defined in [dataconnect/index.d.ts](./index.d.ts). It has the following fields:
+```typescript
+export interface UpdateBusinessCoordinatesData {
+  business_update?: Business_Key | null;
+}
+```
+### Using `UpdateBusinessCoordinates`'s action shortcut function
+
+```typescript
+import { getDataConnect } from 'firebase/data-connect';
+import { connectorConfig, updateBusinessCoordinates, UpdateBusinessCoordinatesVariables } from '@nakevlink/dataconnect';
+
+// The `UpdateBusinessCoordinates` mutation requires an argument of type `UpdateBusinessCoordinatesVariables`:
+const updateBusinessCoordinatesVars: UpdateBusinessCoordinatesVariables = {
+  businessId: ..., 
+  latitude: ..., 
+  longitude: ..., 
+};
+
+// Call the `updateBusinessCoordinates()` function to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await updateBusinessCoordinates(updateBusinessCoordinatesVars);
+// Variables can be defined inline as well.
+const { data } = await updateBusinessCoordinates({ businessId: ..., latitude: ..., longitude: ..., });
+
+// You can also pass in a `DataConnect` instance to the action shortcut function.
+const dataConnect = getDataConnect(connectorConfig);
+const { data } = await updateBusinessCoordinates(dataConnect, updateBusinessCoordinatesVars);
+
+console.log(data.business_update);
+
+// Or, you can use the `Promise` API.
+updateBusinessCoordinates(updateBusinessCoordinatesVars).then((response) => {
+  const data = response.data;
+  console.log(data.business_update);
+});
+```
+
+### Using `UpdateBusinessCoordinates`'s `MutationRef` function
+
+```typescript
+import { getDataConnect, executeMutation } from 'firebase/data-connect';
+import { connectorConfig, updateBusinessCoordinatesRef, UpdateBusinessCoordinatesVariables } from '@nakevlink/dataconnect';
+
+// The `UpdateBusinessCoordinates` mutation requires an argument of type `UpdateBusinessCoordinatesVariables`:
+const updateBusinessCoordinatesVars: UpdateBusinessCoordinatesVariables = {
+  businessId: ..., 
+  latitude: ..., 
+  longitude: ..., 
+};
+
+// Call the `updateBusinessCoordinatesRef()` function to get a reference to the mutation.
+const ref = updateBusinessCoordinatesRef(updateBusinessCoordinatesVars);
+// Variables can be defined inline as well.
+const ref = updateBusinessCoordinatesRef({ businessId: ..., latitude: ..., longitude: ..., });
+
+// You can also pass in a `DataConnect` instance to the `MutationRef` function.
+const dataConnect = getDataConnect(connectorConfig);
+const ref = updateBusinessCoordinatesRef(dataConnect, updateBusinessCoordinatesVars);
+
+// Call `executeMutation()` on the reference to execute the mutation.
+// You can use the `await` keyword to wait for the promise to resolve.
+const { data } = await executeMutation(ref);
+
+console.log(data.business_update);
+
+// Or, you can use the `Promise` API.
+executeMutation(ref).then((response) => {
+  const data = response.data;
+  console.log(data.business_update);
 });
 ```
 
