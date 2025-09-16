@@ -79,6 +79,20 @@
           "order": "ASCENDING"
         }
       ]
+    },
+    {
+      "collectionGroup": "punches",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "punchTime",
+          "order": "DESCENDING"
+        }
+      ]
     }
   ],
   "fieldOverrides": []
